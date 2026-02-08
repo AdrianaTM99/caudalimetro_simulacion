@@ -1,9 +1,13 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import streamlit as st
 
-# Título de la app
+# 1. El título grande
 st.title('Simulación Interactiva de Caudalímetro Electromagnético')
+
+# 2. El autor en texto normal (con negrita) o pequeño
+st.markdown('**Por:** Adriana Teixeira Mendoza') 
 
 # Sliders amigables para el usuario
 B = st.slider('Intensidad del Campo Magnético B (T)', min_value=0.1, max_value=1.0, value=0.5, step=0.1, help='Ajusta el valor de B, típico 0.5 T para imanes N35')
@@ -43,3 +47,4 @@ if st.button('Generar Gráfica V vs Q'):
 
 # Texto explicativo
 st.info('Ajusta los sliders y presiona el botón para ver la gráfica. El color cambia según B: rojo (bajo), verde (medio), azul (alto).')
+
