@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Título y Autor en la misma línea, franja delgada)
+# 2. CSS Maestro (Título Fijo, Radio Buttons Azules y Diseño Intacto)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -43,30 +43,44 @@ st.markdown("""
         justify-content: center;
     }
 
-    /* Contenedor interno: Flexbox para poner título y autor en la misma línea */
     .header-content {
         width: 100%;
         max-width: 1100px;
-        padding: 10px 2rem; /* Padding reducido para franja más delgada */
+        padding: 10px 2rem;
         display: flex;
-        justify-content: space-between; /* Uno a la izquierda, otro a la derecha */
-        align-items: center; /* Alineación vertical perfecta */
+        justify-content: space-between;
+        align-items: center;
     }
 
     header[data-testid="stHeader"] { visibility: hidden; }
-
     .stApp { background: transparent !important; }
 
     .block-container {
         font-family: 'Roboto', sans-serif;
         max-width: 1100px !important;
         margin: 0 auto !important;
-        padding: 100px 2rem 4rem 2rem !important; /* Espacio superior ajustado a la nueva franja */
+        padding: 100px 2rem 4rem 2rem !important;
         color: white !important;
     }
 
     .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; font-weight: 300 !important; margin: 0; color: white; }
+
+    /* --- CAMBIO DE COLOR NARANJA A AZUL EN RADIO BUTTONS --- */
+    div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
+        background-color: transparent !important;
+    }
+    /* Círculo seleccionado */
+    div[data-role="radio"][aria-checked="true"] > div:first-child {
+        border-color: #00d4ff !important;
+    }
+    div[data-role="radio"][aria-checked="true"] > div:first-child > div {
+        background-color: #00d4ff !important;
+    }
+    /* Hover y focus */
+    div[data-testid="stRadio"] label:hover div:first-child {
+        border-color: #00d4ff !important;
+    }
 
     /* Sliders y Botones */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
@@ -151,10 +165,13 @@ else:
 if st.button('🚀 Generar curva de calibración'):
     A_m2 = np.pi * (D_si / 2)**2
     v = np.linspace(0.1, 5.0, 100)
+    # Factor de conductividad (sigmoide para simular pérdida por debajo de 5 μS/cm)
     f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
     V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v) * conv_q
     m_eq = V_mv[-1] / Q_plot[-1]
+
+    
 
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(10, 5))
