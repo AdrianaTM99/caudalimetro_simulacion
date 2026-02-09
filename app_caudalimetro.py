@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Sliders Cian, Sin recuadros extra, Título a la izquierda)
+# 2. CSS Maestro (Respetando tu interfaz de referencia)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -41,7 +41,7 @@ st.markdown("""
     .fixed-header h1 { font-size: 1.8rem !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; margin: 0; color: white; }
 
-    /* ESTILO DE LOS SLIDERS (FORZAR CIAN) */
+    /* ESTILO DE LOS SLIDERS (CIAN) */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
@@ -59,24 +59,36 @@ st.markdown("""
         border-radius: 8px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* Recuadro de la Calculadora (Sin recuadros internos azules) */
+    /* Panel Derecho Fijo para Conductividades */
+    .fixed-panel-right {
+        position: fixed;
+        top: 85px; right: 20px;
+        width: 260px;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #00d4ff;
+        z-index: 1000;
+        color: white;
+    }
+
     .calc-box {
         background-color: rgba(26, 82, 118, 0.3);
         padding: 25px; border-radius: 12px; border: 1px solid #00d4ff; 
         margin-top: 20px; max-width: 700px;
     }
 
-    /* Título de la calculadora pegado a la izquierda, sin recuadro azul */
     .calc-header-text {
-        color: white;
-        font-size: 1.6rem;
-        font-weight: 700;
-        margin-bottom: 15px;
-        text-align: left;
-        display: block;
+        color: white; font-size: 1.6rem; font-weight: 700;
+        margin-bottom: 15px; text-align: left; display: block;
     }
 
     p, label { font-size: 1.1rem !important; color: white !important; }
+    
+    .table-cond { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .table-cond th { border-bottom: 1px solid #00d4ff; text-align: left; padding: 5px; color: #00d4ff; }
+    .table-cond td { padding: 8px 5px; border-bottom: 1px solid rgba(255,255,255,0.1); }
     </style>
 
     <div class="fixed-header">
@@ -85,6 +97,28 @@ st.markdown("""
             <h3>Por: Adriana Teixeira Mendoza</h3>
         </div>
     </div>
+    """, unsafe_allow_html=True)
+
+# --- PANEL LATERAL DE CONSULTA ---
+with st.sidebar:
+    st.markdown("### Referencias")
+    mostrar_tabla = st.toggle("Ver Conductividades Nominales")
+
+if mostrar_tabla:
+    st.markdown("""
+        <div class="fixed-panel-right">
+            <span style="font-weight:700; font-size:1.1rem; color:#00d4ff; display:block; margin-bottom:10px;">Conductividades</span>
+            <table class="table-cond">
+                <tr><th>Fluido</th><th>μS/cm</th></tr>
+                <tr><td>Agua Destilada</td><td>0.5 - 5</td></tr>
+                <tr><td>Agua Potable</td><td>50 - 800</td></tr>
+                <tr><td>Leche</td><td>4,000 - 6,000</td></tr>
+                <tr><td>Zumo de Frutas</td><td>2,000 - 4,000</td></tr>
+                <tr><td>Agua de Mar</td><td>52,000</td></tr>
+                <tr><td>Ácido Sulfúrico</td><td>730,000</td></tr>
+            </table>
+            <p style="font-size:0.7rem; margin-top:10px; opacity:0.7;">* Valores aproximados a 25°C</p>
+        </div>
     """, unsafe_allow_html=True)
 
 # --- 3. SELECCIÓN DE UNIDADES ---
@@ -158,7 +192,6 @@ if st.session_state.generado:
     st.markdown('<div class="calc-box">', unsafe_allow_html=True)
     st.markdown('<span class="calc-header-text">Calculadora de Predicción</span>', unsafe_allow_html=True)
     
-    # Voltaje
     q_input = st.number_input(f"Ingresa Caudal (Q) en {u_q} para hallar Voltaje:", value=0.0, format="%.4f", key="q_in")
     v_output = q_input * m_eq
     st.markdown(f"**Resultado: Voltaje (V) = {v_output:.4f} mV**")
@@ -166,7 +199,6 @@ if st.session_state.generado:
     st.markdown("<br>", unsafe_allow_html=True)
     st.write("---")
     
-    # Caudal
     v_input = st.number_input(f"Ingresa Voltaje (V) en mV para hallar Caudal:", value=0.0, format="%.4f", key="v_in")
     q_output = v_input / m_eq if m_eq != 0 else 0
     st.markdown(f"**Resultado: Caudal (Q) = {q_output:.4f} {u_q}**")
