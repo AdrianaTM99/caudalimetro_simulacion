@@ -2,13 +2,13 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 1. Configuración de página (Debe ir al principio)
+# 1. Configuración de página
 st.set_page_config(layout="centered", page_title="Simulador Adriana")
 
-# 2. CSS para fondo TOTAL y marco negro transparente
+# 2. CSS para Fondo de Mar TOTAL y Franja Negra Transparente Vertical
 st.markdown("""
     <style>
-    /* Fondo que cubre TODA la pantalla sin recortes */
+    /* Fondo que cubre TODA la pantalla */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover;
@@ -17,26 +17,27 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* Quitar el color de fondo de la aplicación para que se vea la imagen */
+    /* Quitar fondos de cabecera y app */
     [data-testid="stHeader"], .stApp {
         background: rgba(0,0,0,0);
     }
 
-    /* EL MARCO NEGRO VERTICAL (Rectángulo central) */
+    /* FRANJA NEGRA VERTICAL COMPLETA */
     .block-container {
-        background-color: rgba(0, 0, 0, 0.85); /* Negro sólido al 85% */
-        border-radius: 20px;
+        background-color: rgba(0, 0, 0, 0.5); /* Más transparente (0.5) */
         padding: 3rem !important;
-        max-width: 800px;
-        margin-top: 50px;
-        margin-bottom: 50px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        backdrop-filter: blur(10px); /* Opcional: desenfoque del fondo */
+        max-width: 850px;
+        min-height: 100vh; /* Se estira de arriba a abajo */
+        margin: 0 auto; /* Centrado horizontal */
+        color: white !important;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px); /* Desenfoque sutil para legibilidad */
     }
 
-    /* Forzar texto blanco */
+    /* Estilo de textos y etiquetas */
     h1, h3, h4, p, label, .stMarkdown, [data-testid="stWidgetLabel"] p {
         color: white !important;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 1);
     }
 
     /* Botón moderno */
@@ -48,22 +49,18 @@ st.markdown("""
         border-radius: 10px;
         padding: 0.6rem;
         font-weight: bold;
-        transition: 0.3s;
-    }
-    .stButton > button:hover {
-        background-color: #008fcc;
-        transform: scale(1.02);
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. Título y autor
+# 3. Contenido
 st.title('Simulación Interactiva de Caudalímetro Electromagnético')
 st.markdown('### Por: Adriana Teixeira Mendoza')
 st.write("---")
 
-# 4. Parámetros del Sistema
-st.markdown("#### Parámetros del Sistema")
+
+
+st.markdown("#### Parámetros del Sistema (Ajuste Manual)")
 col1, col2, col3 = st.columns(3)
 with col1:
     B = st.number_input('B: Campo Magnético (T)', 0.1, 1.0, 0.5, 0.1)
@@ -77,14 +74,14 @@ def conductivity_factor(sigma, sigma_min=5, k=0.01):
 
 factor = conductivity_factor(sigma)
 
-st.write("") # Espacio
+st.write("")
 
 if st.button('🚀 Generar curva de calibración'):
+    # Cálculos
     A = np.pi * (D / 2)**2
     v = np.linspace(0.1, 5.0, 100)
     Q = A * v
     V_mv = B * D * v * factor * 1000
-
     m = (B * D * factor * 1000) / A
 
     # Gráfica
@@ -96,7 +93,6 @@ if st.button('🚀 Generar curva de calibración'):
     ax.set_title('Calibración V vs Q', fontsize=12)
     ax.grid(True, alpha=0.1)
     
-    # Hacer el fondo de la figura transparente para el marco
     fig.patch.set_alpha(0.0)
     ax.set_facecolor('none')
 
