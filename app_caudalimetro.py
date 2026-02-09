@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Título Fijo y Contenedor Deslizable)
+# 2. CSS Maestro (Título Fijo Extremo a Extremo con Transparencia)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -29,40 +29,44 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* RECUADRO FIJO PARA EL TÍTULO */
+    /* RECUADRO FIJO DE EXTREMO A EXTREMO */
     .fixed-header {
         position: fixed;
         top: 0;
-        left: 50%;
-        transform: translateX(-50%);
+        left: 0;
+        width: 100vw; /* 100% del ancho de la pantalla */
+        background-color: rgba(0, 0, 0, 0.5); /* Misma transparencia que la franja */
+        backdrop-filter: blur(4px); /* Mismo desenfoque */
+        z-index: 999;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: center; /* Centra el contenedor interno */
+    }
+
+    /* Contenedor interno del título para alinearse con los sliders */
+    .header-content {
         width: 100%;
         max-width: 1100px;
-        background-color: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(10px);
-        padding: 20px 40px;
-        z-index: 999;
-        border-bottom: 2px solid #00d4ff;
+        padding: 20px 2rem;
     }
 
-    /* Ocultar header nativo de Streamlit para evitar doble espacio */
-    header[data-testid="stHeader"] {
-        visibility: hidden;
-    }
+    /* Ocultar header nativo */
+    header[data-testid="stHeader"] { visibility: hidden; }
 
-    .stApp { backdrop-filter: blur(4px); }
-    .stApp, .block-container { background: transparent !important; }
+    .stApp { background: transparent !important; }
 
     .block-container {
         font-family: 'Roboto', sans-serif;
         max-width: 1100px !important;
         margin: 0 auto !important;
-        padding: 160px 2rem 4rem 2rem !important; /* El padding superior evita que el header tape el contenido */
+        padding: 180px 2rem 4rem 2rem !important; /* Espacio para el header fijo */
         color: white !important;
     }
 
     .fixed-header h1 { font-size: 2.5rem !important; font-weight: 700 !important; text-align: left !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.2rem !important; text-align: left !important; font-weight: 300 !important; margin: 5px 0 0 0; color: #00d4ff; }
 
+    /* Sliders y Botones */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
@@ -81,13 +85,14 @@ st.markdown("""
     </style>
 
     <div class="fixed-header">
-        <h1>Simulación de Caudalímetro Electromagnético</h1>
-        <h3>Por: Adriana Teixeira Mendoza</h3>
+        <div class="header-content">
+            <h1>Simulación de Caudalímetro Electromagnético</h1>
+            <h3>Por: Adriana Teixeira Mendoza</h3>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-# --- LÓGICA DE UNIDADES COMPLETA ---
-# Nota: Quitamos st.title y el markdown de Adriana aquí porque ya están en el fixed-header
+# --- LÓGICA DE UNIDADES ---
 sistema = st.radio("Sistema de Unidades Global:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
 if sistema == "Métrico (T, μS/cm, m)":
@@ -105,7 +110,7 @@ else:
 
 st.write("---")
 
-# --- PARÁMETROS DINÁMICOS ---
+# --- PARÁMETROS ---
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 col1, col2, col3 = st.columns(3, gap="large")
 
@@ -137,9 +142,7 @@ with c_err1:
 
 # --- CÁLCULOS ---
 if sistema == "Americano (G, mhos/in, in)":
-    B_si = B_user / 10000.0
-    D_si = D_user * 0.0254
-    sigma_si = sigma_user / 2.54
+    B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
 else:
     B_si, D_si, sigma_si = B_user, D_user, sigma_user
 
