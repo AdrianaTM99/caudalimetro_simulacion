@@ -11,36 +11,37 @@ st.set_page_config(
     page_icon=URL_ICONO
 )
 
-# 2. CSS para el fondo del mar, panel translúcido y sliders azules
+# 2. CSS para fondo de mar, panel translúcido (Glassmorphism) y sliders azules
 st.markdown("""
     <style>
     [data-testid="stAppViewContainer"] {
-        background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/large_2x/sea-surface-photo.jpg");
+        background-image: url("https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=2000&auto=format&fit=crop");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
     }
 
-    /* RECUADRO NEGRO TRANSLÚCIDO CON DESENFOQUE */
+    /* RECUADRO NEGRO CON TRANSPARENCIA Y DESENFOQUE PARA CONTRASTE */
     .main .block-container {
         max-width: 850px;
         padding: 3rem;
-        background-color: rgba(0, 0, 0, 0.75); /* Fondo negro con 75% opacidad */
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background-color: rgba(0, 0, 0, 0.75); /* Negro 75% opacidad */
+        border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 25px;
-        backdrop-filter: blur(15px); /* Desenfoque de la imagen de fondo */
+        backdrop-filter: blur(15px); /* Efecto cristal que evita saturación */
         box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9);
         margin-top: 40px;
         margin-bottom: 40px;
     }
 
+    /* Forzar texto blanco nítido */
     h1, h2, h3, p, label, .stMarkdown {
         color: white !important;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 1);
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 1);
     }
 
-    /* SLIDERS AZULES */
+    /* Sliders azules */
     div[data-baseweb="slider"] div[style*="background-color: rgb(255, 75, 75)"],
     div[data-baseweb="slider"] div[style*="background-color: #ff4b4b"] {
         background-color: #007bff !important;
@@ -51,6 +52,7 @@ st.markdown("""
         border-color: #ffffff !important;
     }
 
+    /* Estilo del botón */
     .stButton>button {
         width: 100%;
         background-color: #007bff;
@@ -59,6 +61,7 @@ st.markdown("""
         border: none;
         padding: 12px;
         font-weight: bold;
+        font-size: 18px;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -71,20 +74,20 @@ st.write("---")
 
 st.markdown("#### Parámetros del Sistema (Ajuste Manual o Deslizante)")
 
-# Función para entrada manual + slider
+# Función para entrada manual + slider sincronizado
 col1, col2, col3 = st.columns(3)
 
 with col1:
     B = st.number_input('B: Campo Magnético (T)', 0.1, 1.0, 0.5, 0.1)
-    B = st.slider('Ajuste B', 0.1, 1.0, float(B), 0.1, label_visibility="collapsed")
+    B = st.slider('Slider B', 0.1, 1.0, float(B), 0.1, label_visibility="collapsed")
 
 with col2:
     sigma = st.number_input('σ: Conductividad (µS/cm)', 1, 5000, 1000, 100)
-    sigma = st.slider('Ajuste σ', 1, 5000, int(sigma), 100, label_visibility="collapsed")
+    sigma = st.slider('Slider σ', 1, 5000, int(sigma), 100, label_visibility="collapsed")
 
 with col3:
     D = st.number_input('D: Diámetro (m)', 0.005, 0.050, 0.0127, 0.001, format="%.4f")
-    D = st.slider('Ajuste D', 0.005, 0.050, float(D), 0.001, label_visibility="collapsed")
+    D = st.slider('Slider D', 0.005, 0.050, float(D), 0.001, label_visibility="collapsed")
 
 # Lógica del Factor de Conductividad
 def conductivity_factor(sigma, sigma_min=5, k=0.01):
@@ -95,34 +98,36 @@ factor = conductivity_factor(sigma)
 st.write("") 
 
 if st.button('🚀 Generar curva de calibración'):
-    # Cálculos
+    # Cálculos físicos
     A = np.pi * (D / 2)**2
-    v = np.linspace(0.1, 5, 100) # Rango de velocidad del fluido
-    Q = A * v # m³/s
-    V_theor = B * D * v * factor * 1000 # mV
+    v = np.linspace(0.1, 5, 100) # Velocidad del fluido (m/s)
+    Q = A * v # Caudal (m³/s)
+    V_theor = B * D * v * factor * 1000 # Voltaje inducido (mV)
     
-    # Cálculo de la pendiente de la curva V vs Q
-    # V = B * D * (Q/A) * factor * 1000 -> Pendiente m = (B * D * factor * 1000) / A
+    # Pendiente de la curva (Sensibilidad)
+    # Ecuación: V = (B * D * factor * 1000 / A) * Q
     pendiente = (B * D * factor * 1000) / A
     
-    # Gráfica
+    # Configuración de Gráfica
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(8, 5))
-    ax.plot(Q, V_theor, color='#00e5ff', linewidth=3)
+    ax.plot(Q, V_theor, color='#00e5ff', linewidth=3, label='Respuesta Teórica')
     ax.set_xlabel('Caudal Q (m³/s)')
     ax.set_ylabel('Voltaje V (mV)')
     ax.set_title(f'Curva de Calibración: Voltaje vs Caudal')
-    ax.grid(True, alpha=0.2)
+    ax.grid(True, alpha=0.3, linestyle='--')
     
+    # Transparencia de la gráfica para el panel
     fig.patch.set_alpha(0.0)
     ax.set_facecolor('none')
     st.pyplot(fig)
     
     # MOSTRAR ECUACIÓN DE LA CURVA
     st.markdown("### Ecuación de la Curva Calculada:")
-    st.latex(rf"V_{(mV)} = {pendiente:.2f} \cdot Q_{(m^3/s)} + 0")
+    # Renderizado matemático profesional
+    st.latex(rf"V_{{(mV)}} = {pendiente:.2f} \cdot Q_{{(m^3/s)}}")
     
-    st.info(f"Sensibilidad del sensor: {pendiente:.2f} mV / (m³/s)")
+    st.success(f"Simulación finalizada. Pendiente (Sensibilidad): {pendiente:.2f} mV / (m³/s)")
 
 
 
