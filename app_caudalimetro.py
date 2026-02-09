@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Fondo con desenfoque mejorado)
+# 2. CSS Maestro (Fondo negro central recuperado y desenfocado)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Fondo general de la imagen */
+    /* Imagen de fondo base */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover; 
@@ -18,7 +18,7 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* Franja central con DESENFOQUE (Glassmorphism) */
+    /* CAPA NEGRA CENTRAL CON DESENFOQUE */
     [data-testid="stAppViewContainer"]::before {
         content: "";
         position: fixed;
@@ -26,17 +26,24 @@ st.markdown("""
         left: 50%;
         transform: translateX(-50%);
         width: 100%;
-        max-width: 1150px; /* Ancho de la zona de lectura */
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.6); /* Oscurecido */
-        backdrop-filter: blur(10px); /* <--- AQUÍ SE AJUSTA EL DESENFOQUE */
-        -webkit-backdrop-filter: blur(10px);
-        z-index: -1;
+        max-width: 1200px; /* Ajuste del ancho de la franja */
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.7); /* Color negro con opacidad */
+        backdrop-filter: blur(15px); /* Desenfoque fuerte */
+        -webkit-backdrop-filter: blur(15px);
+        z-index: 0;
+    }
+
+    /* Asegurar que el contenido esté por encima de la capa negra */
+    .stApp {
+        position: relative;
+        z-index: 1;
+        background: transparent !important;
     }
 
     .fixed-header {
         position: fixed; top: 0; left: 0; width: 100vw;
-        background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px);
+        background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);
         z-index: 999; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex; justify-content: center;
     }
@@ -47,7 +54,6 @@ st.markdown("""
     }
 
     header[data-testid="stHeader"] { visibility: hidden; }
-    .stApp { background: transparent !important; }
 
     .block-container {
         font-family: 'Roboto', sans-serif; max-width: 1100px !important;
@@ -58,7 +64,7 @@ st.markdown("""
     .fixed-header h1 { font-size: 1.8rem !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; margin: 0; color: white; }
 
-    /* ESTILO DE LOS SLIDERS (COLOR CIAN) */
+    /* ESTILO DE LOS SLIDERS */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
