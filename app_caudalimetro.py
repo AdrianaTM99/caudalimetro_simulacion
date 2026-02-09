@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Título Fijo Extremo a Extremo con Transparencia)
+# 2. CSS Maestro (Título y Autor en la misma línea, franja delgada)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -29,28 +29,30 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* RECUADRO FIJO DE EXTREMO A EXTREMO */
+    /* RECUADRO FIJO DE EXTREMO A EXTREMO (MÁS DELGADO) */
     .fixed-header {
         position: fixed;
         top: 0;
         left: 0;
-        width: 100vw; /* 100% del ancho de la pantalla */
-        background-color: rgba(0, 0, 0, 0.5); /* Misma transparencia que la franja */
-        backdrop-filter: blur(4px); /* Mismo desenfoque */
+        width: 100vw;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
         z-index: 999;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
-        justify-content: center; /* Centra el contenedor interno */
+        justify-content: center;
     }
 
-    /* Contenedor interno del título para alinearse con los sliders */
+    /* Contenedor interno: Flexbox para poner título y autor en la misma línea */
     .header-content {
         width: 100%;
         max-width: 1100px;
-        padding: 20px 2rem;
+        padding: 10px 2rem; /* Padding reducido para franja más delgada */
+        display: flex;
+        justify-content: space-between; /* Uno a la izquierda, otro a la derecha */
+        align-items: center; /* Alineación vertical perfecta */
     }
 
-    /* Ocultar header nativo */
     header[data-testid="stHeader"] { visibility: hidden; }
 
     .stApp { background: transparent !important; }
@@ -59,12 +61,12 @@ st.markdown("""
         font-family: 'Roboto', sans-serif;
         max-width: 1100px !important;
         margin: 0 auto !important;
-        padding: 180px 2rem 4rem 2rem !important; /* Espacio para el header fijo */
+        padding: 100px 2rem 4rem 2rem !important; /* Espacio superior ajustado a la nueva franja */
         color: white !important;
     }
 
-    .fixed-header h1 { font-size: 2.5rem !important; font-weight: 700 !important; text-align: left !important; margin: 0; color: white; }
-    .fixed-header h3 { font-size: 1.2rem !important; text-align: left !important; font-weight: 300 !important; margin: 5px 0 0 0; color: #00d4ff; }
+    .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
+    .fixed-header h3 { font-size: 1.1rem !important; font-weight: 300 !important; margin: 0; color: white; }
 
     /* Sliders y Botones */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
@@ -92,7 +94,7 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- LÓGICA DE UNIDADES ---
+# --- LÓGICA DE UNIDADES COMPLETA ---
 sistema = st.radio("Sistema de Unidades Global:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
 if sistema == "Métrico (T, μS/cm, m)":
@@ -153,8 +155,6 @@ if st.button('🚀 Generar curva de calibración'):
     V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v) * conv_q
     m_eq = V_mv[-1] / Q_plot[-1]
-
-    
 
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(10, 5))
