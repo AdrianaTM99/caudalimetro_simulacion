@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import time # Necesario para controlar el tiempo de la animación
 
 # 1. Configuración de la página con ICONO personalizado
 st.set_page_config(
@@ -8,6 +9,9 @@ st.set_page_config(
     page_title="Simulador Adriana",
     page_icon="https://raw.githubusercontent.com/AdrianaTM99/caudalimetro_simulacion/main/ICONO_CAUDALIMETRO.png"
 )
+
+# Enlace RAW de tu animación GIF
+URL_GIF = "https://raw.githubusercontent.com/AdrianaTM99/caudalimetro_simulacion/main/caudalimetro%20v3.1.png"
 
 # 2. CSS Maestro (Control total de diseño)
 st.markdown("""
@@ -24,7 +28,6 @@ st.markdown("""
 
     /* ELIMINAR NARANJA (Forzar azul en Radio y Expander) */
     div[data-baseweb="radio"] div[aria-checked="true"] { background-color: #00d4ff !important; border-color: #00d4ff !important; }
-    .st-emotion-cache-1vt4y6f { color: #00d4ff !important; } /* Color del texto del expander */
     
     /* ENCABEZADO FIJO */
     .fixed-header {
@@ -81,6 +84,9 @@ st.markdown("""
     header[data-testid="stHeader"] { visibility: hidden; }
     .stApp { background: transparent !important; }
     p, label { font-size: 1.1rem !important; color: white !important; }
+    
+    /* Centrar la animación */
+    .stImage { display: flex; justify-content: center; margin: 20px 0; }
     </style>
 
     <div class="fixed-header">
@@ -92,7 +98,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- 3. SELECCIÓN DE UNIDADES ---
-st.write("##") # Espacio para compensar el header fijo
+st.write("##") 
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
 if sistema == "Métrico (T, μS/cm, m)":
@@ -113,7 +119,6 @@ else:
 # --- 4. SIDEBAR CON TABLA DESPLEGABLE ---
 with st.sidebar:
     st.markdown("### Referencias Técnicas")
-    # Este es el botón desplegable que pediste para la tabla
     with st.expander("📊 Ver Tabla de Conductividades", expanded=False):
         st.markdown(f"""
             <table class="sidebar-table">
@@ -146,25 +151,40 @@ error_factor = st.slider('Ajuste de Error del Sistema (K)', 0.80, 1.20, 1.00, 0.
 if 'generado' not in st.session_state:
     st.session_state.generado = False
 
+# --- 6. PROCESAMIENTO CON ANIMACIÓN ---
 if st.button('🚀 Generar curva de calibración'):
-    st.session_state.generado = True
+    # Inicia el bloque de carga
+    with st.spinner('Procesando datos del caudalímetro...'):
+        # Muestra tu GIF centrado
+        st.image(URL_GIF, width=250)
+        
+        # Simulamos un pequeño retraso para que la animación sea visible
+        time.sleep(1.5)
+        
+        # Realizamos los cálculos mientras la animación está presente
+        if sistema == "Americano (G, mhos/in, in)":
+            B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
+        else:
+            B_si, D_si, sigma_si = B_user, D_user, sigma_user
 
-# --- 6. RESULTADOS ---
+        A_m2 = np.pi * (D_si / 2)**2
+        v_vec = np.linspace(0.1, 5.0, 100)
+        f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
+        V_mv = (B_si * D_si * v_vec * f_cond * 1000) * error_factor
+        Q_plot = (A_m2 * v_vec) * conv_q
+        m_eq = V_mv[-1] / Q_plot[-1]
+        
+        # Guardamos en el estado de la sesión para mantener los resultados
+        st.session_state.m_eq = m_eq
+        st.session_state.Q_plot = Q_plot
+        st.session_state.V_mv = V_mv
+        st.session_state.generado = True
+
+# --- 7. MOSTRAR RESULTADOS ---
 if st.session_state.generado:
-    if sistema == "Americano (G, mhos/in, in)":
-        B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
-    else:
-        B_si, D_si, sigma_si = B_user, D_user, sigma_user
-
-    A_m2 = np.pi * (D_si / 2)**2
-    v_vec = np.linspace(0.1, 5.0, 100)
-    # Factor de corrección por conductividad
-    f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
-    V_mv = (B_si * D_si * v_vec * f_cond * 1000) * error_factor
-    Q_plot = (A_m2 * v_vec) * conv_q
-    m_eq = V_mv[-1] / Q_plot[-1]
-
-    
+    m_eq = st.session_state.m_eq
+    Q_plot = st.session_state.Q_plot
+    V_mv = st.session_state.V_mv
 
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(10, 4))
@@ -175,7 +195,6 @@ if st.session_state.generado:
     ax.set_facecolor('none')
     st.pyplot(fig)
 
-    # ECUACIÓN GIGANTE CORREGIDA
     st.markdown(f"""
         <div class="equation-container">
             <div class="equation-text">
@@ -184,7 +203,6 @@ if st.session_state.generado:
         </div>
     """, unsafe_allow_html=True)
 
-    # CALCULADORA
     st.markdown('<div class="calc-box">', unsafe_allow_html=True)
     st.markdown('<span class="calc-header-text">Calculadora de Predicción</span>', unsafe_allow_html=True)
     
