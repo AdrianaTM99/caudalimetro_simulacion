@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Reescritura total de Radio Buttons para visibilidad máxima)
+# 2. CSS Maestro (Colores de botones más opacos y diseño corregido)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -66,40 +66,40 @@ st.markdown("""
     .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; font-weight: 300 !important; margin: 0; color: white; }
 
-    /* --- ESTILO RADICAL PARA RADIO BUTTONS (AZUL Y NEGRO) --- */
-    /* Forzar el círculo exterior: Borde azul, Fondo negro */
+    /* ESTILO DE RADIO BUTTONS (AZUL Y NEGRO) */
     div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
         border: 2px solid #00d4ff !important;
         background-color: #000000 !important;
         width: 20px !important;
         height: 20px !important;
     }
-
-    /* Forzar el punto interior cuando está MARCADO */
     div[data-testid="stRadio"] [data-baseweb="radio"][aria-checked="true"] > div:first-child > div {
         background-color: #00d4ff !important;
-        width: 10px !important;
-        height: 10px !important;
+        width: 100% !important;
+        height: 100% !important;
+        border: 2px solid black !important;
     }
 
-    /* Eliminar cualquier sombra o resplandor naranja/negro de Streamlit */
-    div[data-testid="stRadio"] [data-baseweb="radio"] {
-        background-color: transparent !important;
-    }
-
-    /* Sliders y Botones */
+    /* Sliders (mantenemos el cian para que resalten sobre el negro) */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
+    /* --- BOTONES CON AZUL MÁS OPACO Y OSCURO --- */
     .stButton > button {
         width: 100%;
-        background-color: #00d4ff;
-        color: white;
+        background-color: #1a5276 !important; /* Azul cobalto opaco */
+        color: white !important;
         border-radius: 8px;
-        padding: 1rem;
-        font-size: 1.4rem;
+        padding: 0.8rem;
+        font-size: 1.2rem;
         font-weight: bold;
-        border: none;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: background-color 0.3s ease;
+    }
+
+    .stButton > button:hover {
+        background-color: #21618c !important; /* Un poco más claro al pasar el mouse */
+        border-color: #00d4ff !important;
     }
 
     p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
@@ -113,14 +113,13 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- LÓGICA DE UNIDADES COMPLETA ---
-# Al usar st.radio, el CSS anterior "capturará" el componente y lo pintará de azul
+# --- LÓGICA DE UNIDADES ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
 if sistema == "Métrico (T, μS/cm, m)":
     u_b, u_sig, u_d, u_q = "T", "μS/cm", "m", "m³/s"
     b_min, b_max, b_def = 0.1, 1.5, 0.5
-    sig_min, sig_max, sig_def = 1, 5000, 1000
+    sig_min, sig_max, sig_def = 1.0, 5000.0, 1000.0
     d_min, d_max, d_def = 0.005, 0.500, 0.0127
     conv_q = 1.0
 else:
