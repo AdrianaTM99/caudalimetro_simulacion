@@ -5,32 +5,36 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Ajustado para abarcar el ancho completo del contenido)
+# 2. CSS Maestro (Fondo único con 70% de transparencia y ancho completo)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
+    /* Fondo de pantalla completo con la imagen del mar */
     [data-testid="stAppViewContainer"] {
-        background-image: 
-            linear-gradient(to right, transparent 0%, transparent calc(50% - 600px), rgba(0, 0, 0, 0.5) calc(50% - 600px), rgba(0, 0, 0, 0.5) calc(50% + 600px), transparent calc(50% + 600px)),
-            url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
-        background-size: cover; background-position: center; background-attachment: fixed;
+        background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
+        background-size: cover; 
+        background-position: center; 
+        background-attachment: fixed;
     }
 
-    /* Ajuste de la franja negra central para que sea más ancha */
+    /* RECUADRO ÚNICO CON TRANSPARENCIA DEL 70% */
     .block-container {
         font-family: 'Roboto', sans-serif; 
-        max-width: 1200px !important; /* Aumentado para cubrir mejor el contenido */
+        max-width: 1200px !important; 
         margin: 0 auto !important; 
-        padding: 100px 2rem 4rem 2rem !important;
+        padding: 100px 3rem 5rem 3rem !important;
         color: white !important;
-        background-color: rgba(0, 0, 0, 0.4); /* Fondo sutil para asegurar legibilidad */
-        border-radius: 15px;
+        background-color: rgba(0, 0, 0, 0.7) !important; /* 70% de transparencia */
+        min-height: 100vh;
+        box-shadow: 0px 0px 30px rgba(0,0,0,0.5);
     }
 
+    /* Header fijo transparente */
     .fixed-header {
         position: fixed; top: 0; left: 0; width: 100vw;
-        background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);
+        background-color: rgba(0, 0, 0, 0.8); 
+        backdrop-filter: blur(8px);
         z-index: 999; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex; justify-content: center;
     }
@@ -56,14 +60,15 @@ st.markdown("""
         border-radius: 8px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
+    /* Calculadora con borde cian sutil */
     .calc-box {
-        background-color: rgba(26, 82, 118, 0.3);
-        padding: 25px; border-radius: 12px; border: 1px solid #00d4ff; 
-        margin-top: 20px; max-width: 800px;
+        background-color: rgba(255, 255, 255, 0.05);
+        padding: 25px; border-radius: 12px; border: 1px solid rgba(0, 212, 255, 0.3); 
+        margin-top: 20px; max-width: 850px;
     }
 
     .calc-header-text {
-        color: white; font-size: 1.6rem; font-weight: 700;
+        color: #00d4ff; font-size: 1.6rem; font-weight: 700;
         margin-bottom: 15px; text-align: left; display: block;
     }
 
@@ -71,10 +76,7 @@ st.markdown("""
 
     /* Estilo de Tabla en Sidebar */
     .sidebar-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.85rem;
-        margin-top: 15px;
+        width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 15px;
     }
     .sidebar-table th { color: #00d4ff; border-bottom: 1px solid #00d4ff; text-align: left; padding: 8px; }
     .sidebar-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); color: white; }
@@ -88,7 +90,7 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- 3. SELECCIÓN DE UNIDADES ---
+# --- 3. SELECCIÓN DE UNIDADES Y LÓGICA DE TABLA ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
 if sistema == "Métrico (T, μS/cm, m)":
@@ -97,39 +99,41 @@ if sistema == "Métrico (T, μS/cm, m)":
     sig_min, sig_max, sig_def = 1.0, 5000.0, 1000.0
     d_min, d_max, d_def = 0.005, 0.500, 0.0127
     conv_q = 1.0
-    # Valores para la tabla métrica
-    val_dest = "0.5 - 5"
-    val_pot = "50 - 800"
-    val_mar = "52,000"
-    val_leche = "4,000 - 6,000"
+    # Tabla Métrica
+    filas_tabla = [
+        ("Agua Destilada", "0.5 - 5"),
+        ("Agua Potable", "50 - 800"),
+        ("Agua de Mar", "52,000"),
+        ("Leche", "4,000 - 6,000"),
+        ("Zumo de Frutas", "2,000 - 4,000")
+    ]
 else:
     u_b, u_sig, u_d, u_q = "G", "μmhos/in", "in", "GPM"
     b_min, b_max, b_def = 1000.0, 15000.0, 5000.0
     sig_min, sig_max, sig_def = 2.5, 12700.0, 2540.0
     d_min, d_max, d_def = 0.2, 20.0, 0.5
     conv_q = 15850.3
-    # Conversión de valores para la tabla americana (μS/cm a μmhos/in aproximadamente x2.54)
-    val_dest = "1.27 - 12.7"
-    val_pot = "127 - 2032"
-    val_mar = "132,080"
-    val_leche = "10,160 - 15,240"
+    # Tabla Americana (Conversión aprox)
+    filas_tabla = [
+        ("Agua Destilada", "1.27 - 12.7"),
+        ("Agua Potable", "127 - 2,032"),
+        ("Agua de Mar", "132,080"),
+        ("Leche", "10,160 - 15,240"),
+        ("Zumo de Frutas", "5,080 - 10,160")
+    ]
 
-# --- 4. SIDEBAR CON TABLA DINÁMICA ---
+# --- 4. SIDEBAR CON TABLA ---
 with st.sidebar:
     st.markdown("### Referencias Técnicas")
     ver_conductividades = st.toggle("Ver Conductividades Nominales")
     
     if ver_conductividades:
-        st.markdown(f"""
-            <table class="sidebar-table">
-                <tr><th>Fluido</th><th>{u_sig}</th></tr>
-                <tr><td>Agua Destilada</td><td>{val_dest}</td></tr>
-                <tr><td>Agua Potable</td><td>{val_pot}</td></tr>
-                <tr><td>Agua de Mar</td><td>{val_mar}</td></tr>
-                <tr><td>Leche</td><td>{val_leche}</td></tr>
-            </table>
-            <p style='font-size:0.8rem; opacity:0.7; margin-top:10px;'>* Valores convertidos al sistema {u_sig}.</p>
-        """, unsafe_allow_html=True)
+        tabla_html = f"<table class='sidebar-table'><tr><th>Fluido</th><th>{u_sig}</th></tr>"
+        for fluido, valor in filas_tabla:
+            tabla_html += f"<tr><td>{fluido}</td><td>{valor}</td></tr>"
+        tabla_html += "</table>"
+        st.markdown(tabla_html, unsafe_allow_html=True)
+        st.markdown(f"<p style='font-size:0.75rem; opacity:0.6;'>* Valores ajustados a {u_sig}</p>", unsafe_allow_html=True)
 
 st.write("---")
 
@@ -169,8 +173,10 @@ if st.session_state.generado:
     Q_plot = (A_m2 * v_vec) * conv_q
     m_eq = V_mv[-1] / Q_plot[-1]
 
+    
+
     plt.style.use('dark_background')
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots(figsize=(10, 4))
     ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=3)
     ax.set_xlabel(f'Caudal Q ({u_q})')
     ax.set_ylabel('Voltaje V (mV)')
@@ -180,6 +186,7 @@ if st.session_state.generado:
 
     st.latex(rf"V_{{(mV)}} = {m_eq:.4f} \cdot Q_{{({u_q})}}")
 
+    # --- CALCULADORA ---
     st.markdown('<div class="calc-box">', unsafe_allow_html=True)
     st.markdown('<span class="calc-header-text">Calculadora de Predicción</span>', unsafe_allow_html=True)
     
