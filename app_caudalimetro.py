@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Respetando tu interfaz de referencia)
+# 2. CSS Maestro (Sliders Cian, Sin recuadros extra, Título a la izquierda)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -41,7 +41,7 @@ st.markdown("""
     .fixed-header h1 { font-size: 1.8rem !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; margin: 0; color: white; }
 
-    /* ESTILO DE LOS SLIDERS (CIAN) */
+    /* ESTILO DE LOS SLIDERS */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
@@ -59,20 +59,7 @@ st.markdown("""
         border-radius: 8px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* Panel Derecho Fijo para Conductividades */
-    .fixed-panel-right {
-        position: fixed;
-        top: 85px; right: 20px;
-        width: 260px;
-        background-color: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(10px);
-        padding: 20px;
-        border-radius: 12px;
-        border: 1px solid #00d4ff;
-        z-index: 1000;
-        color: white;
-    }
-
+    /* Recuadro de la Calculadora */
     .calc-box {
         background-color: rgba(26, 82, 118, 0.3);
         padding: 25px; border-radius: 12px; border: 1px solid #00d4ff; 
@@ -85,10 +72,18 @@ st.markdown("""
     }
 
     p, label { font-size: 1.1rem !important; color: white !important; }
-    
-    .table-cond { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    .table-cond th { border-bottom: 1px solid #00d4ff; text-align: left; padding: 5px; color: #00d4ff; }
-    .table-cond td { padding: 8px 5px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+    /* Estilo de Tabla en Sidebar */
+    .sidebar-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+        margin-top: 15px;
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+    }
+    .sidebar-table th { color: #00d4ff; border-bottom: 1px solid #00d4ff; text-align: left; padding: 8px; }
+    .sidebar-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); color: white; }
     </style>
 
     <div class="fixed-header">
@@ -99,29 +94,27 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- PANEL LATERAL DE CONSULTA ---
+# --- 3. SIDEBAR: CONSULTA DE CONDUCTIVIDADES ---
 with st.sidebar:
-    st.markdown("### Referencias")
-    mostrar_tabla = st.toggle("Ver Conductividades Nominales")
-
-if mostrar_tabla:
-    st.markdown("""
-        <div class="fixed-panel-right">
-            <span style="font-weight:700; font-size:1.1rem; color:#00d4ff; display:block; margin-bottom:10px;">Conductividades</span>
-            <table class="table-cond">
+    st.markdown("### Referencias Técnicas")
+    ver_conductividades = st.toggle("Ver Conductividades Nominales")
+    
+    if ver_conductividades:
+        st.markdown("""
+            <table class="sidebar-table">
                 <tr><th>Fluido</th><th>μS/cm</th></tr>
                 <tr><td>Agua Destilada</td><td>0.5 - 5</td></tr>
                 <tr><td>Agua Potable</td><td>50 - 800</td></tr>
+                <tr><td>Agua de Mar</td><td>52,000</td></tr>
                 <tr><td>Leche</td><td>4,000 - 6,000</td></tr>
                 <tr><td>Zumo de Frutas</td><td>2,000 - 4,000</td></tr>
-                <tr><td>Agua de Mar</td><td>52,000</td></tr>
-                <tr><td>Ácido Sulfúrico</td><td>730,000</td></tr>
+                <tr><td>Soda Cáustica (10%)</td><td>350,000</td></tr>
+                <tr><td>Ácido Sulfúrico (30%)</td><td>730,000</td></tr>
             </table>
-            <p style="font-size:0.7rem; margin-top:10px; opacity:0.7;">* Valores aproximados a 25°C</p>
-        </div>
-    """, unsafe_allow_html=True)
+            <p style='font-size:0.8rem; opacity:0.7; margin-top:10px;'>* Valores estándar a 25°C.</p>
+        """, unsafe_allow_html=True)
 
-# --- 3. SELECCIÓN DE UNIDADES ---
+# --- 4. SELECCIÓN DE UNIDADES ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
 if sistema == "Métrico (T, μS/cm, m)":
@@ -139,7 +132,7 @@ else:
 
 st.write("---")
 
-# --- 4. PARÁMETROS ---
+# --- 5. PARÁMETROS ---
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 col1, col2, col3 = st.columns(3, gap="large")
 
@@ -161,7 +154,7 @@ if 'generado' not in st.session_state:
 if st.button('🚀 Generar curva de calibración'):
     st.session_state.generado = True
 
-# --- 5. RESULTADOS ---
+# --- 6. RESULTADOS ---
 if st.session_state.generado:
     if sistema == "Americano (G, mhos/in, in)":
         B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
