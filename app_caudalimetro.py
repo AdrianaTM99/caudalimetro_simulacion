@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Botones opacos, Título Fijo y Radio Buttons Azules/Negros)
+# 2. CSS Maestro (Diseño unificado: Título fijo, botones opacos, radio buttons personalizados)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Fondo de imagen base FIJO */
+    /* Fondo de imagen base FIJO con franja central sombreada */
     [data-testid="stAppViewContainer"] {
         background-image: 
             linear-gradient(
@@ -29,7 +29,7 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* RECUADRO FIJO DE EXTREMO A EXTREMO */
+    /* RECUADRO FIJO DEL TÍTULO (Extremo a Extremo) */
     .fixed-header {
         position: fixed;
         top: 0;
@@ -66,7 +66,7 @@ st.markdown("""
     .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; font-weight: 300 !important; margin: 0; color: white; }
 
-    /* ESTILO DE RADIO BUTTONS (AZUL Y NEGRO) */
+    /* INDICADORES DE SELECCIÓN (RADIO BUTTONS) - AZUL Y NEGRO */
     div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
         border: 2px solid #00d4ff !important;
         background-color: #000000 !important;
@@ -80,11 +80,11 @@ st.markdown("""
         border: 2px solid black !important;
     }
 
-    /* Sliders */
+    /* SLIDERS (Azul cian para resaltar) */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
-    /* BOTONES AZUL OPACO */
+    /* BOTONES (Azul cobalto opaco) */
     .stButton > button {
         width: 100%;
         background-color: #1a5276 !important;
@@ -94,9 +94,14 @@ st.markdown("""
         font-size: 1.2rem;
         font-weight: bold;
         border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: 0.3s;
+    }
+    .stButton > button:hover {
+        background-color: #21618c !important;
+        border-color: #00d4ff !important;
     }
 
-    /* Estilo para los cuadros de resultado de la calculadora */
+    /* RESULTADOS CALCULADORA */
     .stSuccess, .stInfo {
         background-color: rgba(26, 82, 118, 0.5) !important;
         color: white !important;
@@ -114,7 +119,7 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- LÓGICA DE UNIDADES ---
+# --- 3. LÓGICA DE UNIDADES ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
 if sistema == "Métrico (T, μS/cm, m)":
@@ -132,21 +137,21 @@ else:
 
 st.write("---")
 
-# --- PARÁMETROS ---
+# --- 4. PARÁMETROS DINÁMICOS ---
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
-    B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(B_val))
-    B_user = st.slider(f'Ajustar B', float(b_min), float(b_max), float(B_val), label_visibility="collapsed")
+    B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(b_def))
+    B_user = st.slider(f'B_slider', float(b_min), float(b_max), float(B_val), label_visibility="collapsed")
 
 with col2:
     sig_val = st.number_input(f'σ: Conductividad ({u_sig})', float(sig_min), float(sig_max), float(sig_def))
-    sigma_user = st.slider(f'Ajustar σ', float(sig_min), float(sig_max), float(sig_val), label_visibility="collapsed")
+    sigma_user = st.slider(f'Sig_slider', float(sig_min), float(sig_max), float(sig_val), label_visibility="collapsed")
 
 with col3:
     D_val = st.number_input(f'D: Diámetro ({u_d})', float(d_min), float(d_max), float(d_def), format="%.4f")
-    D_user = st.slider(f'Ajustar D', float(d_min), float(d_max), float(D_val), label_visibility="collapsed")
+    D_user = st.slider(f'D_slider', float(d_min), float(d_max), float(D_val), label_visibility="collapsed")
 
 st.write("---")
 
@@ -162,8 +167,7 @@ with c_err2:
 with c_err1:
     error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
 
-# --- CÁLCULOS Y GRÁFICA ---
-# Pre-calculamos la pendiente incluso si no se presiona el botón para que la calculadora funcione
+# --- 5. CÁLCULOS Y GRÁFICA ---
 if sistema == "Americano (G, mhos/in, in)":
     B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
 else:
@@ -171,7 +175,6 @@ else:
 
 A_m2 = np.pi * (D_si / 2)**2
 f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
-# Pendiente m = (B * D * f_cond * 1000 * error) / (Area * conv_q)
 m_eq = (B_si * D_si * f_cond * 1000 * error_factor) / (A_m2 * conv_q)
 
 if st.button('🚀 Generar curva de calibración'):
@@ -194,9 +197,9 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 
-# --- NUEVA SECCIÓN: CALCULADORA DE VALORES ---
+# --- 6. CALCULADORA DE VALORES ---
 st.markdown(f"#### 🧮 Calculadora de Predicción ({u_q} ↔ mV)")
-st.write("Ingresa un valor para calcular su correspondencia basada en la ecuación actual:")
+st.write("Calcula resultados basados en la configuración de parámetros de arriba:")
 
 calc_col1, calc_col2 = st.columns(2)
 
