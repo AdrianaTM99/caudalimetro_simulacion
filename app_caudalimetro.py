@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro para Fondo Infinito y Persistente
+# 2. CSS Maestro: Fondo fijo y franja negra centrada
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* 1. Fondo de imagen FIJO en la base */
+    /* Fondo de imagen FIJO en toda la pantalla */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover;
@@ -19,25 +19,22 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* 2. Quitar fondos por defecto */
+    /* Quitar fondos por defecto de Streamlit */
     [data-testid="stHeader"], .stApp {
-        background: rgba(0,0,0,0);
+        background: rgba(0,0,0,0) !important;
     }
 
-    /* 3. LA FRANJA NEGRA INFINITA */
-    /* Aplicamos el fondo al contenedor principal de scroll para que nunca se corte */
-    .main {
-        background-color: rgba(0, 0, 0, 0.4) !important; /* Más transparente como pediste */
-        max-width: 1100px;
-        margin: 0 auto;
-        backdrop-filter: blur(2px);
-    }
-
-    /* Ajuste del contenedor de bloques para que no añada márgenes blancos */
+    /* LA FRANJA NEGRA CENTRAL PERSISTENTE */
     .block-container {
         font-family: 'Roboto', sans-serif;
-        padding: 4rem !important;
+        background-color: rgba(0, 0, 0, 0.45) !important; /* Negro translúcido */
+        backdrop-filter: blur(8px) !important; /* Desenfoque sutil para legibilidad */
+        max-width: 1100px !important; /* Ancho controlado */
+        min-height: 100vh !important;
+        margin: 0 auto !important; /* Centrado horizontal */
+        padding: 4rem 3rem !important;
         color: white !important;
+        box-shadow: 0 0 100px rgba(0,0,0,0.5); /* Sombra lateral para dar profundidad */
     }
 
     /* TÍTULO A LA IZQUIERDA */
@@ -55,7 +52,7 @@ st.markdown("""
         margin-bottom: 2rem !important;
     }
 
-    /* SLIDERS AZULES CIAN */
+    /* FORZAR SLIDERS AZULES (#00D4FF) */
     div[data-testid="stSlider"] > div > div > div > div {
         background-color: #00d4ff !important;
     }
@@ -64,7 +61,7 @@ st.markdown("""
         border: 2px solid white !important;
     }
 
-    /* BOTÓN AZUL ELÉCTRICO */
+    /* BOTÓN AZUL */
     .stButton > button {
         width: 100%;
         background-color: #00d4ff;
@@ -77,8 +74,8 @@ st.markdown("""
         transition: 0.3s;
     }
     .stButton > button:hover {
-        background-color: #0099cc;
-        box-shadow: 0px 0px 20px rgba(0, 212, 255, 0.5);
+        background-color: #00bfff;
+        box-shadow: 0px 0px 20px rgba(0, 212, 255, 0.6);
     }
 
     p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
@@ -87,6 +84,7 @@ st.markdown("""
 
 # --- CONTENIDO ---
 
+# Títulos
 st.title('Simulación de Caudalímetro Electromagnético')
 st.markdown('### Por: Adriana Teixeira Mendoza')
 st.write("---")
@@ -95,7 +93,7 @@ st.write("---")
 
 st.markdown("#### Configuración de Parámetros")
 
-# Columnas para los parámetros principales
+# Parámetros principales con Sliders Azules
 col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
@@ -128,13 +126,14 @@ with c_err1:
         error_factor = st.slider('Factor de Error Manual', 0.80, 1.20, 1.00, 0.01)
     else:
         error_factor = 1.00
-        st.write(f"Factor por defecto: **{error_factor:.2f}**")
+        st.write(f"Factor por defecto activo: **{error_factor:.2f}**")
 
 def conductivity_factor(s):
+    # Función sigmoide para representar pérdidas por conductividad
     return 1 / (1 + np.exp(-0.01 * (s - 5)))
 
 if st.button('🚀 Generar curva de calibración'):
-    # Cálculos
+    # Cálculos físicos
     A = np.pi * (D / 2)**2
     v = np.linspace(0.1, 5.0, 100)
     Q = A * v
@@ -148,16 +147,17 @@ if st.button('🚀 Generar curva de calibración'):
     ax.plot(Q, V_mv, color='#00d4ff', linewidth=3)
     ax.set_xlabel('Caudal Q (m³/s)')
     ax.set_ylabel('Voltaje V (mV)')
-    ax.set_title('Curva de Calibración', fontsize=16, pad=20)
+    ax.set_title('Calibración: Voltaje vs Caudal', fontsize=16, pad=20)
     ax.grid(True, alpha=0.1)
     
+    # Hacer transparente la gráfica para que no rompa el fondo negro
     fig.patch.set_alpha(0.0)
     ax.set_facecolor('none')
     st.pyplot(fig)
 
-    st.markdown("#### Ecuación Final:")
+    st.markdown("#### Resultados del Análisis:")
     st.latex(rf"V_{{(mV)}} = {m:.2f} \cdot Q_{{(m^3/s)}}")
     st.success(f"Sensibilidad: {m:.2f} mV / (m³/s)")
 
 st.write("---")
-st.caption("Fórmula: ε = (B ⋅ D ⋅ v ⋅ f(σ)) ⋅ Factor_Error | Adriana Teixeira 2026")
+st.caption("ε = (B ⋅ D ⋅ v ⋅ f(σ)) ⋅ Factor_Error | Adriana Teixeira 2026")
