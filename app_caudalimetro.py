@@ -3,17 +3,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time 
 
-# 1. Configuración de la página
+# 1. Configuración de la página con ICONO (Enlace RAW)
 st.set_page_config(
     layout="wide", 
     page_title="Simulador Adriana",
     page_icon="https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20v3.1.png"
 )
 
-# Enlaces RAW
+# Enlaces RAW de archivos en GitHub
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20chikito.gif"
 
-# 2. CSS Maestro
+# 2. CSS Maestro (Fondo 75% oscuro, Título Centrado, Ecuación Grande)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -93,7 +93,7 @@ else:
     b_min, b_max, b_def, sig_min, sig_max, sig_def, d_min, d_max, d_def, conv_q = 1000.0, 15000.0, 5000.0, 2.5, 12700.0, 2540.0, 0.2, 20.0, 0.5, 15850.3
     val_dest, val_pot, val_mar, val_leche = "1.27 - 12.7", "127 - 2032", "132,080", "10,160 - 15,240"
 
-# --- 4. SIDEBAR ---
+# --- 4. SIDEBAR CON TABLA DESPLEGABLE ---
 with st.sidebar:
     st.markdown("### Referencias Técnicas")
     with st.expander("📊 Ver Tabla de Conductividades", expanded=False):
@@ -128,25 +128,26 @@ error_factor = st.slider('Ajuste de Error del Sistema (K)', 0.80, 1.20, 1.00, 0.
 if 'generado' not in st.session_state:
     st.session_state.generado = False
 
-# --- 6. PROCESAMIENTO CON DESPAWN ---
+# --- 6. PROCESAMIENTO CON ANIMACIÓN Y DESPAWN ---
 if st.button('🚀 Generar curva de calibración'):
-    # Creamos el contenedor vacío para el GIF
+    # Creamos un placeholder para que el GIF desaparezca después
     placeholder = st.empty()
     
     with placeholder.container():
         st.write("##")
-        _, mid_col, _ = st.columns([1, 1, 1])
+        # Centrado perfecto del mensaje y el GIF
+        _, mid_col, _ = st.columns([1, 2, 1]) 
         with mid_col:
-            st.image(URL_GIF, width=280)
-            st.markdown("<p style='text-align:center; color:#00d4ff;'>Calculando flujo electromagnético...</p>", unsafe_allow_html=True)
+            st.image(URL_GIF, width=300)
+            st.markdown("<p style='text-align:center; color:#00d4ff; font-weight:bold;'>Calculando flujo electromagnético...</p>", unsafe_allow_html=True)
         
-        # Simulamos carga
+        # Tiempo de carga visible
         time.sleep(2.0)
 
-    # AQUÍ OCURRE EL DESPAWN: Borramos el contenido del placeholder
+    # DESPAWN: Se limpia el contenedor antes de mostrar la gráfica
     placeholder.empty()
         
-    # Cálculos técnicos
+    # Cálculos de simulación
     if sistema == "Americano (G, mhos/in, in)":
         B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
     else:
@@ -163,7 +164,7 @@ if st.button('🚀 Generar curva de calibración'):
     st.session_state.V_mv = V_mv
     st.session_state.generado = True
 
-# --- 7. RESULTADOS ---
+# --- 7. RESULTADOS FINALES ---
 if st.session_state.generado:
     m_eq = st.session_state.m_eq
     Q_plot = st.session_state.Q_plot
@@ -186,16 +187,17 @@ if st.session_state.generado:
         </div>
     """, unsafe_allow_html=True)
 
+    # Calculadora de predicción interactiva
     st.markdown('<div style="background-color: rgba(26, 82, 118, 0.4); padding: 25px; border-radius: 12px; border: 1px solid #00d4ff;">', unsafe_allow_html=True)
     st.markdown('<span style="color: white; font-size: 1.6rem; font-weight: 700;">Calculadora de Predicción</span>', unsafe_allow_html=True)
     
     col_a, col_b = st.columns(2)
     with col_a:
-        q_input = st.number_input(f"Caudal (Q) en {u_q}:", value=1.0, format="%.4f", key="q_in")
-        st.write(f"**Voltaje: {q_input * m_eq:.4f} mV**")
+        q_input = st.number_input(f"Ingresa Caudal (Q) en {u_q}:", value=1.0, format="%.4f", key="q_in")
+        st.write(f"**Resultado: {q_input * m_eq:.4f} mV**")
     with col_b:
-        v_input = st.number_input(f"Voltaje (V) en mV:", value=1.0, format="%.4f", key="v_in")
-        st.write(f"**Caudal: {v_input / m_eq if m_eq != 0 else 0:.4f} {u_q}**")
+        v_input = st.number_input(f"Ingresa Voltaje (V) en mV:", value=1.0, format="%.4f", key="v_in")
+        st.write(f"**Resultado: {v_input / m_eq if m_eq != 0 else 0:.4f} {u_q}**")
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.write("---")
