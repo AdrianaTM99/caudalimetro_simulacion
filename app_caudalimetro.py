@@ -1,24 +1,23 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-import time # Necesario para controlar el tiempo de la animación
+import time 
 
-# 1. Configuración de la página con ICONO personalizado
+# 1. Configuración de la página con ICONO (Enlace RAW corregido)
 st.set_page_config(
     layout="wide", 
     page_title="Simulador Adriana",
-    page_icon="https://github.com/AdrianaTM99/caudalimetro_simulacion/blob/main/caudalimetro%20v3.1.png"
+    page_icon="https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20v3.1.png"
 )
 
-# Enlace RAW de tu animación GIF
-URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/blob/main/caudalimetro%20chikito.gif"
+# Enlace RAW de tu animación GIF (Cambiado 'blob' por 'raw')
+URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20chikito.gif"
 
-# 2. CSS Maestro (Control total de diseño)
+# 2. CSS Maestro
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* FONDO OSCURO 75% */
     [data-testid="stAppViewContainer"] {
         background-image: 
             linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
@@ -26,10 +25,8 @@ st.markdown("""
         background-size: cover; background-position: center; background-attachment: fixed;
     }
 
-    /* ELIMINAR NARANJA (Forzar azul en Radio y Expander) */
     div[data-baseweb="radio"] div[aria-checked="true"] { background-color: #00d4ff !important; border-color: #00d4ff !important; }
     
-    /* ENCABEZADO FIJO */
     .fixed-header {
         position: fixed; top: 0; left: 0; width: 100vw;
         background-color: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
@@ -49,35 +46,24 @@ st.markdown("""
         font-weight: 300;
     }
 
-    /* ECUACIÓN GIGANTE */
     .equation-container {
-        background: rgba(0, 212, 255, 0.1);
-        border: 2px solid #00d4ff;
-        border-radius: 15px;
-        padding: 30px;
-        margin: 40px auto;
-        text-align: center;
-        max-width: 850px;
+        background: rgba(0, 212, 255, 0.1); border: 2px solid #00d4ff;
+        border-radius: 15px; padding: 30px; margin: 40px auto;
+        text-align: center; max-width: 850px;
     }
 
     .equation-text {
-        font-size: 3.5rem !important;
-        color: #00d4ff;
-        font-family: 'Roboto', sans-serif;
-        font-weight: 700;
+        font-size: 3.5rem !important; color: #00d4ff;
+        font-family: 'Roboto', sans-serif; font-weight: 700;
     }
 
-    /* BOTONES Y SLIDERS */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     .stButton > button {
         width: 100%; background-color: #1a5276 !important; color: white !important;
         border: 1px solid #00d4ff; border-radius: 8px; font-weight: bold;
     }
 
-    /* ESTILO DE TABLA */
-    .sidebar-table {
-        width: 100%; border-collapse: collapse; font-size: 0.9rem; color: white;
-    }
+    .sidebar-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; color: white; }
     .sidebar-table th { color: #00d4ff; border-bottom: 1px solid #00d4ff; text-align: left; padding: 8px; }
     .sidebar-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
 
@@ -85,8 +71,12 @@ st.markdown("""
     .stApp { background: transparent !important; }
     p, label { font-size: 1.1rem !important; color: white !important; }
     
-    /* Centrar la animación */
-    .stImage { display: flex; justify-content: center; margin: 20px 0; }
+    /* Contenedor para centrar el GIF */
+    .gif-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
     </style>
 
     <div class="fixed-header">
@@ -103,20 +93,14 @@ sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, 
 
 if sistema == "Métrico (T, μS/cm, m)":
     u_b, u_sig, u_d, u_q = "T", "μS/cm", "m", "m³/s"
-    b_min, b_max, b_def = 0.1, 1.5, 0.5
-    sig_min, sig_max, sig_def = 1.0, 5000.0, 1000.0
-    d_min, d_max, d_def = 0.005, 0.500, 0.0127
-    conv_q = 1.0
+    b_min, b_max, b_def, sig_min, sig_max, sig_def, d_min, d_max, d_def, conv_q = 0.1, 1.5, 0.5, 1.0, 5000.0, 1000.0, 0.005, 0.500, 0.0127, 1.0
     val_dest, val_pot, val_mar, val_leche = "0.5 - 5", "50 - 800", "52,000", "4,000 - 6,000"
 else:
     u_b, u_sig, u_d, u_q = "G", "μmhos/in", "in", "GPM"
-    b_min, b_max, b_def = 1000.0, 15000.0, 5000.0
-    sig_min, sig_max, sig_def = 2.5, 12700.0, 2540.0
-    d_min, d_max, d_def = 0.2, 20.0, 0.5
-    conv_q = 15850.3
+    b_min, b_max, b_def, sig_min, sig_max, sig_def, d_min, d_max, d_def, conv_q = 1000.0, 15000.0, 5000.0, 2.5, 12700.0, 2540.0, 0.2, 20.0, 0.5, 15850.3
     val_dest, val_pot, val_mar, val_leche = "1.27 - 12.7", "127 - 2032", "132,080", "10,160 - 15,240"
 
-# --- 4. SIDEBAR CON TABLA DESPLEGABLE ---
+# --- 4. SIDEBAR ---
 with st.sidebar:
     st.markdown("### Referencias Técnicas")
     with st.expander("📊 Ver Tabla de Conductividades", expanded=False):
@@ -153,15 +137,14 @@ if 'generado' not in st.session_state:
 
 # --- 6. PROCESAMIENTO CON ANIMACIÓN ---
 if st.button('🚀 Generar curva de calibración'):
-    # Inicia el bloque de carga
-    with st.spinner('Procesando datos del caudalímetro...'):
-        # Muestra tu GIF centrado
-        st.image(URL_GIF, width=250)
+    with st.spinner('Simulando flujo...'):
+        # Centrado manual del GIF usando una columna
+        _, mid_col, _ = st.columns([1, 2, 1])
+        with mid_col:
+            st.image(URL_GIF, width=300)
         
-        # Simulamos un pequeño retraso para que la animación sea visible
-        time.sleep(1.5)
+        time.sleep(2.0) # Tiempo para apreciar el GIF
         
-        # Realizamos los cálculos mientras la animación está presente
         if sistema == "Americano (G, mhos/in, in)":
             B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
         else:
@@ -172,15 +155,13 @@ if st.button('🚀 Generar curva de calibración'):
         f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
         V_mv = (B_si * D_si * v_vec * f_cond * 1000) * error_factor
         Q_plot = (A_m2 * v_vec) * conv_q
-        m_eq = V_mv[-1] / Q_plot[-1]
         
-        # Guardamos en el estado de la sesión para mantener los resultados
-        st.session_state.m_eq = m_eq
+        st.session_state.m_eq = V_mv[-1] / Q_plot[-1]
         st.session_state.Q_plot = Q_plot
         st.session_state.V_mv = V_mv
         st.session_state.generado = True
 
-# --- 7. MOSTRAR RESULTADOS ---
+# --- 7. RESULTADOS ---
 if st.session_state.generado:
     m_eq = st.session_state.m_eq
     Q_plot = st.session_state.Q_plot
@@ -197,25 +178,21 @@ if st.session_state.generado:
 
     st.markdown(f"""
         <div class="equation-container">
-            <div class="equation-text">
-                V<sub>(mV)</sub> = {m_eq:.4f} · Q<sub>({u_q})</sub>
-            </div>
+            <div class="equation-text">V<sub>(mV)</sub> = {m_eq:.4f} · Q<sub>({u_q})</sub></div>
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="calc-box">', unsafe_allow_html=True)
-    st.markdown('<span class="calc-header-text">Calculadora de Predicción</span>', unsafe_allow_html=True)
+    st.markdown('<div style="background-color: rgba(26, 82, 118, 0.4); padding: 25px; border-radius: 12px; border: 1px solid #00d4ff;">', unsafe_allow_html=True)
+    st.markdown('<span style="color: white; font-size: 1.6rem; font-weight: 700;">Calculadora de Predicción</span>', unsafe_allow_html=True)
     
     col_a, col_b = st.columns(2)
     with col_a:
-        q_input = st.number_input(f"Ingresa Caudal (Q) en {u_q}:", value=1.0, format="%.4f", key="q_in")
-        st.write(f"**Resultado: {q_input * m_eq:.4f} mV**")
+        q_input = st.number_input(f"Caudal (Q) en {u_q}:", value=1.0, format="%.4f", key="q_in")
+        st.write(f"**Voltaje: {q_input * m_eq:.4f} mV**")
     with col_b:
-        v_input = st.number_input(f"Ingresa Voltaje (V) en mV:", value=1.0, format="%.4f", key="v_in")
-        st.write(f"**Resultado: {v_input / m_eq if m_eq != 0 else 0:.4f} {u_q}**")
+        v_input = st.number_input(f"Voltaje (V) en mV:", value=1.0, format="%.4f", key="v_in")
+        st.write(f"**Caudal: {v_input / m_eq if m_eq != 0 else 0:.4f} {u_q}**")
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
-
-
