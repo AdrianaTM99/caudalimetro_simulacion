@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Interfaz profesional, botones azul cobalto y calculadora vertical)
+# 2. CSS Maestro (Interfaz profesional, botones azul cobalto y calculadora vertical unificada)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -118,7 +118,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 # --- 6. RESULTADOS (Sección Condicional) ---
 if st.session_state.generado:
-    # Cálculos
+    # Cálculos físicos
     if sistema == "Americano (G, mhos/in, in)":
         B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
     else:
@@ -146,21 +146,22 @@ if st.session_state.generado:
 
     st.latex(rf"V_{{(mV)}} = {m_eq:.4f} \cdot Q_{{({u_q})}}")
 
-    # --- CALCULADORA VERTICAL ---
+    # --- CALCULADORA VERTICAL UNIFICADA ---
     st.markdown('### 🧮 Calculadora de Predicción')
     st.markdown('<div class="calc-box">', unsafe_allow_html=True)
     
-    # Campo para calcular Voltaje
-    q_input = st.number_input(f"Ingresa Caudal (Q) en {u_q} para hallar Voltaje:", value=0.0, format="%.4f")
+    # Cálculo de Voltaje
+    q_input = st.number_input(f"Ingresa Caudal (Q) en {u_q} para hallar Voltaje:", value=0.0, format="%.4f", key="q_in")
     v_output = q_input * m_eq
-    st.markdown(f"**Resultado:** Voltaje (V) = `{v_output:.4f} mV`")
+    st.markdown(f"**Resultado: Voltaje (V) = {v_output:.4f} mV**")
     
-    st.write("---") # Separador visual interno
+    st.markdown("<br>", unsafe_allow_html=True) # Pequeño espacio
+    st.write("---")
     
-    # Campo para calcular Caudal
-    v_input = st.number_input(f"Ingresa Voltaje (V) en mV para hallar Caudal:", value=0.0, format="%.4f")
+    # Cálculo de Caudal
+    v_input = st.number_input(f"Ingresa Voltaje (V) en mV para hallar Caudal:", value=0.0, format="%.4f", key="v_in")
     q_output = v_input / m_eq if m_eq != 0 else 0
-    st.markdown(f"**Resultado:** Caudal (Q) = `{q_output:.4f} {u_q}`")
+    st.markdown(f"**Resultado: Caudal (Q) = {q_output:.4f} {u_q}**")
     
     st.markdown('</div>', unsafe_allow_html=True)
 
