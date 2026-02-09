@@ -10,7 +10,7 @@ st.set_page_config(
     page_icon="https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20v3.1.png"
 )
 
-# Enlace RAW corregido
+# Enlace RAW
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
 # 2. CSS Maestro
@@ -146,7 +146,6 @@ if st.button('🚀 Generar curva de calibración'):
     placeholder = st.empty()
     
     with placeholder.container():
-        # posicion de la animacion
         st.markdown(f"""
             <div class="loading-overlay">
                 <img src="{URL_GIF}" width="300">
@@ -189,6 +188,8 @@ if st.session_state.generado:
     fig.patch.set_alpha(0.0)
     ax.set_facecolor('none')
     st.pyplot(fig)
+
+    
 
     st.markdown(f"""
         <div class="equation-container">
