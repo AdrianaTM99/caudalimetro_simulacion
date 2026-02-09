@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # Enlace RAW de tu animación GIF
-URL_GIF = "https://raw.githubusercontent.com/AdrianaTM99/caudalimetro_simulacion/main/caudalimetro%20v3.1.png"
+URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/blob/main/caudalimetro%20chikito.gif"
 
 # 2. CSS Maestro (Control total de diseño)
 st.markdown("""
@@ -217,4 +217,5 @@ if st.session_state.generado:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
+
 
