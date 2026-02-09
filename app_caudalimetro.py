@@ -10,7 +10,7 @@ st.set_page_config(
     page_icon="https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20v3.1.png"
 )
 
-# Enlaces RAW
+# Enlace RAW corregido
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
 # 2. CSS Maestro
@@ -25,15 +25,14 @@ st.markdown("""
         background-size: cover; background-position: center; background-attachment: fixed;
     }
 
-    /* Estilo para la capa de carga en coordenadas X, Y */
     .loading-overlay {
         position: fixed;
-        top: 50%; /* Coordenada Y (Centro) */
-        left: 50%; /* Coordenada X (Centro) */
-        transform: translate(-50%, -50%); /* Ajuste para centrado perfecto */
+        top: 50%; 
+        left: 50%; 
+        transform: translate(-50%, -50%) scale(1.4); 
         z-index: 9999;
         text-align: center;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(0, 0, 0, 0.9);
         padding: 40px;
         border-radius: 20px;
         border: 2px solid #00d4ff;
@@ -142,16 +141,17 @@ error_factor = st.slider('Ajuste de Error del Sistema (K)', 0.80, 1.20, 1.00, 0.
 if 'generado' not in st.session_state:
     st.session_state.generado = False
 
-# --- 6. PROCESAMIENTO CON POSICIONAMIENTO X, Y ---
+# --- 6. PROCESAMIENTO ---
 if st.button('🚀 Generar curva de calibración'):
     placeholder = st.empty()
     
     with placeholder.container():
-        # Posición de la animación: Se inyecta HTML con clase CSS personalizada para coordenadas fijas
+        # posicion de la animacion
         st.markdown(f"""
             <div class="loading-overlay">
-                <img src="{URL_GIF}" width="280">
-                <p style="color:#00d4ff; font-weight:bold; margin-top:15px;">\n \n \n \n \n \n Calculando flujo electromagnético...</p>
+                <img src="{URL_GIF}" width="300">
+                <br><br>
+                <p style="color:#00d4ff; font-weight:bold; margin-top:15px;">Calculando flujo electromagnético...</p>
             </div>
         """, unsafe_allow_html=True)
         
@@ -190,8 +190,6 @@ if st.session_state.generado:
     ax.set_facecolor('none')
     st.pyplot(fig)
 
-    
-
     st.markdown(f"""
         <div class="equation-container">
             <div class="equation-text">V<sub>(mV)</sub> = {m_eq:.4f} · Q<sub>({u_q})</sub></div>
@@ -203,20 +201,12 @@ if st.session_state.generado:
     
     col_a, col_b = st.columns(2)
     with col_a:
-        q_input = st.number_input(f"Ingresa Caudal (Q) en {u_q}:", value=1.0, format="%.4f", key="q_in")
+        q_input = st.number_input(f"Caudal (Q) en {u_q}:", value=1.0, format="%.4f", key="q_in")
         st.write(f"**Resultado: {q_input * m_eq:.4f} mV**")
     with col_b:
-        v_input = st.number_input(f"Ingresa Voltaje (V) en mV:", value=1.0, format="%.4f", key="v_in")
+        v_input = st.number_input(f"Voltaje (V) en mV:", value=1.0, format="%.4f", key="v_in")
         st.write(f"**Resultado: {v_input / m_eq if m_eq != 0 else 0:.4f} {u_q}**")
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
-
-
-
-
-
-
-
-
