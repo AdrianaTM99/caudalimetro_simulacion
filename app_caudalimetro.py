@@ -29,7 +29,7 @@ st.markdown("""
         position: fixed;
         top: 50%; 
         left: 50%; 
-        transform: translate(-50%, -50%) scale(1); 
+        transform: translate(-50%, -50%) scale(0.5); 
         z-index: 9999;
         text-align: center;
         background: rgba(0, 0, 0, 0.9);
@@ -211,4 +211,5 @@ if st.session_state.generado:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
+
 
