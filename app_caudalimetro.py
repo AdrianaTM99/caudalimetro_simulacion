@@ -151,7 +151,7 @@ if st.button('🚀 Generar curva de calibración'):
         st.markdown(f"""
             <div class="loading-overlay">
                 <img src="{URL_GIF}" width="280">
-                <p style="color:#00d4ff; font-weight:bold; margin-top:15px;"\n\n\n>Calculando flujo electromagnético...</p>
+                <p style="color:#00d4ff; font-weight:bold; margin-top:15px;">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤCalculando flujo electromagnético...</p>
             </div>
         """, unsafe_allow_html=True)
         
