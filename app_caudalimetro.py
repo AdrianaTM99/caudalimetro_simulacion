@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # Enlaces RAW
-URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/blob/main/caudalimetro%20con%20rayitas_3.gif"
+URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
 # 2. CSS Maestro
 st.markdown("""
@@ -211,4 +211,5 @@ if st.session_state.generado:
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.write("---")
-st.caption("Adriana Teixeira Mendoza 2026")https://github.com/AdrianaTM99/caudalimetro_simulacion/blob/main/caudalimetro%20con%20rayitas_3.gif
+st.caption("Adriana Teixeira Mendoza 2026")
+
