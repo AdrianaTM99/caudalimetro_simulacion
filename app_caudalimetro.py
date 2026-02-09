@@ -5,14 +5,16 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Solo imagen de fondo limpia)
+# 2. CSS Maestro (Imagen de fondo 50% más oscura)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Imagen de fondo sin recuadros negros */
+    /* Imagen de fondo con superposición oscura del 50% */
     [data-testid="stAppViewContainer"] {
-        background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
+        background-image: 
+            linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), /* Capa negra al 50% */
+            url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover; 
         background-position: center; 
         background-attachment: fixed;
@@ -25,7 +27,7 @@ st.markdown("""
         margin: 0 auto !important; 
         padding: 100px 2rem 4rem 2rem !important;
         color: white !important;
-        background-color: transparent; /* Eliminado el fondo negro */
+        background-color: transparent;
     }
 
     .fixed-header {
@@ -57,7 +59,7 @@ st.markdown("""
     }
 
     .calc-box {
-        background-color: rgba(26, 82, 118, 0.4); /* Un poco más de opacidad para leer sobre el mar */
+        background-color: rgba(26, 82, 118, 0.4);
         padding: 25px; border-radius: 12px; border: 1px solid #00d4ff; 
         margin-top: 20px; max-width: 800px;
         backdrop-filter: blur(5px);
@@ -161,7 +163,7 @@ if st.session_state.generado:
     Q_plot = (A_m2 * v_vec) * conv_q
     m_eq = V_mv[-1] / Q_plot[-1]
 
-    
+    # Placeholder para imagen si la tienes: 
 
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(10, 5))
