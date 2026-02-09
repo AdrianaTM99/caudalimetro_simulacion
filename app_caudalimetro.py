@@ -5,26 +5,26 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Desenfoque, Capa Negra y Panel Derecho Fijo)
+# 2. CSS Maestro (Fondo desenfocado, capa negra y panel derecho fijo)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Fondo base */
+    /* Fondo general */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover; background-position: center; background-attachment: fixed;
     }
 
-    /* FRANJA CENTRAL NEGRA CON DESENFOQUE PROFUNDO */
+    /* FRANJA CENTRAL CON DESENFOQUE (GLASSMORPHISM) */
     [data-testid="stAppViewContainer"]::before {
         content: "";
         position: fixed;
         top: 0; left: 50%; transform: translateX(-50%);
         width: 100%; max-width: 1200px;
         height: 100vh;
-        background-color: rgba(0, 0, 0, 0.75);
-        backdrop-filter: blur(15px);
+        background-color: rgba(0, 0, 0, 0.75); /* Fondo negro opaco */
+        backdrop-filter: blur(15px); /* Desenfoque fuerte */
         -webkit-backdrop-filter: blur(15px);
         z-index: 0;
     }
@@ -44,19 +44,18 @@ st.markdown("""
     }
     header[data-testid="stHeader"] { visibility: hidden; }
 
-    /* PANEL DERECHO FIJO (TABLA) */
+    /* PANEL DERECHO FIJO */
     .fixed-right-panel {
         position: fixed;
-        top: 80px; right: 20px;
+        top: 100px; right: 30px;
         width: 280px;
-        background-color: rgba(26, 82, 118, 0.8);
-        backdrop-filter: blur(10px);
-        padding: 15px;
-        border-radius: 12px;
+        background-color: rgba(26, 82, 118, 0.85);
+        backdrop-filter: blur(12px);
+        padding: 20px;
+        border-radius: 15px;
         border: 1px solid #00d4ff;
         z-index: 1000;
-        color: white;
-        font-size: 0.85rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
 
     .block-container {
@@ -65,7 +64,7 @@ st.markdown("""
         color: white !important;
     }
 
-    /* SLIDERS CIAN */
+    /* ESTILO DE LOS SLIDERS CIAN */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
@@ -88,9 +87,11 @@ st.markdown("""
     }
 
     p, label { font-size: 1.1rem !important; color: white !important; }
-    table { width: 100%; color: white; border-collapse: collapse; }
-    th { text-align: left; border-bottom: 1px solid #00d4ff; padding-bottom: 5px; }
-    td { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+    /* Estilos de Tabla */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    .data-table th { color: #00d4ff; border-bottom: 1px solid #00d4ff; text-align: left; padding: 5px; }
+    .data-table td { padding: 8px 5px; border-bottom: 1px solid rgba(255,255,255,0.1); }
     </style>
 
     <div class="fixed-header">
@@ -101,25 +102,28 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- PANEL DERECHO (Conductividades) ---
-with st.container():
-    if st.sidebar.button("📋 Ver Tabla de Conductividades"):
-        st.markdown("""
-            <div class="fixed-right-panel">
-                <h4 style="margin-top:0; color:#00d4ff;">Conductividad Nominal</h4>
-                <table>
-                    <tr><th>Fluido</th><th>μS/cm</th></tr>
-                    <tr><td>Agua Destilada</td><td>0.5 - 5</td></tr>
-                    <tr><td>Agua Potable</td><td>50 - 800</td></tr>
-                    <tr><td>Agua de Mar</td><td>52,000</td></tr>
-                    <tr><td>Leche</td><td>4,000 - 6,000</td></tr>
-                    <tr><td>Ácido Sulfúrico (30%)</td><td>730,000</td></tr>
-                    <tr><td>Soda Cáustica (10%)</td><td>350,000</td></tr>
-                    <tr><td>Jugo de Frutas</td><td>2,000 - 4,000</td></tr>
-                </table>
-                <p style='font-size:0.7rem !important; margin-top:10px;'>*Valores aproximados a 25°C</p>
-            </div>
-        """, unsafe_allow_html=True)
+# --- PANEL DE CONSULTA (TABLA FIJA A LA DERECHA) ---
+with st.sidebar:
+    st.markdown("### Consultas Rápidas")
+    ver_tabla = st.checkbox("Mostrar Tabla de Conductividades")
+
+if ver_tabla:
+    st.markdown("""
+        <div class="fixed-right-panel">
+            <h3 style='margin-top:0; color:#00d4ff; font-size:1.2rem;'>Valores de Conductividad</h3>
+            <table class="data-table">
+                <tr><th>Fluido</th><th>Nominal (μS/cm)</th></tr>
+                <tr><td>Agua Destilada</td><td>0.5 - 5.0</td></tr>
+                <tr><td>Agua Potable</td><td>50 - 800</td></tr>
+                <tr><td>Agua de Mar</td><td>52,000</td></tr>
+                <tr><td>Leche</td><td>4,000 - 6,000</td></tr>
+                <tr><td>Zumo de Fruta</td><td>2,000 - 4,000</td></tr>
+                <tr><td>Ácido Sulfúrico (30%)</td><td>730,000</td></tr>
+                <tr><td>Soda Cáustica (10%)</td><td>350,000</td></tr>
+            </table>
+            <p style='font-size:0.7rem; margin-top:10px; opacity:0.8;'>* Referencias estándar a 25°C.</p>
+        </div>
+    """, unsafe_allow_html=True)
 
 # --- 3. SELECCIÓN DE UNIDADES ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
@@ -170,7 +174,6 @@ if st.session_state.generado:
 
     A_m2 = np.pi * (D_si / 2)**2
     v_vec = np.linspace(0.1, 5.0, 100)
-    # Factor de corrección por conductividad
     f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
     V_mv = (B_si * D_si * v_vec * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v_vec) * conv_q
@@ -179,7 +182,7 @@ if st.session_state.generado:
     
 
     plt.style.use('dark_background')
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots(figsize=(10, 4))
     ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=3)
     ax.set_xlabel(f'Caudal Q ({u_q})')
     ax.set_ylabel('Voltaje V (mV)')
