@@ -5,22 +5,23 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Imagen de fondo 50% más oscura)
+# 2. CSS Maestro (Fondo 75% oscuro, Título Centrado, Autor a la Derecha)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Imagen de fondo con superposición oscura del 50% */
+    /* --- FONDO DE PANTALLA --- */
+    /* Capa negra al 75% (0.75) sobre la imagen */
     [data-testid="stAppViewContainer"] {
         background-image: 
-            linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), /* Capa negra al 50% */
+            linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
             url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover; 
         background-position: center; 
         background-attachment: fixed;
     }
 
-    /* Contenedor transparente */
+    /* Contenedor principal limpio */
     .block-container {
         font-family: 'Roboto', sans-serif; 
         max-width: 1200px !important; 
@@ -30,34 +31,59 @@ st.markdown("""
         background-color: transparent;
     }
 
+    /* --- ENCABEZADO FIJO --- */
     .fixed-header {
         position: fixed; top: 0; left: 0; width: 100vw;
-        background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
+        background-color: rgba(0, 0, 0, 0.85); /* Un poco más oscuro el header también */
+        backdrop-filter: blur(10px);
         z-index: 999; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex; justify-content: center;
+        height: 80px; /* Altura fija para centrar verticalmente */
     }
 
     .header-content {
-        width: 100%; max-width: 1100px; padding: 10px 2rem;
-        display: flex; justify-content: space-between; align-items: center;
+        width: 100%; max-width: 1200px; padding: 0 2rem;
+        display: flex; 
+        align-items: center; 
+        justify-content: center; /* Centra el contenido principal (el título) */
+        position: relative; /* Necesario para posicionar el nombre a la derecha */
+        height: 100%;
     }
 
+    /* Título centrado */
+    .fixed-header h1 { 
+        font-size: 1.8rem !important; 
+        margin: 0; 
+        color: white; 
+        text-align: center;
+    }
+
+    /* Nombre pegado a la derecha de forma absoluta */
+    .fixed-header h3 { 
+        font-size: 1.1rem !important; 
+        margin: 0; 
+        color: #00d4ff; /* Un toque de cian para destacar */
+        position: absolute;
+        right: 2rem;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    /* Ocultar header por defecto de Streamlit */
     header[data-testid="stHeader"] { visibility: hidden; }
     .stApp { background: transparent !important; }
 
-    .fixed-header h1 { font-size: 1.8rem !important; margin: 0; color: white; }
-    .fixed-header h3 { font-size: 1.1rem !important; margin: 0; color: white; }
-
-    /* ESTILO DE SLIDERS CIAN */
+    /* --- SLIDERS CIAN --- */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
-    /* Botones Azul Cobalto */
+    /* --- BOTONES --- */
     .stButton > button {
         width: 100%; background-color: #1a5276 !important; color: white !important;
         border-radius: 8px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
+    /* --- CALCULADORA --- */
     .calc-box {
         background-color: rgba(26, 82, 118, 0.4);
         padding: 25px; border-radius: 12px; border: 1px solid #00d4ff; 
@@ -70,14 +96,11 @@ st.markdown("""
         margin-bottom: 15px; text-align: left; display: block;
     }
 
-    p, label { font-size: 1.1rem !important; color: white !important; text-shadow: 1px 1px 2px black; }
+    p, label { font-size: 1.1rem !important; color: white !important; }
 
-    /* Estilo de Tabla en Sidebar */
+    /* --- TABLA LATERAL --- */
     .sidebar-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.85rem;
-        margin-top: 15px;
+        width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 15px;
     }
     .sidebar-table th { color: #00d4ff; border-bottom: 1px solid #00d4ff; text-align: left; padding: 8px; }
     .sidebar-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); color: white; }
@@ -150,7 +173,6 @@ if st.button('🚀 Generar curva de calibración'):
 
 # --- 6. RESULTADOS ---
 if st.session_state.generado:
-    # Lógica de cálculo (conversión a SI para el cálculo interno)
     if sistema == "Americano (G, mhos/in, in)":
         B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
     else:
@@ -162,8 +184,6 @@ if st.session_state.generado:
     V_mv = (B_si * D_si * v_vec * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v_vec) * conv_q
     m_eq = V_mv[-1] / Q_plot[-1]
-
-    # Placeholder para imagen si la tienes: 
 
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(10, 5))
