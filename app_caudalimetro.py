@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Interfaz profesional y limpia)
+# 2. CSS Maestro (Interfaz profesional, botones azul cobalto y calculadora vertical)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -41,7 +41,7 @@ st.markdown("""
     .fixed-header h1 { font-size: 1.8rem !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; margin: 0; color: white; }
 
-    /* Estilo Radio Buttons */
+    /* Estilo Radio Buttons (Azul y Negro) */
     div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
         border: 2px solid #00d4ff !important; background-color: #000000 !important;
     }
@@ -49,16 +49,17 @@ st.markdown("""
         background-color: #00d4ff !important;
     }
 
-    /* Botones Azul Cobalto */
+    /* Botones Azul Cobalto Opaco */
     .stButton > button {
         width: 100%; background-color: #1a5276 !important; color: white !important;
         border-radius: 8px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* Calculadora Estilo */
+    /* Recuadro de la Calculadora */
     .calc-box {
         background-color: rgba(26, 82, 118, 0.3);
-        padding: 20px; border-radius: 10px; border: 1px solid #00d4ff; margin-top: 20px;
+        padding: 25px; border-radius: 12px; border: 1px solid #00d4ff; 
+        margin-top: 20px; max-width: 600px;
     }
 
     p, label { font-size: 1.1rem !important; color: white !important; }
@@ -72,7 +73,7 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- 3. LÓGICA DE UNIDADES ---
+# --- 3. SELECCIÓN DE UNIDADES ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
 if sistema == "Métrico (T, μS/cm, m)":
@@ -108,16 +109,16 @@ with col3:
 
 error_factor = st.slider('Ajuste de Error del Sistema', 0.80, 1.20, 1.00, 0.01)
 
-# --- 5. LÓGICA DE PERSISTENCIA ---
+# --- 5. LÓGICA DE ESTADO ---
 if 'generado' not in st.session_state:
     st.session_state.generado = False
 
 if st.button('🚀 Generar curva de calibración'):
     st.session_state.generado = True
 
-# --- 6. RESULTADOS (Solo si se presionó generar) ---
+# --- 6. RESULTADOS (Sección Condicional) ---
 if st.session_state.generado:
-    # Conversiones
+    # Cálculos
     if sistema == "Americano (G, mhos/in, in)":
         B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
     else:
@@ -129,7 +130,6 @@ if st.session_state.generado:
     V_mv = (B_si * D_si * v_vec * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v_vec) * conv_q
     
-    # Pendiente m
     m_eq = V_mv[-1] / Q_plot[-1]
 
     
@@ -146,22 +146,21 @@ if st.session_state.generado:
 
     st.latex(rf"V_{{(mV)}} = {m_eq:.4f} \cdot Q_{{({u_q})}}")
 
-    # --- CALCULADORA AUTOMÁTICA DEBAJO ---
+    # --- CALCULADORA VERTICAL ---
+    st.markdown('### 🧮 Calculadora de Predicción')
     st.markdown('<div class="calc-box">', unsafe_allow_html=True)
-    st.markdown("#### 🧮 Calculadora Basada en Ecuación")
-    st.write("Ingresa un valor para obtener automáticamente el otro:")
     
-    c1, c2 = st.columns(2)
+    # Campo para calcular Voltaje
+    q_input = st.number_input(f"Ingresa Caudal (Q) en {u_q} para hallar Voltaje:", value=0.0, format="%.4f")
+    v_output = q_input * m_eq
+    st.markdown(f"**Resultado:** Voltaje (V) = `{v_output:.4f} mV`")
     
-    with c1:
-        q_input = st.number_input(f"Si el Caudal (Q) es {u_q}:", value=0.0, format="%.4f")
-        v_output = q_input * m_eq
-        st.markdown(f"**Voltaje (V) = {v_output:.4f} mV**")
-
-    with c2:
-        v_input = st.number_input(f"Si el Voltaje (V) es mV:", value=0.0, format="%.4f")
-        q_output = v_input / m_eq if m_eq != 0 else 0
-        st.markdown(f"**Caudal (Q) = {q_output:.4f} {u_q}**")
+    st.write("---") # Separador visual interno
+    
+    # Campo para calcular Caudal
+    v_input = st.number_input(f"Ingresa Voltaje (V) en mV para hallar Caudal:", value=0.0, format="%.4f")
+    q_output = v_input / m_eq if m_eq != 0 else 0
+    st.markdown(f"**Resultado:** Caudal (Q) = `{q_output:.4f} {u_q}`")
     
     st.markdown('</div>', unsafe_allow_html=True)
 
