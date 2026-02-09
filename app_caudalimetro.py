@@ -3,42 +3,42 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 1. Configuración de la página
-st.set_page_config(layout="wide", page_title="Simulador Pro Adriana")
+st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro: Franja Negra con DESENFOQUE, PERSISTENCIA y TÍTULO IZQUIERDA
+# 2. CSS Maestro: Franja Negra, Desenfoque Sutil y Cero Naranja
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Fondo de imagen base */
+    /* 1. Fondo de imagen FIJO y la FRANJA NEGRA INFINITA */
     [data-testid="stAppViewContainer"] {
-        background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
+        background-image: 
+            linear-gradient(
+                to right, 
+                transparent 0%, 
+                transparent calc(50% - 550px), 
+                rgba(0, 0, 0, 0.5) calc(50% - 550px), 
+                rgba(0, 0, 0, 0.5) calc(50% + 550px), 
+                transparent calc(50% + 550px), 
+                transparent 100%
+            ),
+            url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
     }
 
-    /* CAPA NEGRA DESENFOCADA E INFINITA (No se mueve al deslizar) */
-    [data-testid="stAppViewContainer"]::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        max-width: 1100px;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.45); 
-        backdrop-filter: blur(8px); /* Desenfoque sutil */
-        z-index: -1;
+    /* 2. Desenfoque Sutil en la franja central */
+    .stApp {
+        backdrop-filter: blur(4px); /* Desenfoque muy ligero */
     }
 
-    /* Limpieza de la interfaz de Streamlit */
     .stApp, [data-testid="stHeader"], .block-container {
         background: transparent !important;
     }
 
+    /* 3. Ajuste de contenido */
     .block-container {
         font-family: 'Roboto', sans-serif;
         max-width: 1100px !important;
@@ -47,138 +47,117 @@ st.markdown("""
         color: white !important;
     }
 
-    /* Estilos de Texto y Títulos a la Izquierda */
-    h1 { font-size: 3rem !important; font-weight: 700 !important; text-align: left !important; margin-bottom: 0px !important; }
-    h3 { font-size: 1.6rem !important; text-align: left !important; font-weight: 300 !important; margin-top: 0px !important; margin-bottom: 2rem !important; }
-    h4 { margin-top: 20px; color: #00d4ff !important; }
+    /* TÍTULO A LA IZQUIERDA */
+    h1 { 
+        font-size: 3rem !important; 
+        font-weight: 700 !important; 
+        text-align: left !important; 
+    }
+    h3 { 
+        font-size: 1.6rem !important; 
+        text-align: left !important; 
+        font-weight: 300 !important;
+    }
 
-    /* Sliders Azules Bonitos (#00D4FF) */
-    div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
-    div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
+    /* SLIDERS AZULES (#00D4FF) */
+    div[data-testid="stSlider"] > div > div > div > div {
+        background-color: #00d4ff !important;
+    }
+    div[data-testid="stSlider"] [role="slider"] {
+        background-color: #00d4ff !important;
+        border: 2px solid white !important;
+    }
 
-    /* Botones Azules */
+    /* ELIMINAR NARANJA DE LOS INPUTS Y MENSAJES */
+    /* Cambia el color de enfoque de los números */
+    input[type="number"]:focus {
+        border-color: #00d4ff !important;
+        box-shadow: 0 0 0 1px #00d4ff !important;
+    }
+    /* Cambia el color de las alertas (warning) a Azul */
+    div[data-testid="stNotification"] {
+        background-color: rgba(0, 212, 255, 0.2) !important;
+        color: #00d4ff !important;
+        border: 1px solid #00d4ff !important;
+    }
+    div[data-testid="stNotification"] svg {
+        fill: #00d4ff !important;
+    }
+
+    /* BOTÓN AZUL */
     .stButton > button {
         width: 100%;
         background-color: #00d4ff;
         color: white;
         border-radius: 8px;
+        padding: 1rem;
+        font-size: 1.4rem;
         font-weight: bold;
         border: none;
-        padding: 0.8rem;
         transition: 0.3s;
     }
     .stButton > button:hover {
-        background-color: #00bfff;
+        background-color: #008fcc;
         box-shadow: 0px 0px 15px rgba(0, 212, 255, 0.5);
     }
-    
-    /* Estilo para los inputs numéricos */
-    .stNumberInput div div input {
-        background-color: rgba(255, 255, 255, 0.1) !important;
-        color: white !important;
-    }
 
-    p, label, .stMarkdown { color: white !important; font-size: 1.1rem; }
+    p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- LÓGICA DE INTERFAZ ---
+# --- CONTENIDO ---
 
 st.title('Simulación de Caudalímetro Electromagnético')
 st.markdown('### Por: Adriana Teixeira Mendoza')
-
-# 1. Selector de Sistema de Unidades
-sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (m, m³/s)", "Americano (in, GPM)"), horizontal=True)
-
-# Configuración dinámica de unidades y factores
-if sistema == "Métrico (m, m³/s)":
-    u = {"D": "m", "Q": "m³/s", "V": "mV", "conv_Q": 1.0}
-    d_vals = {"min": 0.005, "max": 0.5, "def": 0.0127}
-else:
-    u = {"D": "in", "Q": "GPM", "V": "mV", "conv_Q": 15850.3} # 1 m3/s = 15850.3 GPM
-    d_vals = {"min": 0.2, "max": 20.0, "def": 0.5}
-
 st.write("---")
 
-# 2. Parámetros de Entrada con Sliders Azules
-st.markdown(f"#### Parámetros de Configuración ({sistema})")
+
+
+st.markdown("#### Configuración de Parámetros")
+
 col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
-    B = st.slider('B: Campo Magnético (Tesla)', 0.1, 1.5, 0.5, 0.01)
+    B_val = st.number_input('B: Campo Magnético (T)', 0.1, 1.0, 0.5, 0.1)
+    B = st.slider('Ajustar B', 0.1, 1.0, float(B_val), 0.01, label_visibility="collapsed")
+
 with col2:
-    sigma = st.slider('σ: Conductividad (μS/cm)', 5, 5000, 1000, 10)
+    sigma_val = st.number_input('σ: Conductividad (μS/cm)', 1, 5000, 1000, 100)
+    sigma = st.slider('Ajustar σ', 1, 5000, int(sigma_val), 10, label_visibility="collapsed")
+
 with col3:
-    # Vinculamos el slider al sistema de unidades
-    D = st.slider(f'D: Diámetro del tubo ({u["D"]})', d_vals["min"], d_vals["max"], d_vals["def"])
-
-# 3. Factor de Error
-if 'err_val' not in st.session_state: st.session_state.err_val = 1.0
-
-with st.expander("Ajustes de Error (Factor de Corrección)"):
-    c_e1, c_e2 = st.columns([3, 1])
-    with c_e1:
-        st.session_state.err_val = st.slider("Factor de error manual", 0.80, 1.20, st.session_state.err_val, 0.01)
-    with c_e2:
-        if st.button("Restablecer"):
-            st.session_state.err_val = 1.0
-
-# --- CÁLCULOS FÍSICOS (Ley de Faraday) ---
-# 
-# Convertimos D a metros para la física interna
-D_m = D if u["D"] == "m" else D * 0.0254
-area_m2 = np.pi * (D_m / 2)**2
-# Factor de conductividad (pérdidas en fluidos poco conductivos)
-f_cond = 1 / (1 + np.exp(-0.01 * (sigma - 5)))
-
-# Pendiente en SI (Voltaje / m3/s)
-# V = B * D * v -> v = Q/A -> V = (B * D / A) * Q
-m_si = (B * D_m * (1/area_m2) * f_cond * 1000) * st.session_state.err_val
-
-# Pendiente final ajustada al sistema (si es GPM, m_final será menor)
-m_final = m_si / u["conv_Q"]
-
-# 4. Resultados y Gráfica
-if st.button('🚀 Generar Análisis y Curva de Calibración'):
-    
-    # Rango de caudal para graficar (basado en velocidad hasta 5 m/s)
-    q_max_plot = 5.0 * area_m2 * u["conv_Q"]
-    q_rango = np.linspace(0, q_max_plot, 100)
-    v_rango = m_final * q_rango
-
-    plt.style.use('dark_background')
-    fig, ax = plt.subplots(figsize=(10, 4.5))
-    ax.plot(q_rango, v_rango, color='#00d4ff', linewidth=3, label='Curva de Calibración')
-    ax.set_xlabel(f'Caudal Q ({u["Q"]})', fontsize=11)
-    ax.set_ylabel(f'Voltaje V ({u["V"]})', fontsize=11)
-    ax.set_title('Respuesta del Sensor: Voltaje vs Caudal', fontsize=14, pad=20)
-    ax.grid(True, alpha=0.1)
-    
-    # Estética de la gráfica
-    fig.patch.set_alpha(0.0)
-    ax.set_facecolor('none')
-    st.pyplot(fig)
-
-    st.markdown("#### Ecuación de Calibración:")
-    st.latex(rf"V_{{({u['V']})}} = {m_final:.4f} \cdot Q_{{({u['Q']})}}")
-
-    st.write("---")
-    
-    # 5. Calculadora Interactiva
-    st.markdown(f"#### 💡 Calculadora Interactiva de Variables")
-    st.info(f"Ingresa un valor para calcular automáticamente su contraparte usando la sensibilidad de {m_final:.4f}")
-    
-    c1, c2 = st.columns(2)
-    
-    with c1:
-        q_calc = st.number_input(f"Dato de Caudal ({u['Q']}):", value=0.0, step=0.01)
-        v_res = q_calc * m_final
-        st.write(f"➡️ El Voltaje inducido es: **{v_res:.4f} {u['V']}**")
-
-    with c2:
-        v_calc = st.number_input(f"Dato de Voltaje ({u['V']}):", value=0.0, step=0.01)
-        q_res = (v_calc / m_final) if m_final != 0 else 0
-        st.write(f"➡️ El Caudal estimado es: **{q_res:.4f} {u['Q']}**")
+    D_val = st.number_input('D: Diámetro (m)', 0.005, 0.050, 0.0127, 0.001, format="%.4f")
+    D = st.slider('Ajustar D', 0.005, 0.050, float(D_val), 0.0001, label_visibility="collapsed")
 
 st.write("---")
-st.caption(f"Simulador de Caudalímetro Electromagnético | Adriana Teixeira Mendoza 2026 | Sistema: {sistema}")
+
+if 'edit_error' not in st.session_state:
+    st.session_state.edit_error = False
+
+st.markdown("#### Factor de Error del Sistema")
+c_err1, c_err2 = st.columns([3, 1])
+with c_err2:
+    if st.button('🔄 Cambiar Factor'):
+        st.session_state.edit_error = not st.session_state.edit_error
+with c_err1:
+    error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
+    if not st.session_state.edit_error: 
+        st.write(f"Factor por defecto: **{error_factor}**")
+    else:
+        st.warning(f"Ajuste manual de error activo: {error_factor}")
+
+if st.button('🚀 Generar curva de calibración'):
+    A = np.pi * (D / 2)**2
+    v = np.linspace(0.1, 5.0, 100)
+    # f_cond simula la pérdida de señal por baja conductividad (Ley de Faraday real)
+    f_cond = 1 / (1 + np.exp(-0.01 * (sigma - 5)))
+    V_mv = (B * D * v * f_cond * 1000) * error_factor
+    m = ((B * D * f_cond * 1000) / A) * error_factor
+
+    plt.style.use('dark_background')
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(v*A, V_mv, color='#00d4ff', linewidth=3)
+    ax.set_xlabel('Caudal Q (m³/s)')
+    ax.set_ylabel('Voltaje V (mV)')
+    ax.set_title('Calibración: Voltaje Inducido vs Caudal', color='white', pad=20)
+    fig.patch.set_alpha
