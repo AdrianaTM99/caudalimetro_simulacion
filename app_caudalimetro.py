@@ -2,63 +2,67 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 1. Configuración de página
-st.set_page_config(layout="wide", page_title="Simulador Caudalímetro")
+# 1. Configuración de página (Quitamos el modo wide para que esté centrado)
+st.set_page_config(layout="centered", page_title="Simulador Caudalímetro")
 
-# 2. CSS para Fondo, Texto Blanco y Sliders Azules
+# 2. CSS para fondo total, contenido centrado/ancho y sliders azules
 st.markdown("""
     <style>
-    /* Fondo total de la app */
+    /* Imagen de fondo total con alta calidad */
     [data-testid="stAppViewContainer"] {
-        background-image: url("https://img.freepik.com/fotos-premium/hermosa-playa-nocturna-rocas-via-lactea_104785-856.jpg");
+        background-image: url("https://img.freepik.com/foto-gratis/fondo-galaxia-estilo-fantasia_23-2151114299.jpg?semt=ais_hybrid&w=740&q=80");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
     }
 
-    /* Quitar color a la cabecera */
-    [data-testid="stHeader"] {
-        background: rgba(0,0,0,0);
+    /* Ajustar el ancho del contenedor centrado */
+    .main .block-container {
+        max-width: 900px; /* Aquí controlas qué tan ancho es el programa en el centro */
+        padding-top: 2rem;
+        background-color: rgba(0, 0, 0, 0.4); /* Fondo sutil para legibilidad */
+        border-radius: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
     }
 
-    /* Forzar texto blanco en toda la app */
+    /* Forzar texto blanco */
     h1, h2, h3, p, label, .stMarkdown {
         color: white !important;
     }
 
-    /* CAMBIAR COLOR DE LOS SLIDERS A AZUL */
-    /* Color de la barra recorrida */
-    .stSlider [data-baseweb="slider"] div[style*="background-color: rgb(255, 75, 75)"],
-    .stSlider [data-baseweb="slider"] div[style*="background-color: #ff4b4b"] {
+    /* CAMBIAR SLIDERS A AZUL */
+    /* Parte recorrida de la barra */
+    div[data-baseweb="slider"] div[style*="background-color: rgb(255, 75, 75)"],
+    div[data-baseweb="slider"] div[style*="background-color: #ff4b4b"] {
         background-color: #007bff !important;
     }
     
-    /* Color del círculo (tirador) del slider */
-    div[data-testid="stThumbValue"] {
-        background-color: #007bff !important;
-    }
-    
+    /* El círculo o tirador */
     div[role="slider"] {
         background-color: #007bff !important;
         border-color: #007bff !important;
     }
 
-    /* Fondo de los widgets para que resalten un poco */
-    .stSlider, .stButton {
-        background-color: rgba(0, 0, 0, 0.4);
-        padding: 15px;
-        border-radius: 10px;
+    /* El valor que aparece sobre el slider */
+    div[data-testid="stThumbValue"] {
+        color: white !important;
+    }
+
+    /* Barra superior transparente */
+    [data-testid="stHeader"] {
+        background: rgba(0,0,0,0);
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- Lógica de la simulación ---
+# --- Contenido de la App ---
 
 st.title('Simulación Interactiva de Caudalímetro Electromagnético')
-st.markdown('**Por:** Adriana Teixeira Mendoza')
+st.markdown('### Por: Adriana Teixeira Mendoza')
 
-# Sliders (ahora se verán azules gracias al CSS)
+# Sliders (Ahora azules)
 B = st.slider('Intensidad del Campo Magnético B (T)', 0.1, 1.0, 0.5, 0.1)
 sigma = st.slider('Conductividad del Fluido σ (µS/cm)', 1, 5000, 1000, 100)
 D = st.slider('Diámetro Interno D (m)', 0.005, 0.02, 0.0127, 0.001)
@@ -68,33 +72,28 @@ def conductivity_factor(sigma, sigma_min=5, k=0.01):
 
 factor = conductivity_factor(sigma)
 
+# Botón centrado
 if st.button('Generar Gráfica V vs Q'):
     A = np.pi * (D / 2)**2
     v = np.linspace(0.1, 10, 100)
     V_theor = B * D * v * factor * 1000 
     Q = A * v 
     
-    # MODO OSCURO PARA MATPLOTLIB
+    # Gráfica en modo oscuro
     plt.style.use('dark_background')
-    
     fig, ax = plt.subplots()
     
-    # Elegir un color de línea que resalte en modo oscuro
-    line_color = '#00ffcc' # Un cian neón
-    if B < 0.4: line_color = '#ff3333' # Rojo neón
-    elif B > 0.7: line_color = '#3399ff' # Azul brillante
-
-    ax.plot(Q, V_theor, color=line_color, linewidth=2)
-    ax.set_xlabel('Caudal Q (m³/s)', color='white')
-    ax.set_ylabel('Voltaje V (mV)', color='white')
-    ax.set_title(f'V vs Q (B={B}T, D={D}m)', color='white')
+    # Color de línea azul/cian para combinar
+    ax.plot(Q, V_theor, color='#00d4ff', linewidth=3)
+    ax.set_xlabel('Caudal Q (m³/s)')
+    ax.set_ylabel('Voltaje V (mV)')
+    ax.set_title(f'Relación Voltaje vs Caudal (B={B}T)')
+    ax.grid(True, alpha=0.3)
     
-    # Hacer que el fondo de la figura sea transparente para que se vea el fondo de la playa
+    # Fondo transparente de la figura
     fig.patch.set_alpha(0.0)
-    ax.set_facecolor(range=(0,0,0,0.2)) # Fondo del eje ligeramente oscuro
+    ax.set_facecolor('none')
     
     st.pyplot(fig)
 
-
-
-st.info('La gráfica y los controles se han adaptado al modo nocturno.')
+st.info('Ajusta los valores en el centro y observa el comportamiento del caudalímetro.')
