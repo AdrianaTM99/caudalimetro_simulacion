@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Colores de botones más opacos y diseño corregido)
+# 2. CSS Maestro (Botones opacos, Título Fijo y Radio Buttons Azules/Negros)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -80,26 +80,27 @@ st.markdown("""
         border: 2px solid black !important;
     }
 
-    /* Sliders (mantenemos el cian para que resalten sobre el negro) */
+    /* Sliders */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
-    /* --- BOTONES CON AZUL MÁS OPACO Y OSCURO --- */
+    /* BOTONES AZUL OPACO */
     .stButton > button {
         width: 100%;
-        background-color: #1a5276 !important; /* Azul cobalto opaco */
+        background-color: #1a5276 !important;
         color: white !important;
         border-radius: 8px;
         padding: 0.8rem;
         font-size: 1.2rem;
         font-weight: bold;
         border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: background-color 0.3s ease;
     }
 
-    .stButton > button:hover {
-        background-color: #21618c !important; /* Un poco más claro al pasar el mouse */
-        border-color: #00d4ff !important;
+    /* Estilo para los cuadros de resultado de la calculadora */
+    .stSuccess, .stInfo {
+        background-color: rgba(26, 82, 118, 0.5) !important;
+        color: white !important;
+        border: 1px solid #00d4ff !important;
     }
 
     p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
@@ -136,7 +137,7 @@ st.markdown(f"#### Configuración de Parámetros ({sistema})")
 col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
-    B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(b_def))
+    B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(B_val))
     B_user = st.slider(f'Ajustar B', float(b_min), float(b_max), float(B_val), label_visibility="collapsed")
 
 with col2:
@@ -161,24 +162,27 @@ with c_err2:
 with c_err1:
     error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
 
-# --- CÁLCULOS ---
+# --- CÁLCULOS Y GRÁFICA ---
+# Pre-calculamos la pendiente incluso si no se presiona el botón para que la calculadora funcione
 if sistema == "Americano (G, mhos/in, in)":
     B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
 else:
     B_si, D_si, sigma_si = B_user, D_user, sigma_user
 
+A_m2 = np.pi * (D_si / 2)**2
+f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
+# Pendiente m = (B * D * f_cond * 1000 * error) / (Area * conv_q)
+m_eq = (B_si * D_si * f_cond * 1000 * error_factor) / (A_m2 * conv_q)
+
 if st.button('🚀 Generar curva de calibración'):
-    A_m2 = np.pi * (D_si / 2)**2
-    v = np.linspace(0.1, 5.0, 100)
-    f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
-    V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
-    Q_plot = (A_m2 * v) * conv_q
-    m_eq = V_mv[-1] / Q_plot[-1]
+    v_range = np.linspace(0.1, 5.0, 100)
+    V_mv = (B_si * D_si * v_range * f_cond * 1000) * error_factor
+    Q_plot = (A_m2 * v_range) * conv_q
 
     
 
     plt.style.use('dark_background')
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots(figsize=(10, 4))
     ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=3)
     ax.set_xlabel(f'Caudal Q ({u_q})')
     ax.set_ylabel('Voltaje V (mV)')
@@ -187,6 +191,24 @@ if st.button('🚀 Generar curva de calibración'):
     st.pyplot(fig)
 
     st.latex(rf"V_{{(mV)}} = {m_eq:.4f} \cdot Q_{{({u_q})}}")
+
+st.write("---")
+
+# --- NUEVA SECCIÓN: CALCULADORA DE VALORES ---
+st.markdown(f"#### 🧮 Calculadora de Predicción ({u_q} ↔ mV)")
+st.write("Ingresa un valor para calcular su correspondencia basada en la ecuación actual:")
+
+calc_col1, calc_col2 = st.columns(2)
+
+with calc_col1:
+    q_input = st.number_input(f"Si el Caudal (Q) es:", value=0.0, step=0.1, format="%.2f")
+    v_res = q_input * m_eq
+    st.success(f"El Voltaje inducido será: **{v_res:.4f} mV**")
+
+with calc_col2:
+    v_input = st.number_input(f"Si el Voltaje (V) es (mV):", value=0.0, step=0.1, format="%.2f")
+    q_res = v_input / m_eq if m_eq != 0 else 0
+    st.info(f"El Caudal estimado es: **{q_res:.4f} {u_q}**")
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
