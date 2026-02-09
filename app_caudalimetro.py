@@ -150,7 +150,7 @@ if st.button('🚀 Generar curva de calibración'):
         # Posición de la animación: Se inyecta HTML con clase CSS personalizada para coordenadas fijas
         st.markdown(f"""
             <div class="loading-overlay">
-                <img src="{URL_GIF}" width="280">
+                <img src="{URL_GIF}" width="350">
                 <p style="color:#00d4ff; font-weight:bold; margin-top:15px;">Calculando flujo electromagnético...</p>
             </div>
         """, unsafe_allow_html=True)
@@ -212,3 +212,4 @@ if st.session_state.generado:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
+
