@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Corrección de Radio Buttons y Diseño)
+# 2. CSS Maestro (Corrección Extrema de Radio Buttons y Título Fijo)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -66,25 +66,20 @@ st.markdown("""
     .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; font-weight: 300 !important; margin: 0; color: white; }
 
-    /* --- CORRECCIÓN DEFINITIVA DE RADIO BUTTONS (AZULES) --- */
-    /* El círculo exterior */
-    div[data-testid="stRadio"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
-        color: white !important;
+    /* --- AZUL TOTAL EN RADIO BUTTONS (FORZADO) --- */
+    /* Círculo externo (desmarcado y marcado) */
+    div[data-testid="stRadio"] [data-baseweb="radio"] div:first-child {
+        border-color: #00d4ff !important;
     }
     
-    div[data-testid="stRadio"] div[role="radiogroup"] label div:first-child {
-        border-color: #00d4ff !important; /* Borde azul siempre visible */
-    }
-
-    /* El punto interno cuando está seleccionado */
-    div[data-testid="stRadio"] div[role="radiogroup"] label[data-baseweb="radio"] div div {
+    /* Punto interno (marcado) */
+    div[data-testid="stRadio"] [data-baseweb="radio"] div div {
         background-color: #00d4ff !important;
     }
 
-    /* Borde cuando está seleccionado */
-    div[data-testid="stRadio"] div[role="radiogroup"] label[data-baseweb="radio"] div:first-child {
-        border-color: #00d4ff !important;
-        background-color: transparent !important;
+    /* Color del texto de las opciones */
+    div[data-testid="stRadio"] label {
+        color: white !important;
     }
 
     /* Sliders y Botones */
@@ -131,7 +126,7 @@ else:
 
 st.write("---")
 
-# --- PARÁMETROS DINÁMICOS ---
+# --- PARÁMETROS ---
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 col1, col2, col3 = st.columns(3, gap="large")
 
