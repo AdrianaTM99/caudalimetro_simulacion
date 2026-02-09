@@ -2,75 +2,155 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Código CSS ajustado: Fondo al ras de pantalla (full screen), contenedor negro menos opaco (0.5 para transparencia)
+# 1. Configuración de la página
+st.set_page_config(layout="wide", page_title="Simulador Adriana")
+
+# 2. CSS Mejorado: Franja persistente, Fuente Roboto, Sliders Azules y Desenfoque Sutil
 st.markdown("""
     <style>
-    .stApp {
-        background-image: url("https://img.freepik.com/fotos-premium/hermosa-playa-nocturna-rocas-via-lactea_104785-856.jpg");  # URL de tu imagen
-        background-size: cover;  # Cubre toda la pantalla
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+    /* Fondo de pantalla fijo */
+    [data-testid="stAppViewContainer"] {
+        background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
+        background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
-        background-blend-mode: overlay;  # Mezcla para no saturar
-        opacity: 0.8;  # Ajusta opacity para claridad
-        display: flex;  # Para centrar contenido vertical/horizontal
-        flex-direction: column;
-        justify-content: center;  # Centra vertical
-        align-items: center;  # Centra horizontal
-        min-height: 100vh;  # Full height
     }
-    .stApp > header { background-color: transparent; }  # Barra superior transparente
-    .main-content {  # Clase para contenedor centrado
-        width: 80%;  # Ancho del contenido central (ajusta)
-        max-width: 800px;  # Máximo para no estirar
-        padding: 20px;  # Espacio interno
-        background-color: rgba(0, 0, 0, 0.5);  # Negro menos opaco (transparencia 50%)
-        border-radius: 10px;  # Bordes redondeados
+
+    /* Contenedor de la App transparente */
+    [data-testid="stHeader"], .stApp {
+        background: rgba(0,0,0,0);
+    }
+
+    /* FRANJA NEGRA: Ligeramente más transparente (0.5), desenfoque sutil (5px) y persistente */
+    .main .block-container {
+        font-family: 'Roboto', sans-serif;
+        background-color: rgba(0, 0, 0, 0.5) !important; 
+        padding: 4rem !important;
+        max-width: 1100px; 
+        min-height: 100vh;
+        height: auto;
+        margin: 0 auto;
+        color: white !important;
+        backdrop-filter: blur(5px); /* Desenfoque sutil */
+        box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    }
+
+    /* FUERZA SLIDERS AZULES */
+    div[data-testid="stSlider"] > div > div > div > div {
+        background-color: #00bfff !important;
+    }
+    div[data-testid="stSlider"] [role="slider"] {
+        background-color: #00bfff !important;
+        border: 2px solid white !important;
+    }
+
+    /* Estilo de textos */
+    h1 { font-size: 3rem !important; font-weight: 700 !important; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+    h3 { font-size: 1.8rem !important; text-align: center; }
+    h4 { font-size: 1.5rem !important; margin-top: 20px; }
+    p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
+
+    /* Botón Principal */
+    .stButton > button {
+        width: 100%;
+        background-color: #00bfff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 1rem;
+        font-size: 1.4rem;
+        font-weight: bold;
+        margin-top: 25px;
+        transition: 0.3s;
+    }
+    .stButton > button:hover {
+        background-color: #008fcc;
+        transform: scale(1.01);
     }
     </style>
     """, unsafe_allow_html=True)
 
-# Contenedor centrado para contenido
-with st.container():
-    st.markdown("<div class='main-content'>", unsafe_allow_html=True)  # Inicia contenedor
+# --- CONTENIDO ---
 
-    # Título de la app
-    st.title('Simulación Interactiva de Caudalímetro Electromagnético')
+st.title('Simulación de Caudalímetro Electromagnético')
+st.markdown('### Por: Adriana Teixeira Mendoza')
+st.write("---")
 
-    # Sliders amigables para el usuario
-    B = st.slider('Intensidad del Campo Magnético B (T)', min_value=0.1, max_value=1.0, value=0.5, step=0.1, help='Ajusta el valor de B, típico 0.5 T para imanes N35')
-    sigma = st.slider('Conductividad del Fluido σ (µS/cm)', min_value=1, max_value=5000, value=1000, step=100, help='Conductividad típica: baja <5, media ~1000, alta >5000')
-    D = st.slider('Diámetro Interno D (m)', min_value=0.005, max_value=0.02, value=0.0127, step=0.001, help='Diámetro de tubería PVC ½" ≈0.0127 m')
 
-    # Función para factor de conductividad (sigmoide)
-    def conductivity_factor(sigma, sigma_min=5, k=0.01):
-        return 1 / (1 + np.exp(-k * (sigma - sigma_min))) 
 
-    factor = conductivity_factor(sigma)
+st.markdown("#### Configuración de Parámetros")
+st.info("Puedes ingresar los datos manualmente o deslizando la barra azul.")
 
-    # Botón para generar gráfica
-    if st.button('Generar Gráfica V vs Q'):
-        A = np.pi * (D / 2)**2
-        v = np.linspace(0.1, 10, 100)
-        V_theor = B * D * v * factor * 1000 # Resultado en mV
-        Q = A * v # m³/s
-        # Definir color según B
-        if B < 0.4:
-            color = 'red'
-        elif B < 0.7:
-            color = 'green'
-        else:
-            color = 'blue'
-        fig, ax = plt.subplots()
-        ax.plot(Q, V_theor, color=color)
-        ax.set_xlabel('Caudal Q (m³/s)')
-        ax.set_ylabel('Voltaje V (mV)')
-        ax.set_title(f'V vs Q (B={B}T, σ={sigma}µS/cm, D={D}m)')
-        ax.grid(True)
-        # Mostrar gráfica en la app
-        st.pyplot(fig)
+# Columnas para los parámetros principales
+col1, col2, col3 = st.columns(3, gap="large")
 
-    # Texto explicativo
-    st.info('Ajusta los sliders y presiona el botón para ver la gráfica. El color cambia según B: rojo (bajo), verde (medio), azul (alto).')
+with col1:
+    B_val = st.number_input('B: Campo Magnético (T)', 0.1, 1.0, 0.5, 0.1)
+    B = st.slider('Ajustar B', 0.1, 1.0, float(B_val), 0.01, label_visibility="collapsed")
 
-    st.markdown("</div>", unsafe_allow_html=True)  # Cierra contenedor
+with col2:
+    sigma_val = st.number_input('σ: Conductividad (μS/cm)', 1, 5000, 1000, 100)
+    sigma = st.slider('Ajustar σ', 1, 5000, int(sigma_val), 10, label_visibility="collapsed")
+
+with col3:
+    D_val = st.number_input('D: Diámetro (m)', 0.005, 0.050, 0.0127, 0.001, format="%.4f")
+    D = st.slider('Ajustar D', 0.005, 0.050, float(D_val), 0.0001, label_visibility="collapsed")
+
+st.write("---")
+
+# Sección del Factor de Error
+st.markdown("#### Factor de Error del Sistema")
+c_err1, c_err2 = st.columns([3, 1])
+
+if 'edit_error' not in st.session_state:
+    st.session_state.edit_error = False
+
+with c_err2:
+    if st.button('🔄 Cambiar Factor'):
+        st.session_state.edit_error = not st.session_state.edit_error
+
+with c_err1:
+    if st.session_state.edit_error:
+        error_factor = st.slider('Modificar Factor de Error (Manual)', 0.80, 1.20, 1.00, 0.01)
+        st.warning(f"Factor de error actual: {error_factor:.2f} (Modificado)")
+    else:
+        error_factor = 1.00
+        st.success(f"Factor de error por defecto: {error_factor:.2f} (Estable)")
+
+# Lógica de cálculo
+def conductivity_factor(s, sigma_min=5, k=0.01):
+    return 1 / (1 + np.exp(-k * (s - sigma_min)))
+
+f_cond = conductivity_factor(sigma)
+
+if st.button('🚀 Generar curva de calibración'):
+    # Cálculos
+    A = np.pi * (D / 2)**2
+    v = np.linspace(0.1, 5.0, 100)
+    Q = A * v
+    V_mv = (B * D * v * f_cond * 1000) * error_factor
+    m = ((B * D * f_cond * 1000) / A) * error_factor
+
+    # Gráfica
+    plt.style.use('dark_background')
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(Q, V_mv, color='#00d4ff', linewidth=3, label='Respuesta con Error')
+    ax.set_xlabel('Caudal Q (m³/s)', fontsize=12)
+    ax.set_ylabel('Voltaje V (mV)', fontsize=12)
+    ax.set_title('Calibración V vs Q (Ajustada)', fontsize=16, pad=20)
+    ax.grid(True, alpha=0.1)
+    
+    fig.patch.set_alpha(0.0)
+    ax.set_facecolor('none')
+    st.pyplot(fig)
+
+    # Resultados y Ecuación
+    st.markdown("#### Ecuación Final del Sensor:")
+    st.latex(rf"V_{{(mV)}} = {m:.2f} \cdot Q_{{(m^3/s)}} \times {error_factor}")
+    st.info(f"Sensibilidad Resultante: {m:.2f} mV / (m³/s)")
+
+st.write("---")
+st.caption("Fórmula base: ε = (B ⋅ D ⋅ v ⋅ f(σ)) ⋅ Factor_Error | Adriana Teixeira 2026")
