@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Eliminación estricta de recuadros extra y sliders cian)
+# 2. CSS Maestro (Refuerzo de colores y alineación)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -41,7 +41,7 @@ st.markdown("""
     .fixed-header h1 { font-size: 1.8rem !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; margin: 0; color: white; }
 
-    /* --- CURSORES Y SLIDERS CIAN --- */
+    /* --- SLIDERS CIAN --- */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
     
@@ -59,23 +59,19 @@ st.markdown("""
         border-radius: 8px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* --- CONTENEDOR DE CALCULADORA (Único recuadro permitido) --- */
+    /* --- CAJA DE CALCULADORA --- */
     .calc-box {
         background-color: rgba(26, 82, 118, 0.3);
         padding: 25px; border-radius: 12px; border: 1px solid #00d4ff; 
         margin-top: 30px; max-width: 700px;
     }
 
-    /* Título simple pegado a la izquierda, sin bordes ni recuadros azules */
-    .calc-pure-title {
-        color: white;
-        font-size: 1.6rem;
-        font-weight: 700;
-        margin-bottom: 20px;
-        text-align: left;
-        display: block;
-        background: none !important; /* Elimina cualquier fondo */
-        border: none !important;     /* Elimina cualquier borde */
+    /* Estilo para que el texto de la etiqueta parezca un título */
+    .stNumberInput label {
+        font-size: 1.6rem !important;
+        font-weight: 700 !important;
+        color: white !important;
+        margin-bottom: 10px !important;
     }
 
     p, label { font-size: 1.1rem !important; color: white !important; }
@@ -156,22 +152,20 @@ if st.session_state.generado:
 
     st.latex(rf"V_{{(mV)}} = {m_eq:.4f} \cdot Q_{{({u_q})}}")
 
-    # --- CALCULADORA LIMPIA ---
+    # --- CALCULADORA ---
     st.markdown('<div class="calc-box">', unsafe_allow_html=True)
     
-    # Título como texto puro a la izquierda
-    st.markdown('<span class="calc-pure-title">Calculadora de Predicción</span>', unsafe_allow_html=True)
-    
-    # Campo Q -> V
-    q_input = st.number_input(f"Ingresa Caudal (Q) en {u_q} para hallar Voltaje:", value=0.0, format="%.4f", key="q_in")
+    # Usamos la etiqueta del componente para colocar el título en el espacio azul
+    q_input = st.number_input(f"Calculadora de Predicción\n\nIngresa Caudal (Q) en {u_q} para hallar Voltaje:", 
+                             value=0.0, format="%.4f", key="q_in")
     v_output = q_input * m_eq
     st.markdown(f"**Resultado: Voltaje (V) = {v_output:.4f} mV**")
     
-    st.markdown("<br>", unsafe_allow_html=True)
     st.write("---")
     
-    # Campo V -> Q
-    v_input = st.number_input(f"Ingresa Voltaje (V) en mV para hallar Caudal:", value=0.0, format="%.4f", key="v_in")
+    # Segundo cálculo
+    v_input = st.number_input(f"Ingresa Voltaje (V) en mV para hallar Caudal:", 
+                             value=0.0, format="%.4f", key="v_in")
     q_output = v_input / m_eq if m_eq != 0 else 0
     st.markdown(f"**Resultado: Caudal (Q) = {q_output:.4f} {u_q}**")
     
