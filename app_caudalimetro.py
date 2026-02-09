@@ -45,7 +45,7 @@ st.markdown("""
 
     /* Forzar el tamaño real del GIF */
     .loading-overlay img {
-        width: 450px !important; /* Tamaño del GIF escalado */
+        width: 1000px !important; /* Tamaño del GIF escalado */
         height: auto !important;
         display: block;
         margin: 0 auto;
@@ -224,3 +224,4 @@ if st.session_state.generado:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
+
