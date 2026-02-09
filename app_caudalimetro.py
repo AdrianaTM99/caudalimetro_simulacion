@@ -5,55 +5,59 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Fondo negro central recuperado y desenfocado)
+# 2. CSS Maestro (Desenfoque, Capa Negra y Panel Derecho Fijo)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Imagen de fondo base */
+    /* Fondo base */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
-        background-size: cover; 
-        background-position: center; 
-        background-attachment: fixed;
+        background-size: cover; background-position: center; background-attachment: fixed;
     }
 
-    /* CAPA NEGRA CENTRAL CON DESENFOQUE */
+    /* FRANJA CENTRAL NEGRA CON DESENFOQUE PROFUNDO */
     [data-testid="stAppViewContainer"]::before {
         content: "";
         position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        max-width: 1200px; /* Ajuste del ancho de la franja */
+        top: 0; left: 50%; transform: translateX(-50%);
+        width: 100%; max-width: 1200px;
         height: 100vh;
-        background-color: rgba(0, 0, 0, 0.7); /* Color negro con opacidad */
-        backdrop-filter: blur(15px); /* Desenfoque fuerte */
+        background-color: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(15px);
         -webkit-backdrop-filter: blur(15px);
         z-index: 0;
     }
 
-    /* Asegurar que el contenido esté por encima de la capa negra */
-    .stApp {
-        position: relative;
-        z-index: 1;
-        background: transparent !important;
-    }
+    .stApp { position: relative; z-index: 1; background: transparent !important; }
 
+    /* HEADER FIJO */
     .fixed-header {
         position: fixed; top: 0; left: 0; width: 100vw;
         background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);
         z-index: 999; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex; justify-content: center;
     }
-
     .header-content {
         width: 100%; max-width: 1100px; padding: 10px 2rem;
         display: flex; justify-content: space-between; align-items: center;
     }
-
     header[data-testid="stHeader"] { visibility: hidden; }
+
+    /* PANEL DERECHO FIJO (TABLA) */
+    .fixed-right-panel {
+        position: fixed;
+        top: 80px; right: 20px;
+        width: 280px;
+        background-color: rgba(26, 82, 118, 0.8);
+        backdrop-filter: blur(10px);
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid #00d4ff;
+        z-index: 1000;
+        color: white;
+        font-size: 0.85rem;
+    }
 
     .block-container {
         font-family: 'Roboto', sans-serif; max-width: 1100px !important;
@@ -61,45 +65,32 @@ st.markdown("""
         color: white !important;
     }
 
-    .fixed-header h1 { font-size: 1.8rem !important; margin: 0; color: white; }
-    .fixed-header h3 { font-size: 1.1rem !important; margin: 0; color: white; }
-
-    /* ESTILO DE LOS SLIDERS */
+    /* SLIDERS CIAN */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
-    /* Estilo Radio Buttons */
-    div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
-        border: 2px solid #00d4ff !important; background-color: #000000 !important;
-    }
-    div[data-testid="stRadio"] [data-baseweb="radio"][aria-checked="true"] > div:first-child > div {
-        background-color: #00d4ff !important;
-    }
-
-    /* Botones Azul Cobalto */
+    /* BOTONES */
     .stButton > button {
         width: 100%; background-color: #1a5276 !important; color: white !important;
         border-radius: 8px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* Recuadro de la Calculadora */
+    /* CALCULADORA */
     .calc-box {
         background-color: rgba(26, 82, 118, 0.4);
         padding: 25px; border-radius: 12px; border: 1px solid #00d4ff; 
         margin-top: 20px; max-width: 700px;
     }
-
     .calc-title {
-        color: white;
-        font-size: 1.6rem;
-        font-weight: 700;
-        margin-bottom: 20px;
-        text-align: left;
-        border-bottom: 1px solid rgba(0, 212, 255, 0.3);
-        padding-bottom: 10px;
+        color: white; font-size: 1.6rem; font-weight: 700;
+        margin-bottom: 20px; text-align: left;
+        border-bottom: 1px solid rgba(0, 212, 255, 0.3); padding-bottom: 10px;
     }
 
     p, label { font-size: 1.1rem !important; color: white !important; }
+    table { width: 100%; color: white; border-collapse: collapse; }
+    th { text-align: left; border-bottom: 1px solid #00d4ff; padding-bottom: 5px; }
+    td { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
     </style>
 
     <div class="fixed-header">
@@ -109,6 +100,26 @@ st.markdown("""
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+# --- PANEL DERECHO (Conductividades) ---
+with st.container():
+    if st.sidebar.button("📋 Ver Tabla de Conductividades"):
+        st.markdown("""
+            <div class="fixed-right-panel">
+                <h4 style="margin-top:0; color:#00d4ff;">Conductividad Nominal</h4>
+                <table>
+                    <tr><th>Fluido</th><th>μS/cm</th></tr>
+                    <tr><td>Agua Destilada</td><td>0.5 - 5</td></tr>
+                    <tr><td>Agua Potable</td><td>50 - 800</td></tr>
+                    <tr><td>Agua de Mar</td><td>52,000</td></tr>
+                    <tr><td>Leche</td><td>4,000 - 6,000</td></tr>
+                    <tr><td>Ácido Sulfúrico (30%)</td><td>730,000</td></tr>
+                    <tr><td>Soda Cáustica (10%)</td><td>350,000</td></tr>
+                    <tr><td>Jugo de Frutas</td><td>2,000 - 4,000</td></tr>
+                </table>
+                <p style='font-size:0.7rem !important; margin-top:10px;'>*Valores aproximados a 25°C</p>
+            </div>
+        """, unsafe_allow_html=True)
 
 # --- 3. SELECCIÓN DE UNIDADES ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
@@ -159,6 +170,7 @@ if st.session_state.generado:
 
     A_m2 = np.pi * (D_si / 2)**2
     v_vec = np.linspace(0.1, 5.0, 100)
+    # Factor de corrección por conductividad
     f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
     V_mv = (B_si * D_si * v_vec * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v_vec) * conv_q
