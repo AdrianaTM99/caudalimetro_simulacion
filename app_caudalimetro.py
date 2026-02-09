@@ -5,63 +5,32 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro Corregido
+# 2. CSS Maestro (Sliders Cian, Sin recuadros extra, Título a la izquierda)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Contenedor principal con la imagen de fondo */
     [data-testid="stAppViewContainer"] {
-        background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
-        background-size: cover; 
-        background-position: center; 
-        background-attachment: fixed;
+        background-image: 
+            linear-gradient(to right, transparent 0%, transparent calc(50% - 550px), rgba(0, 0, 0, 0.5) calc(50% - 550px), rgba(0, 0, 0, 0.5) calc(50% + 550px), transparent calc(50% + 550px)),
+            url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
+        background-size: cover; background-position: center; background-attachment: fixed;
     }
 
-    /* LA CAPA OSCURA Y DESENFOCADA (Corregida para que no tape el contenido) */
-    [data-testid="stAppViewContainer"]::before {
-        content: "";
-        position: fixed;
-        top: 0; left: 50%; transform: translateX(-50%);
-        width: 100%; max-width: 1200px;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.7); /* Oscurece el centro */
-        backdrop-filter: blur(15px); /* Desenfoque potente */
-        -webkit-backdrop-filter: blur(15px);
-        z-index: -1; /* <--- IMPORTANTE: Esto lo envía detrás del contenido */
-    }
-
-    /* Asegurar que la app sea transparente para ver el fondo */
-    .stApp {
-        background: transparent !important;
-    }
-
-    /* HEADER FIJO */
     .fixed-header {
         position: fixed; top: 0; left: 0; width: 100vw;
-        background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);
+        background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);
         z-index: 999; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex; justify-content: center;
     }
+
     .header-content {
         width: 100%; max-width: 1100px; padding: 10px 2rem;
         display: flex; justify-content: space-between; align-items: center;
     }
-    header[data-testid="stHeader"] { visibility: hidden; }
 
-    /* PANEL DERECHO DE CONDUCTIVIDADES */
-    .fixed-right-panel {
-        position: fixed;
-        top: 100px; right: 20px;
-        width: 260px;
-        background-color: rgba(26, 82, 118, 0.9);
-        backdrop-filter: blur(10px);
-        padding: 15px;
-        border-radius: 12px;
-        border: 1px solid #00d4ff;
-        z-index: 1000;
-        color: white;
-    }
+    header[data-testid="stHeader"] { visibility: hidden; }
+    .stApp { background: transparent !important; }
 
     .block-container {
         font-family: 'Roboto', sans-serif; max-width: 1100px !important;
@@ -69,34 +38,45 @@ st.markdown("""
         color: white !important;
     }
 
-    /* ESTILO DE SLIDERS CIAN */
+    .fixed-header h1 { font-size: 1.8rem !important; margin: 0; color: white; }
+    .fixed-header h3 { font-size: 1.1rem !important; margin: 0; color: white; }
+
+    /* ESTILO DE LOS SLIDERS (FORZAR CIAN) */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
-    /* BOTONES */
+    /* Estilo Radio Buttons */
+    div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
+        border: 2px solid #00d4ff !important; background-color: #000000 !important;
+    }
+    div[data-testid="stRadio"] [data-baseweb="radio"][aria-checked="true"] > div:first-child > div {
+        background-color: #00d4ff !important;
+    }
+
+    /* Botones Azul Cobalto */
     .stButton > button {
         width: 100%; background-color: #1a5276 !important; color: white !important;
         border-radius: 8px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* CALCULADORA */
+    /* Recuadro de la Calculadora (Sin recuadros internos azules) */
     .calc-box {
         background-color: rgba(26, 82, 118, 0.3);
         padding: 25px; border-radius: 12px; border: 1px solid #00d4ff; 
         margin-top: 20px; max-width: 700px;
     }
-    .calc-title {
-        color: white; font-size: 1.6rem; font-weight: 700;
-        margin-bottom: 15px; text-align: left;
-        border-bottom: 1px solid rgba(0, 212, 255, 0.3); padding-bottom: 10px;
+
+    /* Título de la calculadora pegado a la izquierda, sin recuadro azul */
+    .calc-header-text {
+        color: white;
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-align: left;
+        display: block;
     }
 
     p, label { font-size: 1.1rem !important; color: white !important; }
-    
-    /* Estilo de la tabla de conductividad */
-    .cond-table { width: 100%; font-size: 0.85rem; border-collapse: collapse; }
-    .cond-table th { border-bottom: 1px solid #00d4ff; text-align: left; padding: 4px; }
-    .cond-table td { padding: 6px 4px; border-bottom: 1px solid rgba(255,255,255,0.1); }
     </style>
 
     <div class="fixed-header">
@@ -105,33 +85,6 @@ st.markdown("""
             <h3>Por: Adriana Teixeira Mendoza</h3>
         </div>
     </div>
-    """, unsafe_allow_html=True)
-
-# --- BOTÓN DE CONSULTA Y TABLA DERECHA ---
-# Usamos el sidebar para el botón de control
-with st.sidebar:
-    st.title("Opciones")
-    ver_tabla = st.button("📋 Consultar Conductividades")
-    if "mostrar" not in st.session_state:
-        st.session_state.mostrar = False
-    if ver_tabla:
-        st.session_state.mostrar = not st.session_state.mostrar
-
-if st.session_state.mostrar:
-    st.markdown("""
-        <div class="fixed-right-panel">
-            <h4 style="margin-top:0; color:#00d4ff;">Conductividades Nominales</h4>
-            <table class="cond-table">
-                <tr><th>Fluido</th><th>μS/cm</th></tr>
-                <tr><td>Agua Destilada</td><td>0.5 - 5</td></tr>
-                <tr><td>Agua Potable</td><td>50 - 800</td></tr>
-                <tr><td>Leche</td><td>4,000 - 6,000</td></tr>
-                <tr><td>Agua de Mar</td><td>52,000</td></tr>
-                <tr><td>Zumo de Frutas</td><td>2,000 - 4,000</td></tr>
-                <tr><td>Soda Cáustica</td><td>350,000</td></tr>
-            </table>
-            <p style="font-size:0.7rem; margin-top:10px; opacity:0.8;">*Valores a 25°C</p>
-        </div>
     """, unsafe_allow_html=True)
 
 # --- 3. SELECCIÓN DE UNIDADES ---
@@ -158,13 +111,13 @@ col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
     B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(b_def))
-    B_user = st.slider(f'Ajustar B', float(b_min), float(b_max), float(B_val), label_visibility="collapsed")
+    B_user = st.slider(f'Slider_B', float(b_min), float(b_max), float(B_val), label_visibility="collapsed")
 with col2:
     sig_val = st.number_input(f'σ: Conductividad ({u_sig})', float(sig_min), float(sig_max), float(sig_def))
-    sigma_user = st.slider(f'Ajustar σ', float(sig_min), float(sig_max), float(sig_val), label_visibility="collapsed")
+    sigma_user = st.slider(f'Slider_Sig', float(sig_min), float(sig_max), float(sig_val), label_visibility="collapsed")
 with col3:
     D_val = st.number_input(f'D: Diámetro ({u_d})', float(d_min), float(d_max), float(d_def), format="%.4f")
-    D_user = st.slider(f'Ajustar D', float(d_min), float(d_max), float(D_val), label_visibility="collapsed")
+    D_user = st.slider(f'Slider_D', float(d_min), float(d_max), float(D_val), label_visibility="collapsed")
 
 error_factor = st.slider('Ajuste de Error del Sistema', 0.80, 1.20, 1.00, 0.01)
 
@@ -183,7 +136,6 @@ if st.session_state.generado:
 
     A_m2 = np.pi * (D_si / 2)**2
     v_vec = np.linspace(0.1, 5.0, 100)
-    # Factor de corrección por conductividad
     f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
     V_mv = (B_si * D_si * v_vec * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v_vec) * conv_q
@@ -202,10 +154,11 @@ if st.session_state.generado:
 
     st.latex(rf"V_{{(mV)}} = {m_eq:.4f} \cdot Q_{{({u_q})}}")
 
-    # --- CALCULADORA VERTICAL ---
+    # --- CALCULADORA LIMPIA ---
     st.markdown('<div class="calc-box">', unsafe_allow_html=True)
-    st.markdown('<div class="calc-title">Calculadora de Predicción</div>', unsafe_allow_html=True)
+    st.markdown('<span class="calc-header-text">Calculadora de Predicción</span>', unsafe_allow_html=True)
     
+    # Voltaje
     q_input = st.number_input(f"Ingresa Caudal (Q) en {u_q} para hallar Voltaje:", value=0.0, format="%.4f", key="q_in")
     v_output = q_input * m_eq
     st.markdown(f"**Resultado: Voltaje (V) = {v_output:.4f} mV**")
@@ -213,6 +166,7 @@ if st.session_state.generado:
     st.markdown("<br>", unsafe_allow_html=True)
     st.write("---")
     
+    # Caudal
     v_input = st.number_input(f"Ingresa Voltaje (V) en mV para hallar Caudal:", value=0.0, format="%.4f", key="v_in")
     q_output = v_input / m_eq if m_eq != 0 else 0
     st.markdown(f"**Resultado: Caudal (Q) = {q_output:.4f} {u_q}**")
