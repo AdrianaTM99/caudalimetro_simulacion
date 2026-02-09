@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Refuerzo de colores y alineación)
+# 2. CSS Maestro
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -41,11 +41,11 @@ st.markdown("""
     .fixed-header h1 { font-size: 1.8rem !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; margin: 0; color: white; }
 
-    /* --- SLIDERS CIAN --- */
+    /* ESTILO DE LOS SLIDERS (COLOR CIAN) */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
-    
-    /* --- RADIO BUTTONS --- */
+
+    /* Estilo Radio Buttons */
     div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
         border: 2px solid #00d4ff !important; background-color: #000000 !important;
     }
@@ -53,25 +53,28 @@ st.markdown("""
         background-color: #00d4ff !important;
     }
 
-    /* --- BOTONES AZUL COBALTO --- */
+    /* Botones Azul Cobalto */
     .stButton > button {
         width: 100%; background-color: #1a5276 !important; color: white !important;
         border-radius: 8px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* --- CAJA DE CALCULADORA --- */
+    /* Recuadro de la Calculadora */
     .calc-box {
         background-color: rgba(26, 82, 118, 0.3);
         padding: 25px; border-radius: 12px; border: 1px solid #00d4ff; 
-        margin-top: 30px; max-width: 700px;
+        margin-top: 20px; max-width: 700px;
     }
 
-    /* Estilo para que el texto de la etiqueta parezca un título */
-    .stNumberInput label {
-        font-size: 1.6rem !important;
-        font-weight: 700 !important;
-        color: white !important;
-        margin-bottom: 10px !important;
+    /* Título de la calculadora pegado a la izquierda */
+    .calc-title {
+        color: white;
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-align: left;
+        border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+        padding-bottom: 10px;
     }
 
     p, label { font-size: 1.1rem !important; color: white !important; }
@@ -109,13 +112,13 @@ col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
     B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(b_def))
-    B_user = st.slider(f'S_B', float(b_min), float(b_max), float(B_val), label_visibility="collapsed")
+    B_user = st.slider(f'Ajustar B', float(b_min), float(b_max), float(B_val), label_visibility="collapsed")
 with col2:
     sig_val = st.number_input(f'σ: Conductividad ({u_sig})', float(sig_min), float(sig_max), float(sig_def))
-    sigma_user = st.slider(f'S_Sig', float(sig_min), float(sig_max), float(sig_val), label_visibility="collapsed")
+    sigma_user = st.slider(f'Ajustar σ', float(sig_min), float(sig_max), float(sig_val), label_visibility="collapsed")
 with col3:
     D_val = st.number_input(f'D: Diámetro ({u_d})', float(d_min), float(d_max), float(d_def), format="%.4f")
-    D_user = st.slider(f'S_D', float(d_min), float(d_max), float(D_val), label_visibility="collapsed")
+    D_user = st.slider(f'Ajustar D', float(d_min), float(d_max), float(D_val), label_visibility="collapsed")
 
 error_factor = st.slider('Ajuste de Error del Sistema', 0.80, 1.20, 1.00, 0.01)
 
@@ -152,20 +155,20 @@ if st.session_state.generado:
 
     st.latex(rf"V_{{(mV)}} = {m_eq:.4f} \cdot Q_{{({u_q})}}")
 
-    # --- CALCULADORA ---
+    # --- CALCULADORA VERTICAL ---
     st.markdown('<div class="calc-box">', unsafe_allow_html=True)
+    st.markdown('<div class="calc-title">Calculadora de Predicción</div>', unsafe_allow_html=True)
     
-    # Usamos la etiqueta del componente para colocar el título en el espacio azul
-    q_input = st.number_input(f"Calculadora de Predicción\n\nIngresa Caudal (Q) en {u_q} para hallar Voltaje:", 
-                             value=0.0, format="%.4f", key="q_in")
+    # Voltaje
+    q_input = st.number_input(f"Ingresa Caudal (Q) en {u_q} para hallar Voltaje:", value=0.0, format="%.4f", key="q_in")
     v_output = q_input * m_eq
     st.markdown(f"**Resultado: Voltaje (V) = {v_output:.4f} mV**")
     
+    st.markdown("<br>", unsafe_allow_html=True)
     st.write("---")
     
-    # Segundo cálculo
-    v_input = st.number_input(f"Ingresa Voltaje (V) en mV para hallar Caudal:", 
-                             value=0.0, format="%.4f", key="v_in")
+    # Caudal
+    v_input = st.number_input(f"Ingresa Voltaje (V) en mV para hallar Caudal:", value=0.0, format="%.4f", key="v_in")
     q_output = v_input / m_eq if m_eq != 0 else 0
     st.markdown(f"**Resultado: Caudal (Q) = {q_output:.4f} {u_q}**")
     
