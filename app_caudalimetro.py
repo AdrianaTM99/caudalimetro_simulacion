@@ -2,35 +2,30 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Código CSS ajustado: Fondo full screen al raz de pantalla, contenedor negro menos opaco (transparencia 0.5)
+# Código CSS ajustado: Fondo al ras de pantalla (full screen), contenedor negro menos opaco (0.5 para transparencia)
 st.markdown("""
     <style>
     .stApp {
         background-image: url("https://img.freepik.com/fotos-premium/hermosa-playa-nocturna-rocas-via-lactea_104785-856.jpg");  # URL de tu imagen
-        background-size: cover;  # Cubre toda la pantalla completa
+        background-size: cover;  # Cubre toda la pantalla
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
         background-blend-mode: overlay;  # Mezcla para no saturar
         opacity: 0.8;  # Ajusta opacity para claridad
-        display: flex;  # Para centrar contenido
+        display: flex;  # Para centrar contenido vertical/horizontal
         flex-direction: column;
         justify-content: center;  # Centra vertical
         align-items: center;  # Centra horizontal
-        min-height: 100vh;  # Full height al raz de pantalla
-        margin: 0;  # Elimina márgenes
-        padding: 0;  # Elimina padding
+        min-height: 100vh;  # Full height
     }
     .stApp > header { background-color: transparent; }  # Barra superior transparente
-    .main-content {  # Contenedor centrado
-        width: 80%;  # Ancho
-        max-width: 800px;
-        padding: 20px;
-        background-color: rgba(0, 0, 0, 0.5);  # Negro menos opaco (transparencia aumentada de 0.7 a 0.5)
-        border-radius: 10px;
-        backdrop-filter: blur(20px);
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 1);
-        margin: auto;
+    .main-content {  # Clase para contenedor centrado
+        width: 80%;  # Ancho del contenido central (ajusta)
+        max-width: 800px;  # Máximo para no estirar
+        padding: 20px;  # Espacio interno
+        background-color: rgba(0, 0, 0, 0.5);  # Negro menos opaco (transparencia 50%)
+        border-radius: 10px;  # Bordes redondeados
     }
     </style>
     """, unsafe_allow_html=True)
