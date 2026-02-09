@@ -7,7 +7,7 @@ import time # Necesario para controlar el tiempo de la animación
 st.set_page_config(
     layout="wide", 
     page_title="Simulador Adriana",
-    page_icon="https://raw.githubusercontent.com/AdrianaTM99/caudalimetro_simulacion/main/ICONO_CAUDALIMETRO.png"
+    page_icon="https://github.com/AdrianaTM99/caudalimetro_simulacion/blob/main/caudalimetro%20v3.1.png"
 )
 
 # Enlace RAW de tu animación GIF
@@ -217,3 +217,4 @@ if st.session_state.generado:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
+
