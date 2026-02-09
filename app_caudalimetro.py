@@ -5,21 +5,38 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro
+# 2. CSS Maestro (Fondo con desenfoque mejorado)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
+    /* Fondo general de la imagen */
     [data-testid="stAppViewContainer"] {
-        background-image: 
-            linear-gradient(to right, transparent 0%, transparent calc(50% - 550px), rgba(0, 0, 0, 0.5) calc(50% - 550px), rgba(0, 0, 0, 0.5) calc(50% + 550px), transparent calc(50% + 550px)),
-            url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
-        background-size: cover; background-position: center; background-attachment: fixed;
+        background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
+        background-size: cover; 
+        background-position: center; 
+        background-attachment: fixed;
+    }
+
+    /* Franja central con DESENFOQUE (Glassmorphism) */
+    [data-testid="stAppViewContainer"]::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 1150px; /* Ancho de la zona de lectura */
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6); /* Oscurecido */
+        backdrop-filter: blur(10px); /* <--- AQUÍ SE AJUSTA EL DESENFOQUE */
+        -webkit-backdrop-filter: blur(10px);
+        z-index: -1;
     }
 
     .fixed-header {
         position: fixed; top: 0; left: 0; width: 100vw;
-        background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);
+        background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px);
         z-index: 999; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex; justify-content: center;
     }
@@ -61,12 +78,11 @@ st.markdown("""
 
     /* Recuadro de la Calculadora */
     .calc-box {
-        background-color: rgba(26, 82, 118, 0.3);
+        background-color: rgba(26, 82, 118, 0.4);
         padding: 25px; border-radius: 12px; border: 1px solid #00d4ff; 
         margin-top: 20px; max-width: 700px;
     }
 
-    /* Título de la calculadora pegado a la izquierda */
     .calc-title {
         color: white;
         font-size: 1.6rem;
@@ -159,7 +175,6 @@ if st.session_state.generado:
     st.markdown('<div class="calc-box">', unsafe_allow_html=True)
     st.markdown('<div class="calc-title">Calculadora de Predicción</div>', unsafe_allow_html=True)
     
-    # Voltaje
     q_input = st.number_input(f"Ingresa Caudal (Q) en {u_q} para hallar Voltaje:", value=0.0, format="%.4f", key="q_in")
     v_output = q_input * m_eq
     st.markdown(f"**Resultado: Voltaje (V) = {v_output:.4f} mV**")
@@ -167,7 +182,6 @@ if st.session_state.generado:
     st.markdown("<br>", unsafe_allow_html=True)
     st.write("---")
     
-    # Caudal
     v_input = st.number_input(f"Ingresa Voltaje (V) en mV para hallar Caudal:", value=0.0, format="%.4f", key="v_in")
     q_output = v_input / m_eq if m_eq != 0 else 0
     st.markdown(f"**Resultado: Caudal (Q) = {q_output:.4f} {u_q}**")
