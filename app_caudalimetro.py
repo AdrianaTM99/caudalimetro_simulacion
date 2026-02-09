@@ -2,16 +2,20 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 1. Configuración de la página
-st.set_page_config(layout="wide", page_title="Simulador Adriana")
+# 1. Configuración de la página con ICONO personalizado
+# Nota: Se usa la URL 'raw' de GitHub para que el icono cargue correctamente
+st.set_page_config(
+    layout="wide", 
+    page_title="Simulador Adriana",
+    page_icon="https://raw.githubusercontent.com/AdrianaTM99/caudalimetro_simulacion/main/ICONO_CAUDALIMETRO.png"
+)
 
-# 2. CSS Maestro (Fondo 75% oscuro, Título Centrado, Autor a la Derecha)
+# 2. CSS Maestro (Fondo 75% oscuro, Título Centrado, Autor a la Derecha en Blanco)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
     /* --- FONDO DE PANTALLA --- */
-    /* Capa negra al 75% (0.75) sobre la imagen */
     [data-testid="stAppViewContainer"] {
         background-image: 
             linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
@@ -21,7 +25,6 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* Contenedor principal limpio */
     .block-container {
         font-family: 'Roboto', sans-serif; 
         max-width: 1200px !important; 
@@ -34,56 +37,54 @@ st.markdown("""
     /* --- ENCABEZADO FIJO --- */
     .fixed-header {
         position: fixed; top: 0; left: 0; width: 100vw;
-        background-color: rgba(0, 0, 0, 0.85); /* Un poco más oscuro el header también */
+        background-color: rgba(0, 0, 0, 0.85); 
         backdrop-filter: blur(10px);
         z-index: 999; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex; justify-content: center;
-        height: 80px; /* Altura fija para centrar verticalmente */
+        height: 80px;
     }
 
     .header-content {
         width: 100%; max-width: 1200px; padding: 0 2rem;
         display: flex; 
         align-items: center; 
-        justify-content: center; /* Centra el contenido principal (el título) */
-        position: relative; /* Necesario para posicionar el nombre a la derecha */
+        justify-content: center; 
+        position: relative;
         height: 100%;
     }
 
-    /* Título centrado */
+    /* Título centrado en blanco */
     .fixed-header h1 { 
         font-size: 1.8rem !important; 
         margin: 0; 
-        color: white; 
+        color: white !important; 
         text-align: center;
     }
 
-    /* Nombre pegado a la derecha de forma absoluta */
+    /* Nombre a la derecha en blanco (mismo color que el título) */
     .fixed-header h3 { 
         font-size: 1.1rem !important; 
         margin: 0; 
-        color: #00d4ff; /* Un toque de cian para destacar */
+        color: white !important; 
         position: absolute;
         right: 2rem;
         top: 50%;
         transform: translateY(-50%);
+        font-weight: 300;
     }
 
-    /* Ocultar header por defecto de Streamlit */
     header[data-testid="stHeader"] { visibility: hidden; }
     .stApp { background: transparent !important; }
 
-    /* --- SLIDERS CIAN --- */
+    /* --- ELEMENTOS DE INTERFAZ --- */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
-    /* --- BOTONES --- */
     .stButton > button {
         width: 100%; background-color: #1a5276 !important; color: white !important;
         border-radius: 8px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* --- CALCULADORA --- */
     .calc-box {
         background-color: rgba(26, 82, 118, 0.4);
         padding: 25px; border-radius: 12px; border: 1px solid #00d4ff; 
@@ -98,7 +99,6 @@ st.markdown("""
 
     p, label { font-size: 1.1rem !important; color: white !important; }
 
-    /* --- TABLA LATERAL --- */
     .sidebar-table {
         width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 15px;
     }
@@ -184,6 +184,8 @@ if st.session_state.generado:
     V_mv = (B_si * D_si * v_vec * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v_vec) * conv_q
     m_eq = V_mv[-1] / Q_plot[-1]
+
+    
 
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(10, 5))
