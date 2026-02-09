@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Eliminación de fondo naranja y forzado de azul/negro)
+# 2. CSS Maestro (Reescritura total de Radio Buttons para visibilidad máxima)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -66,27 +66,25 @@ st.markdown("""
     .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; font-weight: 300 !important; margin: 0; color: white; }
 
-    /* --- ELIMINAR NARANJA Y PONER AZUL/NEGRO EN RADIO BUTTONS --- */
-    /* Círculo base: fondo negro y borde azul */
-    div[data-testid="stRadio"] [data-baseweb="radio"] div:first-child {
-        background-color: black !important;
-        border-color: #00d4ff !important;
-    }
-    
-    /* Cuando está seleccionado: mantener fondo negro (no naranja) y punto azul */
-    div[data-testid="stRadio"] [data-baseweb="radio"][aria-checked="true"] div:first-child {
-        background-color: black !important; 
-        border-color: #00d4ff !important;
+    /* --- ESTILO RADICAL PARA RADIO BUTTONS (AZUL Y NEGRO) --- */
+    /* Forzar el círculo exterior: Borde azul, Fondo negro */
+    div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
+        border: 2px solid #00d4ff !important;
+        background-color: #000000 !important;
+        width: 20px !important;
+        height: 20px !important;
     }
 
-    /* El punto pequeño interno: azul brillante */
-    div[data-testid="stRadio"] [data-baseweb="radio"] div div {
+    /* Forzar el punto interior cuando está MARCADO */
+    div[data-testid="stRadio"] [data-baseweb="radio"][aria-checked="true"] > div:first-child > div {
         background-color: #00d4ff !important;
+        width: 10px !important;
+        height: 10px !important;
     }
 
-    /* Hover: resaltar borde */
-    div[data-testid="stRadio"] label:hover div:first-child {
-        border-color: #ffffff !important;
+    /* Eliminar cualquier sombra o resplandor naranja/negro de Streamlit */
+    div[data-testid="stRadio"] [data-baseweb="radio"] {
+        background-color: transparent !important;
     }
 
     /* Sliders y Botones */
@@ -116,7 +114,8 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- LÓGICA DE UNIDADES COMPLETA ---
-sistema = st.radio("Sistema de Unidades Global:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
+# Al usar st.radio, el CSS anterior "capturará" el componente y lo pintará de azul
+sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
 if sistema == "Métrico (T, μS/cm, m)":
     u_b, u_sig, u_d, u_q = "T", "μS/cm", "m", "m³/s"
