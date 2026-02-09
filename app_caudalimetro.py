@@ -5,59 +5,69 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS con Fuente Roboto, Sliders Azules y Diseño de Franja
+# 2. CSS: Azul Bonito (#00D4FF) + Franja Persistente
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
+    /* Fondo de mar fijo */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover;
         background-position: center;
-        background-repeat: no-repeat;
         background-attachment: fixed;
     }
 
+    /* Fondo transparente para los elementos de Streamlit */
     [data-testid="stHeader"], .stApp {
         background: rgba(0,0,0,0);
     }
 
-    .block-container {
+    /* FRANJA NEGRA PERSISTENTE: 50% transparencia y 5px de desenfoque */
+    .main .block-container {
         font-family: 'Roboto', sans-serif;
-        background-color: rgba(0, 0, 0, 0.6); 
+        background-color: rgba(0, 0, 0, 0.5) !important; 
         padding: 4rem !important;
         max-width: 1100px; 
         min-height: 100vh;
+        height: auto; /* IMPORTANTE: Hace que el fondo crezca con el contenido */
         margin: 0 auto;
         color: white !important;
-        backdrop-filter: none !important;
+        backdrop-filter: blur(5px);
     }
 
-    /* Estilo de textos */
-    h1 { font-size: 3rem !important; font-weight: 700 !important; text-align: center; }
-    h3 { font-size: 1.8rem !important; text-align: center; }
-    h4 { font-size: 1.5rem !important; margin-top: 20px; }
-    p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
-
-    /* Personalización de Sliders a Azul */
-    div[data-baseweb="slider"] div[style*="background-color: rgb(255, 75, 75)"] {
-        background-color: #00bfff !important;
+    /* --- EL AZUL BONITO (#00D4FF) EN LOS SLIDERS --- */
+    /* Color de la barra activa */
+    div[data-testid="stSlider"] > div > div > div > div {
+        background-color: #00D4FF !important;
     }
-    div[data-baseweb="slider"] div[style*="background-color: #00D4FF"] {
-        background-color: #00bfff !important;
+    /* Color del círculo deslizable */
+    div[data-testid="stSlider"] [role="slider"] {
+        background-color: #00D4FF !important;
+        border: 2px solid white !important;
     }
 
-    /* Botón Principal */
+    /* Botón Principal con el mismo Azul */
     .stButton > button {
         width: 100%;
-        background-color: #00bfff;
+        background-color: #00D4FF;
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 10px;
         padding: 1rem;
         font-size: 1.4rem;
         font-weight: bold;
-        margin-top: 25px;
+        transition: 0.3s ease;
+    }
+    .stButton > button:hover {
+        background-color: #00A8CC; /* Un azul un poco más oscuro al pasar el mouse */
+        transform: scale(1.01);
+    }
+
+    /* Texto blanco nítido */
+    h1, h3, h4, p, label, .stMarkdown {
+        color: white !important;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
     }
     </style>
     """, unsafe_allow_html=True)
@@ -68,10 +78,8 @@ st.title('Simulación de Caudalímetro Electromagnético')
 st.markdown('### Por: Adriana Teixeira Mendoza')
 st.write("---")
 
-st.markdown("#### Configuración de Parámetros")
-st.info("Puedes ingresar los datos manualmente o deslizando la barra azul.")
+st.markdown("#### Ajuste de Parámetros")
 
-# Columnas para los parámetros principales
 col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
@@ -88,58 +96,48 @@ with col3:
 
 st.write("---")
 
-# Sección del Factor de Error
-st.markdown("#### Factor de Error del Sistema")
-c_err1, c_err2 = st.columns([3, 1])
-
-# Valor por defecto del error es 1.0 (sin error) o 0.05 (5% de error) según se prefiera
-# Aquí lo definimos como 1.0 para que el cálculo sea puro por defecto
+# Factor de Error con botón de habilitación
 if 'edit_error' not in st.session_state:
     st.session_state.edit_error = False
 
+c_err1, c_err2 = st.columns([3, 1])
 with c_err2:
-    if st.button('🔄 Cambiar Factor'):
+    if st.button('🔄 Cambiar Error'):
         st.session_state.edit_error = not st.session_state.edit_error
 
 with c_err1:
     if st.session_state.edit_error:
-        error_factor = st.slider('Modificar Factor de Error (Manual)', 0.80, 1.20, 1.00, 0.01)
-        st.warning(f"Factor de error actual: {error_factor:.2f} (Modificado)")
+        error_factor = st.slider('Modificar Factor de Error', 0.80, 1.20, 1.00, 0.01)
     else:
         error_factor = 1.00
-        st.success(f"Factor de error por defecto: {error_factor:.2f} (Estable)")
+        st.write(f"Factor por defecto: **{error_factor}**")
 
-# Lógica de cálculo
-def conductivity_factor(s, sigma_min=5, k=0.01):
-    return 1 / (1 + np.exp(-k * (s - sigma_min)))
-
-f_cond = conductivity_factor(sigma)
+# Lógica
+def conductivity_factor(s):
+    return 1 / (1 + np.exp(-0.01 * (s - 5)))
 
 if st.button('🚀 Generar curva de calibración'):
-    # Cálculos incluyendo el factor de error
     A = np.pi * (D / 2)**2
     v = np.linspace(0.1, 5.0, 100)
     Q = A * v
-    V_mv = (B * D * v * f_cond * 1000) * error_factor
-    m = ((B * D * f_cond * 1000) / A) * error_factor
+    f_c = conductivity_factor(sigma)
+    V_mv = (B * D * v * f_c * 1000) * error_factor
+    m = ((B * D * f_c * 1000) / A) * error_factor
 
     # Gráfica
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(10, 5))
-    ax.plot(Q, V_mv, color='#00d4ff', linewidth=3, label='Respuesta con Error')
-    ax.set_xlabel('Caudal Q (m³/s)', fontsize=12)
-    ax.set_ylabel('Voltaje V (mV)', fontsize=12)
-    ax.set_title('Calibración V vs Q (Ajustada)', fontsize=16, pad=20)
+    ax.plot(Q, V_mv, color='#00D4FF', linewidth=3) # Usando el azul bonito
+    ax.set_xlabel('Caudal Q (m³/s)')
+    ax.set_ylabel('Voltaje V (mV)')
     ax.grid(True, alpha=0.1)
     
     fig.patch.set_alpha(0.0)
     ax.set_facecolor('none')
     st.pyplot(fig)
 
-    # Resultados y Ecuación
-    st.markdown("#### Ecuación Final del Sensor:")
-    st.latex(rf"V_{{(mV)}} = {m:.2f} \cdot Q_{{(m^3/s)}} \times {error_factor}")
-    st.info(f"Sensibilidad Resultante: {m:.2f} mV / (m³/s)")
+    st.markdown("#### Resultado:")
+    st.latex(rf"V_{{(mV)}} = {m:.2f} \cdot Q_{{(m^3/s)}}")
 
 st.write("---")
-st.caption("Fórmula base: ε = (B ⋅ D ⋅ v ⋅ f(σ)) ⋅ Factor_Error | Adriana Teixeira 2026")
+st.caption("ε = (B ⋅ D ⋅ v ⋅ f(σ)) ⋅ Factor_Error | Adriana Teixeira 2026")
