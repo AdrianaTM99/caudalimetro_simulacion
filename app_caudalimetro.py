@@ -98,7 +98,7 @@ factor = conductivity_factor(sigma)
 st.write("") 
 
 # Acción y Gráfica
-if st.button('🚀 Generar Simulación de Señal'):
+if st.button('Generar curva de calibreación'):
     # Física del problema (Ley de Faraday)
     A = np.pi * (D / 2)**2
     v = np.linspace(0.1, 10, 100) 
@@ -128,3 +128,4 @@ if st.button('🚀 Generar Simulación de Señal'):
 
 st.markdown("---")
 st.caption("Fórmula base: $V = B \cdot D \cdot v \cdot k$ | Basado en la Ley de Inducción de Faraday.")
+
