@@ -2,8 +2,7 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 1. Configuración de la página con tu icono personalizado de GitHub
-# Usamos la URL raw para que Streamlit pueda renderizar el archivo de imagen
+# 1. Configuración de la página con tu icono personalizado
 URL_ICONO = "https://raw.githubusercontent.com/AdrianaTM99/caudalimetro_simulacion/main/ICONO_CAUDALIMETRO.png"
 
 st.set_page_config(
@@ -12,38 +11,36 @@ st.set_page_config(
     page_icon=URL_ICONO
 )
 
-# 2. CSS para Fondo de Unsplash, Panel de Contraste y Sliders Azules
+# 2. CSS para el fondo del mar, panel translúcido y sliders azules
 st.markdown("""
     <style>
-    /* Imagen de fondo de alta calidad */
     [data-testid="stAppViewContainer"] {
-        background-image: url("https://images.unsplash.com/photo-1580659986392-440ea995857c?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8bGF1dGFuJTIwbWFsYW18ZW58MHx8MHx8fDA%3D");
+        background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/large_2x/sea-surface-photo.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
     }
 
-    /* EL PANEL DE CONTRASTE: Negro traslúcido con desenfoque */
+    /* RECUADRO NEGRO TRANSLÚCIDO CON DESENFOQUE */
     .main .block-container {
         max-width: 850px;
         padding: 3rem;
-        background-color: rgba(0, 0, 0, 0.75); 
+        background-color: rgba(0, 0, 0, 0.75); /* Fondo negro con 75% opacidad */
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 25px;
-        backdrop-filter: blur(12px); 
+        backdrop-filter: blur(15px); /* Desenfoque de la imagen de fondo */
         box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9);
         margin-top: 40px;
         margin-bottom: 40px;
     }
 
-    /* Forzar texto blanco nítido */
     h1, h2, h3, p, label, .stMarkdown {
         color: white !important;
         text-shadow: 1px 1px 4px rgba(0, 0, 0, 1);
     }
 
-    /* Sliders en color Azul */
+    /* SLIDERS AZULES */
     div[data-baseweb="slider"] div[style*="background-color: rgb(255, 75, 75)"],
     div[data-baseweb="slider"] div[style*="background-color: #ff4b4b"] {
         background-color: #007bff !important;
@@ -54,7 +51,6 @@ st.markdown("""
         border-color: #ffffff !important;
     }
 
-    /* Botón personalizado */
     .stButton>button {
         width: 100%;
         background-color: #007bff;
@@ -63,17 +59,6 @@ st.markdown("""
         border: none;
         padding: 12px;
         font-weight: bold;
-        transition: 0.3s;
-    }
-    .stButton>button:hover {
-        background-color: #0056b3;
-        color: white;
-        transform: scale(1.02);
-    }
-
-    /* Barra superior transparente */
-    [data-testid="stHeader"] {
-        background: rgba(0,0,0,0);
     }
     </style>
     """, unsafe_allow_html=True)
@@ -84,12 +69,24 @@ st.title('Simulación Interactiva de Caudalímetro Electromagnético')
 st.markdown('### Por: Adriana Teixeira Mendoza')
 st.write("---")
 
-# Parámetros de entrada
-st.markdown("#### Ajuste de Variables del Sistema")
-B = st.slider('Intensidad del Campo Magnético B (T)', 0.1, 1.0, 0.5, 0.1)
-sigma = st.slider('Conductividad del Fluido σ (µS/cm)', 1, 5000, 1000, 100)
-D = st.slider('Diámetro Interno D (m)', 0.005, 0.02, 0.0127, 0.001)
+st.markdown("#### Parámetros del Sistema (Ajuste Manual o Deslizante)")
 
+# Función para entrada manual + slider
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    B = st.number_input('B: Campo Magnético (T)', 0.1, 1.0, 0.5, 0.1)
+    B = st.slider('Ajuste B', 0.1, 1.0, float(B), 0.1, label_visibility="collapsed")
+
+with col2:
+    sigma = st.number_input('σ: Conductividad (µS/cm)', 1, 5000, 1000, 100)
+    sigma = st.slider('Ajuste σ', 1, 5000, int(sigma), 100, label_visibility="collapsed")
+
+with col3:
+    D = st.number_input('D: Diámetro (m)', 0.005, 0.050, 0.0127, 0.001, format="%.4f")
+    D = st.slider('Ajuste D', 0.005, 0.050, float(D), 0.001, label_visibility="collapsed")
+
+# Lógica del Factor de Conductividad
 def conductivity_factor(sigma, sigma_min=5, k=0.01):
     return 1 / (1 + np.exp(-k * (sigma - sigma_min))) 
 
@@ -97,35 +94,37 @@ factor = conductivity_factor(sigma)
 
 st.write("") 
 
-# Acción y Gráfica
-if st.button('Generar curva de calibreación'):
-    # Física del problema (Ley de Faraday)
+if st.button('🚀 Generar curva de calibración'):
+    # Cálculos
     A = np.pi * (D / 2)**2
-    v = np.linspace(0.1, 10, 100) 
-    V_theor = B * D * v * factor * 1000 # Resultado en mV
+    v = np.linspace(0.1, 5, 100) # Rango de velocidad del fluido
     Q = A * v # m³/s
+    V_theor = B * D * v * factor * 1000 # mV
     
-    # Configuración visual de la gráfica
+    # Cálculo de la pendiente de la curva V vs Q
+    # V = B * D * (Q/A) * factor * 1000 -> Pendiente m = (B * D * factor * 1000) / A
+    pendiente = (B * D * factor * 1000) / A
+    
+    # Gráfica
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(8, 5))
-    
-    # Línea de la señal
     ax.plot(Q, V_theor, color='#00e5ff', linewidth=3)
+    ax.set_xlabel('Caudal Q (m³/s)')
+    ax.set_ylabel('Voltaje V (mV)')
+    ax.set_title(f'Curva de Calibración: Voltaje vs Caudal')
+    ax.grid(True, alpha=0.2)
     
-    ax.set_xlabel('Caudal Volumétrico Q (m³/s)', fontsize=10)
-    ax.set_ylabel('Voltaje Inducido V (mV)', fontsize=10)
-    ax.set_title(f'Respuesta en Función del Caudal (B={B}T)', fontsize=12, pad=15)
-    ax.grid(True, alpha=0.2, linestyle='--')
-    
-    # Integración con el fondo del panel
     fig.patch.set_alpha(0.0)
     ax.set_facecolor('none')
-    
     st.pyplot(fig)
-    st.success(f"Simulación lista. Factor de corrección aplicado: {factor:.4f}")
+    
+    # MOSTRAR ECUACIÓN DE LA CURVA
+    st.markdown("### Ecuación de la Curva Calculada:")
+    st.latex(rf"V_{(mV)} = {pendiente:.2f} \cdot Q_{(m^3/s)} + 0")
+    
+    st.info(f"Sensibilidad del sensor: {pendiente:.2f} mV / (m³/s)")
 
 
 
 st.markdown("---")
 st.caption("Fórmula base: $V = B \cdot D \cdot v \cdot k$ | Basado en la Ley de Inducción de Faraday.")
-
