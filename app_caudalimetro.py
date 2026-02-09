@@ -3,14 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time 
 
-# 1. Configuración de la página con ICONO (Enlace RAW corregido)
+# 1. Configuración de la página
 st.set_page_config(
     layout="wide", 
     page_title="Simulador Adriana",
     page_icon="https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20v3.1.png"
 )
 
-# Enlace RAW de tu animación GIF (Cambiado 'blob' por 'raw')
+# Enlaces RAW
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20chikito.gif"
 
 # 2. CSS Maestro
@@ -70,13 +70,6 @@ st.markdown("""
     header[data-testid="stHeader"] { visibility: hidden; }
     .stApp { background: transparent !important; }
     p, label { font-size: 1.1rem !important; color: white !important; }
-    
-    /* Contenedor para centrar el GIF */
-    .gif-container {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-    }
     </style>
 
     <div class="fixed-header">
@@ -135,31 +128,40 @@ error_factor = st.slider('Ajuste de Error del Sistema (K)', 0.80, 1.20, 1.00, 0.
 if 'generado' not in st.session_state:
     st.session_state.generado = False
 
-# --- 6. PROCESAMIENTO CON ANIMACIÓN ---
+# --- 6. PROCESAMIENTO CON DESPAWN ---
 if st.button('🚀 Generar curva de calibración'):
-    with st.spinner('Simulando flujo...'):
-        # Centrado manual del GIF usando una columna
-        _, mid_col, _ = st.columns([1, 2, 1])
+    # Creamos el contenedor vacío para el GIF
+    placeholder = st.empty()
+    
+    with placeholder.container():
+        st.write("##")
+        _, mid_col, _ = st.columns([1, 1, 1])
         with mid_col:
-            st.image(URL_GIF, width=300)
+            st.image(URL_GIF, width=280)
+            st.markdown("<p style='text-align:center; color:#00d4ff;'>Calculando flujo electromagnético...</p>", unsafe_allow_html=True)
         
-        time.sleep(2.0) # Tiempo para apreciar el GIF
-        
-        if sistema == "Americano (G, mhos/in, in)":
-            B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
-        else:
-            B_si, D_si, sigma_si = B_user, D_user, sigma_user
+        # Simulamos carga
+        time.sleep(2.0)
 
-        A_m2 = np.pi * (D_si / 2)**2
-        v_vec = np.linspace(0.1, 5.0, 100)
-        f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
-        V_mv = (B_si * D_si * v_vec * f_cond * 1000) * error_factor
-        Q_plot = (A_m2 * v_vec) * conv_q
+    # AQUÍ OCURRE EL DESPAWN: Borramos el contenido del placeholder
+    placeholder.empty()
         
-        st.session_state.m_eq = V_mv[-1] / Q_plot[-1]
-        st.session_state.Q_plot = Q_plot
-        st.session_state.V_mv = V_mv
-        st.session_state.generado = True
+    # Cálculos técnicos
+    if sistema == "Americano (G, mhos/in, in)":
+        B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
+    else:
+        B_si, D_si, sigma_si = B_user, D_user, sigma_user
+
+    A_m2 = np.pi * (D_si / 2)**2
+    v_vec = np.linspace(0.1, 5.0, 100)
+    f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
+    V_mv = (B_si * D_si * v_vec * f_cond * 1000) * error_factor
+    Q_plot = (A_m2 * v_vec) * conv_q
+    
+    st.session_state.m_eq = V_mv[-1] / Q_plot[-1]
+    st.session_state.Q_plot = Q_plot
+    st.session_state.V_mv = V_mv
+    st.session_state.generado = True
 
 # --- 7. RESULTADOS ---
 if st.session_state.generado:
@@ -175,6 +177,8 @@ if st.session_state.generado:
     fig.patch.set_alpha(0.0)
     ax.set_facecolor('none')
     st.pyplot(fig)
+
+    
 
     st.markdown(f"""
         <div class="equation-container">
