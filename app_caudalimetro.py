@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Capa negra completa y centrada al 70%)
+# 2. CSS Maestro (Solo imagen de fondo limpia)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* 1. Fondo de imagen fijo */
+    /* Imagen de fondo sin recuadros negros */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover; 
@@ -18,41 +18,19 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* 2. RECUADRO NEGRO COMPLETO (70% Transparencia) */
-    /* Creamos una capa que va detrás del contenido pero delante de la imagen */
-    [data-testid="stAppViewContainer"]::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        max-width: 1200px; /* Ancho del recuadro */
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.7); /* 70% Transparencia */
-        z-index: 0;
-    }
-
-    /* 3. Ajuste del contenido para que flote sobre la capa negra */
+    /* Contenedor transparente */
     .block-container {
         font-family: 'Roboto', sans-serif; 
-        max-width: 1100px !important; 
+        max-width: 1200px !important; 
         margin: 0 auto !important; 
-        padding: 100px 2rem 5rem 2rem !important;
+        padding: 100px 2rem 4rem 2rem !important;
         color: white !important;
-        position: relative;
-        z-index: 1; /* Por encima del ::before */
+        background-color: transparent; /* Eliminado el fondo negro */
     }
 
-    /* Quitar fondos por defecto de Streamlit */
-    .stApp { background: transparent !important; }
-    header[data-testid="stHeader"] { visibility: hidden; }
-
-    /* Header fijo superior */
     .fixed-header {
         position: fixed; top: 0; left: 0; width: 100vw;
-        background-color: rgba(0, 0, 0, 0.8); 
-        backdrop-filter: blur(8px);
+        background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
         z-index: 999; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex; justify-content: center;
     }
@@ -60,8 +38,10 @@ st.markdown("""
     .header-content {
         width: 100%; max-width: 1100px; padding: 10px 2rem;
         display: flex; justify-content: space-between; align-items: center;
-        color: white;
     }
+
+    header[data-testid="stHeader"] { visibility: hidden; }
+    .stApp { background: transparent !important; }
 
     .fixed-header h1 { font-size: 1.8rem !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; margin: 0; color: white; }
@@ -70,29 +50,32 @@ st.markdown("""
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
-    /* Botones */
+    /* Botones Azul Cobalto */
     .stButton > button {
         width: 100%; background-color: #1a5276 !important; color: white !important;
         border-radius: 8px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* Calculadora */
     .calc-box {
-        background-color: rgba(255, 255, 255, 0.05);
-        padding: 25px; border-radius: 12px; border: 1px solid rgba(0, 212, 255, 0.3); 
-        margin-top: 20px;
+        background-color: rgba(26, 82, 118, 0.4); /* Un poco más de opacidad para leer sobre el mar */
+        padding: 25px; border-radius: 12px; border: 1px solid #00d4ff; 
+        margin-top: 20px; max-width: 800px;
+        backdrop-filter: blur(5px);
     }
 
     .calc-header-text {
-        color: #00d4ff; font-size: 1.6rem; font-weight: 700;
+        color: white; font-size: 1.6rem; font-weight: 700;
         margin-bottom: 15px; text-align: left; display: block;
     }
 
-    p, label { font-size: 1.1rem !important; color: white !important; }
+    p, label { font-size: 1.1rem !important; color: white !important; text-shadow: 1px 1px 2px black; }
 
     /* Estilo de Tabla en Sidebar */
     .sidebar-table {
-        width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 15px;
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+        margin-top: 15px;
     }
     .sidebar-table th { color: #00d4ff; border-bottom: 1px solid #00d4ff; text-align: left; padding: 8px; }
     .sidebar-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); color: white; }
@@ -106,7 +89,7 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- 3. LÓGICA DE UNIDADES Y DATOS ---
+# --- 3. SELECCIÓN DE UNIDADES ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
 if sistema == "Métrico (T, μS/cm, m)":
@@ -115,25 +98,31 @@ if sistema == "Métrico (T, μS/cm, m)":
     sig_min, sig_max, sig_def = 1.0, 5000.0, 1000.0
     d_min, d_max, d_def = 0.005, 0.500, 0.0127
     conv_q = 1.0
-    filas_tabla = [("Agua Destilada", "0.5 - 5"), ("Agua Potable", "50 - 800"), ("Agua de Mar", "52,000"), ("Leche", "4,000 - 6,000")]
+    val_dest, val_pot, val_mar, val_leche = "0.5 - 5", "50 - 800", "52,000", "4,000 - 6,000"
 else:
     u_b, u_sig, u_d, u_q = "G", "μmhos/in", "in", "GPM"
     b_min, b_max, b_def = 1000.0, 15000.0, 5000.0
     sig_min, sig_max, sig_def = 2.5, 12700.0, 2540.0
     d_min, d_max, d_def = 0.2, 20.0, 0.5
     conv_q = 15850.3
-    filas_tabla = [("Agua Destilada", "1.27 - 12.7"), ("Agua Potable", "127 - 2,032"), ("Agua de Mar", "132,080"), ("Leche", "10,160 - 15,240")]
+    val_dest, val_pot, val_mar, val_leche = "1.27 - 12.7", "127 - 2032", "132,080", "10,160 - 15,240"
 
-# --- 4. SIDEBAR ---
+# --- 4. SIDEBAR CON TABLA DINÁMICA ---
 with st.sidebar:
     st.markdown("### Referencias Técnicas")
     ver_conductividades = st.toggle("Ver Conductividades Nominales")
     if ver_conductividades:
-        tabla_html = f"<table class='sidebar-table'><tr><th>Fluido</th><th>{u_sig}</th></tr>"
-        for fluido, valor in filas_tabla:
-            tabla_html += f"<tr><td>{fluido}</td><td>{valor}</td></tr>"
-        tabla_html += "</table>"
-        st.markdown(tabla_html, unsafe_allow_html=True)
+        st.markdown(f"""
+            <table class="sidebar-table">
+                <tr><th>Fluido</th><th>{u_sig}</th></tr>
+                <tr><td>Agua Destilada</td><td>{val_dest}</td></tr>
+                <tr><td>Agua Potable</td><td>{val_pot}</td></tr>
+                <tr><td>Agua de Mar</td><td>{val_mar}</td></tr>
+                <tr><td>Leche</td><td>{val_leche}</td></tr>
+            </table>
+        """, unsafe_allow_html=True)
+
+st.write("---")
 
 # --- 5. PARÁMETROS ---
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
@@ -159,6 +148,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 # --- 6. RESULTADOS ---
 if st.session_state.generado:
+    # Lógica de cálculo (conversión a SI para el cálculo interno)
     if sistema == "Americano (G, mhos/in, in)":
         B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
     else:
@@ -174,7 +164,7 @@ if st.session_state.generado:
     
 
     plt.style.use('dark_background')
-    fig, ax = plt.subplots(figsize=(10, 4))
+    fig, ax = plt.subplots(figsize=(10, 5))
     ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=3)
     ax.set_xlabel(f'Caudal Q ({u_q})')
     ax.set_ylabel('Voltaje V (mV)')
