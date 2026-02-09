@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # 1. Configuración de página
 st.set_page_config(layout="centered", page_title="Simulador Adriana")
 
-# 2. CSS para Fondo de Mar TOTAL y Franja Negra Transparente Vertical
+# 2. CSS para Fondo de Mar TOTAL y Franja Negra Translúcida Limpia
 st.markdown("""
     <style>
     /* Fondo que cubre TODA la pantalla */
@@ -17,51 +17,59 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* Quitar fondos de cabecera y app */
+    /* Hacer transparentes los contenedores por defecto de Streamlit */
     [data-testid="stHeader"], .stApp {
         background: rgba(0,0,0,0);
     }
 
-    /* FRANJA NEGRA VERTICAL COMPLETA */
+    /* FRANJA NEGRA VERTICAL: Más transparente, sin desenfoque, de borde a borde */
     .block-container {
-        background-color: rgba(0, 0, 0, 0.5); /* Más transparente (0.5) */
+        background-color: rgba(0, 0, 0, 0.4); /* Negro muy transparente (40%) */
         padding: 3rem !important;
         max-width: 850px;
-        min-height: 100vh; /* Se estira de arriba a abajo */
-        margin: 0 auto; /* Centrado horizontal */
+        min-height: 100vh; /* Ocupa todo el alto de la pantalla */
+        margin: 0 auto; 
         color: white !important;
-        box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(8px); /* Desenfoque sutil para legibilidad */
+        backdrop-filter: none !important; /* ELIMINADO EL DESENFOQUE */
+        box-shadow: none; /* Estética limpia sin sombras pesadas */
     }
 
-    /* Estilo de textos y etiquetas */
+    /* Estilo de textos para que resalten sobre la transparencia */
     h1, h3, h4, p, label, .stMarkdown, [data-testid="stWidgetLabel"] p {
         color: white !important;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 1);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 1); /* Sombra suave para leer bien */
     }
 
-    /* Botón moderno */
+    /* Botón azul plano */
     .stButton > button {
         width: 100%;
         background-color: #00bfff;
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 5px;
         padding: 0.6rem;
         font-weight: bold;
+    }
+    
+    /* Línea divisoria */
+    hr {
+        border-color: rgba(255, 255, 255, 0.2);
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. Contenido
+# --- INICIO DEL CONTENIDO ---
+
 st.title('Simulación Interactiva de Caudalímetro Electromagnético')
 st.markdown('### Por: Adriana Teixeira Mendoza')
 st.write("---")
 
+# Diagrama opcional si lo tienes en local o URL
+# 
 
-
-st.markdown("#### Parámetros del Sistema (Ajuste Manual)")
+st.markdown("#### Parámetros del Sistema")
 col1, col2, col3 = st.columns(3)
+
 with col1:
     B = st.number_input('B: Campo Magnético (T)', 0.1, 1.0, 0.5, 0.1)
 with col2:
@@ -69,6 +77,7 @@ with col2:
 with col3:
     D = st.number_input('D: Diámetro (m)', 0.005, 0.050, 0.0127, 0.001, format="%.4f")
 
+# Cálculo del factor basado en conductividad
 def conductivity_factor(sigma, sigma_min=5, k=0.01):
     return 1 / (1 + np.exp(-k * (sigma - sigma_min)))
 
@@ -77,14 +86,14 @@ factor = conductivity_factor(sigma)
 st.write("")
 
 if st.button('🚀 Generar curva de calibración'):
-    # Cálculos
+    # Cálculos físicos
     A = np.pi * (D / 2)**2
     v = np.linspace(0.1, 5.0, 100)
     Q = A * v
     V_mv = B * D * v * factor * 1000
     m = (B * D * factor * 1000) / A
 
-    # Gráfica
+    # Gráfica optimizada para fondo transparente
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.plot(Q, V_mv, color='#00d4ff', linewidth=2.5)
@@ -93,6 +102,7 @@ if st.button('🚀 Generar curva de calibración'):
     ax.set_title('Calibración V vs Q', fontsize=12)
     ax.grid(True, alpha=0.1)
     
+    # Transparencia en la gráfica
     fig.patch.set_alpha(0.0)
     ax.set_facecolor('none')
 
