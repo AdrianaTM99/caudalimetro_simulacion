@@ -5,83 +5,105 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Diseño Intacto con Desenfoque Sutil)
+# 2. CSS Maestro: Encabezado FIJO y Contenido DESLIZABLE
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
+    /* Fondo de imagen base FIJO */
     [data-testid="stAppViewContainer"] {
-        background-image: 
-            linear-gradient(
-                to right, 
-                transparent 0%, 
-                transparent calc(50% - 550px), 
-                rgba(0, 0, 0, 0.5) calc(50% - 550px), 
-                rgba(0, 0, 0, 0.5) calc(50% + 550px), 
-                transparent calc(50% + 550px), 
-                transparent 100%
-            ),
-            url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
+        background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
     }
 
-    .stApp { backdrop-filter: blur(4px); }
-    .stApp, [data-testid="stHeader"], .block-container { background: transparent !important; }
-
-    .block-container {
-        font-family: 'Roboto', sans-serif;
-        max-width: 1100px !important;
-        margin: 0 auto !important;
-        padding: 4rem 2rem !important;
-        color: white !important;
+    /* RECUADRO FIJO PARA EL TÍTULO */
+    header[data-testid="stHeader"] {
+        display: none;
+    }
+    
+    .fixed-header {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 1100px;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        padding: 1.5rem 2rem;
+        z-index: 1000;
+        border-bottom: 2px solid #00d4ff;
     }
 
-    h1 { font-size: 3rem !important; font-weight: 700 !important; text-align: left !important; }
-    h3 { font-size: 1.6rem !important; text-align: left !important; font-weight: 300 !important; }
+    /* ESPACIADOR para que el contenido no empiece debajo del header fijo */
+    .header-spacer {
+        height: 180px;
+    }
 
+    /* FRANJA NEGRA CENTRAL PARA EL CONTENIDO */
+    .block-container {
+        background-image: linear-gradient(
+            rgba(0, 0, 0, 0.5), 
+            rgba(0, 0, 0, 0.5)
+        ) !important;
+        backdrop-filter: blur(4px);
+        max-width: 1100px !important;
+        margin: auto !important;
+        padding-top: 0rem !important;
+        color: white !important;
+        min-height: 100vh;
+    }
+
+    /* Ajustes de Texto */
+    h1 { font-family: 'Roboto'; font-weight: 700; color: white; margin: 0; font-size: 2.5rem !important; }
+    h3 { font-family: 'Roboto'; font-weight: 300; color: #00d4ff; margin: 0; font-size: 1.2rem !important; }
+
+    /* Estética de Sliders y Botones */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
-
+    
     .stButton > button {
         width: 100%;
         background-color: #00d4ff;
         color: white;
-        border-radius: 8px;
-        padding: 1rem;
-        font-size: 1.4rem;
         font-weight: bold;
+        border-radius: 8px;
         border: none;
+        padding: 0.8rem;
     }
 
-    p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
+    p, label, .stMarkdown { color: white !important; }
     </style>
+    
+    <div class="fixed-header">
+        <h1>Simulación de Caudalímetro Electromagnético</h1>
+        <h3>Por: Adriana Teixeira Mendoza</h3>
+    </div>
+    <div class="header-spacer"></div>
     """, unsafe_allow_html=True)
 
-# --- LÓGICA DE UNIDADES COMPLETA ---
-st.title('Simulación de Caudalímetro Electromagnético')
-st.markdown('### Por: Adriana Teixeira Mendoza')
-
+# --- LÓGICA DE UNIDADES ---
 sistema = st.radio("Sistema de Unidades Global:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
 if sistema == "Métrico (T, μS/cm, m)":
     u_b, u_sig, u_d, u_q = "T", "μS/cm", "m", "m³/s"
     b_min, b_max, b_def = 0.1, 1.5, 0.5
-    sig_min, sig_max, sig_def = 1, 5000, 1000
+    sig_min, sig_max, sig_def = 1.0, 5000.0, 1000.0
     d_min, d_max, d_def = 0.005, 0.500, 0.0127
     conv_q = 1.0
 else:
     u_b, u_sig, u_d, u_q = "G", "μmhos/in", "in", "GPM"
-    b_min, b_max, b_def = 1000.0, 15000.0, 5000.0  # Teslas a Gauss
-    sig_min, sig_max, sig_def = 2.5, 12700.0, 2540.0 # μS/cm a μmhos/in (aprox)
+    b_min, b_max, b_def = 1000.0, 15000.0, 5000.0
+    sig_min, sig_max, sig_def = 2.5, 12700.0, 2540.0
     d_min, d_max, d_def = 0.2, 20.0, 0.5
     conv_q = 15850.3
 
 st.write("---")
 
-# --- PARÁMETROS DINÁMICOS ---
+# --- PARÁMETROS ---
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 col1, col2, col3 = st.columns(3, gap="large")
 
@@ -99,27 +121,21 @@ with col3:
 
 st.write("---")
 
-# Factor de Error
-if 'edit_error' not in st.session_state:
-    st.session_state.edit_error = False
-
-st.markdown("#### Factor de Error del Sistema")
+# Error
+if 'edit_error' not in st.session_state: st.session_state.edit_error = False
 c_err1, c_err2 = st.columns([3, 1])
 with c_err2:
-    if st.button('🔄 Cambiar Factor'):
-        st.session_state.edit_error = not st.session_state.edit_error
+    if st.button('🔄 Cambiar Factor'): st.session_state.edit_error = not st.session_state.edit_error
 with c_err1:
     error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
 
-# --- CÁLCULOS (CONVERSIÓN A SI PARA LA FÓRMULA) ---
+# --- CÁLCULOS ---
 if sistema == "Americano (G, mhos/in, in)":
-    B_si = B_user / 10000.0  # Gauss a Tesla
-    D_si = D_user * 0.0254   # Pulgadas a Metros
-    sigma_si = sigma_user / 2.54 # μmhos/in a μS/cm para la sigmoide interna
+    B_si = B_user / 10000.0
+    D_si = D_user * 0.0254
+    sigma_si = sigma_user / 2.54
 else:
-    B_si = B_user
-    D_si = D_user
-    sigma_si = sigma_user
+    B_si, D_si, sigma_si = B_user, D_user, sigma_user
 
 if st.button('🚀 Generar curva de calibración'):
     A_m2 = np.pi * (D_si / 2)**2
