@@ -5,12 +5,11 @@ import matplotlib.pyplot as plt
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Mejorado: Franja persistente, Fuente Roboto, Sliders Azules y Desenfoque Sutil
+# 2. CSS con Fuente Roboto, Sliders Azules y Diseño de Franja
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Fondo de pantalla fijo */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover;
@@ -19,39 +18,34 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* Contenedor de la App transparente */
     [data-testid="stHeader"], .stApp {
         background: rgba(0,0,0,0);
     }
 
-    /* FRANJA NEGRA: Ligeramente más transparente (0.5), desenfoque sutil (5px) y persistente */
-    .main .block-container {
+    .block-container {
         font-family: 'Roboto', sans-serif;
-        background-color: rgba(0, 0, 0, 0.5) !important; 
+        background-color: rgba(0, 0, 0, 0.6); 
         padding: 4rem !important;
         max-width: 1100px; 
         min-height: 100vh;
-        height: auto;
         margin: 0 auto;
         color: white !important;
-        backdrop-filter: blur(5px); /* Desenfoque sutil */
-        box-shadow: 0 0 50px rgba(0,0,0,0.5);
-    }
-
-    /* FUERZA SLIDERS AZULES */
-    div[data-testid="stSlider"] > div > div > div > div {
-        background-color: #00bfff !important;
-    }
-    div[data-testid="stSlider"] [role="slider"] {
-        background-color: #00bfff !important;
-        border: 2px solid white !important;
+        backdrop-filter: none !important;
     }
 
     /* Estilo de textos */
-    h1 { font-size: 3rem !important; font-weight: 700 !important; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+    h1 { font-size: 3rem !important; font-weight: 700 !important; text-align: center; }
     h3 { font-size: 1.8rem !important; text-align: center; }
     h4 { font-size: 1.5rem !important; margin-top: 20px; }
     p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
+
+    /* Personalización de Sliders a Azul */
+    div[data-baseweb="slider"] div[style*="background-color: rgb(255, 75, 75)"] {
+        background-color: #00bfff !important;
+    }
+    div[data-baseweb="slider"] div[style*="background-color: #00D4FF"] {
+        background-color: #00bfff !important;
+    }
 
     /* Botón Principal */
     .stButton > button {
@@ -64,11 +58,6 @@ st.markdown("""
         font-size: 1.4rem;
         font-weight: bold;
         margin-top: 25px;
-        transition: 0.3s;
-    }
-    .stButton > button:hover {
-        background-color: #008fcc;
-        transform: scale(1.01);
     }
     </style>
     """, unsafe_allow_html=True)
@@ -78,8 +67,6 @@ st.markdown("""
 st.title('Simulación de Caudalímetro Electromagnético')
 st.markdown('### Por: Adriana Teixeira Mendoza')
 st.write("---")
-
-
 
 st.markdown("#### Configuración de Parámetros")
 st.info("Puedes ingresar los datos manualmente o deslizando la barra azul.")
@@ -105,6 +92,8 @@ st.write("---")
 st.markdown("#### Factor de Error del Sistema")
 c_err1, c_err2 = st.columns([3, 1])
 
+# Valor por defecto del error es 1.0 (sin error) o 0.05 (5% de error) según se prefiera
+# Aquí lo definimos como 1.0 para que el cálculo sea puro por defecto
 if 'edit_error' not in st.session_state:
     st.session_state.edit_error = False
 
@@ -127,7 +116,7 @@ def conductivity_factor(s, sigma_min=5, k=0.01):
 f_cond = conductivity_factor(sigma)
 
 if st.button('🚀 Generar curva de calibración'):
-    # Cálculos
+    # Cálculos incluyendo el factor de error
     A = np.pi * (D / 2)**2
     v = np.linspace(0.1, 5.0, 100)
     Q = A * v
