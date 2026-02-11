@@ -150,38 +150,44 @@ st.markdown("""
 st.markdown("""
 <style>
 
+/* SIDEBAR */
 section[data-testid="stSidebar"] {
     background: rgba(0,0,0,0.97) !important;
     border-right: 2px solid #00d4ff;
     position: fixed !important;
-    height: 100vh !important;
-    z-index: 1000 !important;
+
+    /* 👇 BAJAMOS LA BARRA DEBAJO DEL HEADER */
+    top: 70px !important;
+    height: calc(100vh - 70px) !important;
+
+    z-index: 998 !important;
 }
 
-/* Evita que el contenido central se desplace */
+/* CONTENIDO NO SE DESPLACE */
 [data-testid="stAppViewContainer"] {
     margin-left: 0 !important;
 }
 
-/* Botón siempre visible */
+/* BOTÓN SIEMPRE VISIBLE */
 div[data-testid="collapsedControl"] {
     position: fixed !important;
     top: 18px !important;
     left: 18px !important;
-    z-index: 1001 !important;
+    z-index: 1002 !important;
     background-color: rgba(0,0,0,0.9) !important;
     padding: 8px 12px !important;
     border-radius: 10px !important;
     border: 1px solid #00d4ff !important;
 }
 
-/* Asegura que el header quede encima */
+/* HEADER SIEMPRE ENCIMA */
 .fixed-header {
-    z-index: 1002 !important;
+    z-index: 1001 !important;
 }
 
 </style>
 """, unsafe_allow_html=True)
+
 
 # 📘 CONTENIDO DE LA BARRA LATERAL
 with st.sidebar:
@@ -323,5 +329,6 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
