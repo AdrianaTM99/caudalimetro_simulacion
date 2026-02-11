@@ -216,5 +216,84 @@ else:
     d_min, d_max, d_def = 0.2, 20.0, 0.5
     conv_q = 15850.3
 
+# --- PARÁMETROS ---
+st.markdown(f"#### Configuración de Parámetros ({sistema})")
+col1, col2, col3 = st.columns(3, gap="large")
+
+with col1:
+    B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(b_def))
+    B_user = st.slider(f'Ajustar B', float(b_min), float(b_max), float(B_val), key="B_slider", label_visibility="collapsed")
+
+with col2:
+    sig_val = st.number_input(f'σ: Conductividad ({u_sig})', float(sig_min), float(sig_max), float(sig_def))
+    sigma_user = st.slider(f'Ajustar σ', float(sig_min), float(sig_max), float(sig_val), key="sig_slider", label_visibility="collapsed")
+
+with col3:
+    D_val = st.number_input(f'D: Diámetro ({u_d})', float(d_min), float(d_max), float(d_def), format="%.4f")
+    D_user = st.slider(f'Ajustar D', float(d_min), float(d_max), float(D_val), key="D_slider", label_visibility="collapsed")
+
+st.write("---")
+
+if 'edit_error' not in st.session_state:
+    st.session_state.edit_error = False
+
+st.markdown("#### Factor de Error del Sistema")
+c_err1, c_err2 = st.columns([1, 3]) 
+
+with c_err1:
+    if st.button('🔄 Cambiar Factor'):
+        st.session_state.edit_error = not st.session_state.edit_error
+
+with c_err2:
+    error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
+
+# --- CÁLCULOS ---
+if sistema == "Americano (G, mhos/in, in)":
+    B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
+else:
+    B_si, D_si, sigma_si = B_user, D_user, sigma_user
+
+if st.button('🚀 Generar curva de calibración'):
+
+    placeholder = st.empty()
+
+    with placeholder.container():
+        st.markdown(f"""
+            <div class="loading-overlay">
+                <img src="{URL_GIF}" width="450">
+                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.2rem;">
+                Calculando flujo electromagnético...
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+        time.sleep(2.5)
+
+    placeholder.empty()
+
+    A_m2 = np.pi * (D_si / 2)**2
+    v = np.linspace(0.1, 5.0, 100)
+    f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
+    V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
+    Q_plot = (A_m2 * v) * conv_q
+    m_eq = V_mv[-1] / Q_plot[-1]
+
+    plt.style.use('dark_background')
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=3)
+    ax.set_xlabel(f'Caudal Q ({u_q})')
+    ax.set_ylabel('Voltaje V (mV)')
+    fig.patch.set_alpha(0.0)
+    ax.set_facecolor('none')
+
+    st.pyplot(fig)
+
+    st.markdown(f"""
+        <div class="equation-box">
+            <div class="equation-large">
+                V<sub>(mV)</sub> = {m_eq:.4f} · Q<sub>({u_q})</sub>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
