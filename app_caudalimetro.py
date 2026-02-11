@@ -10,109 +10,16 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+
 # ENLACE RAW CORREGIDO
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
-# =====================================================
-# 🔹 SIDEBAR FIJA QUE NO DESPLAZA CONTENIDO
-# =====================================================
-st.markdown("""
-<style>
-
-section[data-testid="stSidebar"] {
-    position: fixed !important;
-    left: 0;
-    top: 0;
-    height: 100vh;
-    width: 330px !important;
-    background: rgba(0,0,0,0.97) !important;
-    backdrop-filter: blur(10px);
-    border-right: 2px solid #00d4ff;
-    z-index: 800;
-    overflow-y: auto;
-
-}
-
-div[data-testid="collapsedControl"] {
-    position: fixed !important;
-    top: 18px !important;
-    left: 18px !important;
-    z-index: 99999 !important;
-    background-color: rgba(0,0,0,0.9) !important;
-    padding: 8px 12px !important;
-    border-radius: 10px !important;
-    border: 1px solid #00d4ff !important;
-
-}
-
-
-[data-testid="stAppViewContainer"] {
-    margin-left: 0 !important;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-# =========================
-# CONTENIDO DE LA SIDEBAR
-# =========================
-with st.sidebar:
-
-    st.markdown("## 📘 Biblioteca Técnica")
-
-    with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=True):
-        st.markdown("""
-        | Fluido | Conductividad (μS/cm aprox.) |
-        |---------|-----------------------------|
-        | Agua destilada | 0.5 – 5 |
-        | Agua potable | 50 – 1500 |
-        | Agua de mar | 50,000 |
-        | Leche | 4000 – 6000 |
-        | Sangre | 7000 |
-        | Soluciones salinas | 10,000 – 80,000 |
-        | Ácidos diluidos | 10,000 – 100,000 |
-        """)
-
-    with st.expander("🔵 Diámetros Nominales y Usos", expanded=True):
-        st.markdown("""
-        | DN | Diámetro (mm) | Uso Común |
-        |----|---------------|------------|
-        | DN15 | 15 mm | Laboratorio |
-        | DN25 | 25 mm | Procesos ligeros |
-        | DN50 | 50 mm | Agua potable |
-        | DN100 | 100 mm | Industria alimentaria |
-        | DN200 | 200 mm | PTAR |
-        | DN500 | 500 mm | Sistemas municipales |
-        """)
-
-    with st.expander("🧲 Campos Magnéticos Recomendados", expanded=True):
-        st.markdown("""
-        | Campo (T) | Aplicación |
-        |------------|------------|
-        | 0.1 – 0.3 T | Alta conductividad |
-        | 0.3 – 0.6 T | Uso industrial estándar |
-        | 0.6 – 1.0 T | Baja conductividad |
-        | 1.0 – 1.5 T | Aplicaciones especiales |
-        """)
-
-    with st.expander("🌊 Velocidades Recomendadas", expanded=True):
-        st.markdown("""
-        | Aplicación | Velocidad Recomendada |
-        |-------------|----------------------|
-        | Agua potable | 1 – 3 m/s |
-        | Industria química | 1 – 5 m/s |
-        | Lodos | 0.5 – 2 m/s |
-        | Alimentos | 1 – 4 m/s |
-        """)
-
-# =====================================================
-# INTERFAZ ORIGINAL (SOLO HEADER CORREGIDO)
-# =====================================================
-
+# 2. CSS Maestro con efecto de desenfoque SOLO en el centro
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
+    /* Fondo de imagen base (Nítida) */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover;
@@ -121,6 +28,8 @@ st.markdown("""
         background-attachment: fixed;
     }
 
+    /* CAPA CENTRAL CON DESENFOQUE (Glassmorphism) */
+    /* Aquí es donde sucede la magia: el linear-gradient tiene transparencia */
     [data-testid="stAppViewContainer"]::before {
         content: "";
         position: fixed;
@@ -128,14 +37,18 @@ st.markdown("""
         left: 50%;
         transform: translateX(-50%);
         width: 100%;
-        max-width: 1150px;
+        max-width: 1150px; /* Ajustado al ancho del contenido */
         height: 100vh;
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0, 0, 0, 0.6); /* Color negro con 60% de opacidad */
+        
+        /* ESTA ES LA LÍNEA QUE DESENFOCA SOLO EL CENTRO */
         backdrop-filter: blur(3px); 
         -webkit-backdrop-filter: blur(3px);
+        
         z-index: 0;
     }
 
+    /* Forzar que el contenido esté sobre el desenfoque */
     .block-container {
         position: relative;
         z-index: 1;
@@ -155,7 +68,6 @@ st.markdown("""
         text-align: center;
         box-shadow: 0px 0px 15px rgba(0, 212, 255, 0.3);
     }
-
     .equation-large {
         font-size: 3rem !important;
         color: #00d4ff;
@@ -167,7 +79,7 @@ st.markdown("""
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        z-index: 2000;
+        z-index: 9999;
         text-align: center;
         background: rgba(0, 0, 0, 0.95);
         padding: 20px;
@@ -175,51 +87,53 @@ st.markdown("""
         border: 2px solid #00d4ff;
     }
 
-    /* 🔥 SOLO CAMBIO AQUÍ */
     .fixed-header {
         position: fixed;
         top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        max-width: 1100px;
+        left: 0;
+        width: 100vw;
         background-color: rgba(0, 0, 0, 0.8);
         backdrop-filter: blur(10px);
-        z-index: 3000;
+        z-index: 999;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
         justify-content: center;
     }
-    .fixed-header {
-    pointer-events: none;
-    }
-
-    .fixed-header h1 {
-    pointer-events: auto;
-    }
-
 
     .header-content {
         width: 100%;
         max-width: 1100px;
         padding: 10px 2rem;
         display: flex;
-        justify-content: center;
-        padding-left: 80px;
+        justify-content: space-between;
         align-items: center;
     }
 
-    header[data-testid="stHeader"] { visibility: visible; }
-
-
-
+    header[data-testid="stHeader"] { visibility: hidden; }
     .stApp { background: transparent !important; }
 
-    .fixed-header h1 { 
-        font-size: 1.8rem !important; 
-        font-weight: 700 !important; 
-        margin: 0; 
-        color: white; 
+    .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
+    .fixed-header h3 { font-size: 1.1rem !important; font-weight: 300 !important; margin: 0; color: white; }
+
+    div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
+        border: 2px solid #00d4ff !important;
+        background-color: #000000 !important;
+    }
+    div[data-testid="stRadio"] [data-baseweb="radio"][aria-checked="true"] > div:first-child > div {
+        background-color: #00d4ff !important;
+    }
+
+    div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
+    div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
+
+    .stButton > button {
+        width: 100%;
+        background-color: #1a5276 !important;
+        color: white !important;
+        border-radius: 8px;
+        padding: 0.8rem;
+        font-size: 1.2rem;
+        font-weight: bold;
     }
 
     p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
@@ -230,7 +144,7 @@ st.markdown("""
             <h1>Simulación de Caudalímetro Electromagnético</h1>
         </div>
     </div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 # --- LÓGICA DE UNIDADES ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
@@ -257,11 +171,9 @@ col1, col2, col3 = st.columns(3, gap="large")
 with col1:
     B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(b_def))
     B_user = st.slider(f'Ajustar B', float(b_min), float(b_max), float(B_val), key="B_slider", label_visibility="collapsed")
-
 with col2:
     sig_val = st.number_input(f'σ: Conductividad ({u_sig})', float(sig_min), float(sig_max), float(sig_def))
     sigma_user = st.slider(f'Ajustar σ', float(sig_min), float(sig_max), float(sig_val), key="sig_slider", label_visibility="collapsed")
-
 with col3:
     D_val = st.number_input(f'D: Diámetro ({u_d})', float(d_min), float(d_max), float(d_def), format="%.4f")
     D_user = st.slider(f'Ajustar D', float(d_min), float(d_max), float(D_val), key="D_slider", label_visibility="collapsed")
@@ -273,35 +185,29 @@ if 'edit_error' not in st.session_state:
 
 st.markdown("#### Factor de Error del Sistema")
 c_err1, c_err2 = st.columns([1, 3]) 
-
 with c_err1:
     if st.button('🔄 Cambiar Factor'):
         st.session_state.edit_error = not st.session_state.edit_error
-
 with c_err2:
     error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
 
 # --- CÁLCULOS ---
 if sistema == "Americano (G, mhos/in, in)":
+    # Corregido: Usar B_user para B_si
     B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
 else:
     B_si, D_si, sigma_si = B_user, D_user, sigma_user
 
 if st.button('🚀 Generar curva de calibración'):
-
     placeholder = st.empty()
-
     with placeholder.container():
         st.markdown(f"""
             <div class="loading-overlay">
                 <img src="{URL_GIF}" width="450">
-                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.2rem;">
-                Calculando flujo electromagnético...
-                </p>
+                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.2rem;">Calculando flujo electromagnético...</p>
             </div>
         """, unsafe_allow_html=True)
         time.sleep(2.5)
-
     placeholder.empty()
 
     A_m2 = np.pi * (D_si / 2)**2
@@ -318,7 +224,6 @@ if st.button('🚀 Generar curva de calibración'):
     ax.set_ylabel('Voltaje V (mV)')
     fig.patch.set_alpha(0.0)
     ax.set_facecolor('none')
-
     st.pyplot(fig)
 
     st.markdown(f"""
@@ -331,12 +236,3 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
-
-
-
-
-
-
-
-
-
