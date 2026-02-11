@@ -32,22 +32,26 @@ st.markdown("""
     /* CAPA CENTRAL CON DESENFOQUE (Glassmorphism) */
     /* Aquí es donde sucede la magia: el linear-gradient tiene transparencia */
     [data-testid="stAppViewContainer"]::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        max-width: 1150px; /* Ajustado al ancho del contenido */
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.6); /* Color negro con 60% de opacidad */
-        
-        /* ESTA ES LA LÍNEA QUE DESENFOCA SOLO EL CENTRO */
-        backdrop-filter: blur(3px); 
-        -webkit-backdrop-filter: blur(3px);
-        
-        z-index: 0;
-    }
+    content: "";
+    position: fixed;
+
+    /* 👇 EMPIEZA DEBAJO DEL HEADER */
+    top: 70px;
+
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1150px;
+
+    /* 👇 ALTURA AJUSTADA */
+    height: calc(100vh - 70px);
+
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px); 
+    -webkit-backdrop-filter: blur(3px);
+
+    z-index: 0;
+}
 
     /* Forzar que el contenido esté sobre el desenfoque */
     .block-container {
@@ -329,6 +333,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
