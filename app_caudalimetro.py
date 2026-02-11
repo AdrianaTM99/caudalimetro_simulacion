@@ -1,6 +1,3 @@
-
-
-
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
@@ -101,7 +98,9 @@ div[data-testid="stSlider"] [role="slider"] {
     transform: translateX(-50%);
     width: 100%;
     max-width: 1150px;
-    height: calc(100vh - 70px);
+    top: 120px;
+    height: calc(100vh - 120px);
+
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
@@ -114,25 +113,24 @@ div[data-testid="stSlider"] [role="slider"] {
     font-family: 'Roboto', sans-serif;
     max-width: 1100px !important;
     margin: 0 auto !important;
-    padding: 200px 2rem 4rem 2rem !important;
+    padding: 160px 2rem 4rem 2rem !important;
     color: white !important;
 }
 /* =========================
    AJUSTES PARA MÓVIL
 ========================= */
 .title-bar {
-
-   .title-bar {
     position: fixed;
-    top: 0;
+    top: 10px; /* 🔥 lo bajamos un poco */
     left: 0;
     width: 100%;
     background: rgba(0,0,0,0.95);
-    padding: 25px 10px;
+    padding: 20px 10px;
     text-align: center;
     z-index: 1000;
     border-bottom: 2px solid #00d4ff;
 }
+
 
 
     .subtitle {
@@ -147,6 +145,35 @@ div[data-testid="stSlider"] [role="slider"] {
     section[data-testid="stSidebar"] {
         top: 60px !important;
         height: calc(100vh - 60px) !important;
+    }
+}
+/* =========================
+   AJUSTES PARA MÓVIL
+========================= */
+@media (max-width: 768px) {
+
+    .title-bar {
+        padding: 15px 5px;
+        top: 5px;
+    }
+
+    .main-title {
+        font-size: 1.1rem !important;  /* 🔥 más pequeño */
+        line-height: 1.2;
+    }
+
+    .subtitle {
+        font-size: 0.75rem;
+    }
+
+    .block-container {
+        padding: 140px 1rem 2rem 1rem !important;
+        max-width: 100% !important;
+    }
+
+    section[data-testid="stSidebar"] {
+        top: 100px !important;
+        height: calc(100vh - 100px) !important;
     }
 }
 
@@ -392,6 +419,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
