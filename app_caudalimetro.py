@@ -161,6 +161,29 @@ div[data-testid="stSlider"] [role="slider"] {
         top: 130px !important;
         height: calc(100vh - 130px) !important;
     }
+
+    /* =====================================
+   EVITAR QUE EL CONTENIDO SALTE
+    ===================================== */
+
+    [data-testid="stAppViewContainer"] {
+        transition: none !important;
+    }
+
+    [data-testid="stMain"] {
+        transition: none !important;
+    }
+
+    [data-testid="stMainBlockContainer"] {
+        transition: none !important;
+    }
+
+    /* Forzar ancho estable */
+    [data-testid="stMain"] > div {
+        max-width: 1100px !important;
+        margin: 0 auto !important;
+    }
+
 }
 </style>
 """, unsafe_allow_html=True)
@@ -371,6 +394,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
