@@ -165,56 +165,6 @@ div[data-testid="collapsedControl"] {
 </style>
 """, unsafe_allow_html=True)
 
-# CONTENIDO DE LA BARRA LATERAL
-with st.sidebar:
-
-    st.markdown("## 📘 Biblioteca Técnica")
-
-    with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=True):
-        st.markdown("""
-        | Fluido | Conductividad (μS/cm aprox.) |
-        |---------|-----------------------------|
-        | Agua destilada | 0.5 – 5 |
-        | Agua potable | 50 – 1500 |
-        | Agua de mar | 50,000 |
-        | Leche | 4000 – 6000 |
-        | Sangre | 7000 |
-        | Soluciones salinas | 10,000 – 80,000 |
-        | Ácidos diluidos | 10,000 – 100,000 |
-        """)
-
-    with st.expander("🔵 Diámetros Nominales y Usos", expanded=True):
-        st.markdown("""
-        | DN | Diámetro (mm) | Uso Común |
-        |----|---------------|------------|
-        | DN15 | 15 mm | Laboratorio |
-        | DN25 | 25 mm | Procesos ligeros |
-        | DN50 | 50 mm | Agua potable |
-        | DN100 | 100 mm | Industria alimentaria |
-        | DN200 | 200 mm | PTAR |
-        | DN500 | 500 mm | Sistemas municipales |
-        """)
-
-    with st.expander("🧲 Campos Magnéticos Recomendados", expanded=True):
-        st.markdown("""
-        | Campo (T) | Aplicación |
-        |------------|------------|
-        | 0.1 – 0.3 T | Alta conductividad |
-        | 0.3 – 0.6 T | Uso industrial estándar |
-        | 0.6 – 1.0 T | Baja conductividad |
-        | 1.0 – 1.5 T | Aplicaciones especiales |
-        """)
-
-    with st.expander("🌊 Velocidades Recomendadas", expanded=True):
-        st.markdown("""
-        | Aplicación | Velocidad Recomendada |
-        |-------------|----------------------|
-        | Agua potable | 1 – 3 m/s |
-        | Industria química | 1 – 5 m/s |
-        | Lodos | 0.5 – 2 m/s |
-        | Alimentos | 1 – 4 m/s |
-        """)
-
 # --- LÓGICA DE UNIDADES ---
 sistema = st.radio(
     "Selecciona el Sistema de Unidades:",
@@ -402,6 +352,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
