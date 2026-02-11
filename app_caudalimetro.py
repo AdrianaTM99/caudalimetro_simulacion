@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-import time  # <--- Agregado para controlar el tiempo de la animación
+import time  
 
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
@@ -9,10 +9,27 @@ st.set_page_config(layout="wide", page_title="Simulador Adriana")
 # Enlaces para la animación
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20chikito.gif"
 
-# 2. CSS Maestro (Agregado estilo de loading-overlay)
+# 2. CSS Maestro
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+    /* ESTILO PARA EL RECUADRO DE LA ECUACIÓN */
+    .equation-box {
+        background: rgba(0, 0, 0, 0.6);
+        border: 2px solid #00d4ff;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 20px auto;
+        text-align: center;
+        box-shadow: 0px 0px 15px rgba(0, 212, 255, 0.3);
+    }
+    .equation-large {
+        font-size: 3rem !important; /* Doble de grande */
+        color: #00d4ff;
+        font-weight: 700;
+        font-family: 'Roboto', sans-serif;
+    }
 
     /* ESTILO PARA LA CAPA DE CARGA */
     .loading-overlay {
@@ -48,7 +65,6 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* RECUADRO FIJO DE EXTREMO A EXTREMO */
     .fixed-header {
         position: fixed;
         top: 0;
@@ -85,18 +101,13 @@ st.markdown("""
     .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; font-weight: 300 !important; margin: 0; color: white; }
 
-    /* ESTILO DE RADIO BUTTONS */
+    /* Radio Buttons y Sliders */
     div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
         border: 2px solid #00d4ff !important;
         background-color: #000000 !important;
-        width: 20px !important;
-        height: 20px !important;
     }
     div[data-testid="stRadio"] [data-baseweb="radio"][aria-checked="true"] > div:first-child > div {
         background-color: #00d4ff !important;
-        width: 100% !important;
-        height: 100% !important;
-        border: 2px solid black !important;
     }
 
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
@@ -111,12 +122,6 @@ st.markdown("""
         font-size: 1.2rem;
         font-weight: bold;
         border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: background-color 0.3s ease;
-    }
-
-    .stButton > button:hover {
-        background-color: #21618c !important;
-        border-color: #00d4ff !important;
     }
 
     p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
@@ -155,18 +160,15 @@ col1, col2, col3 = st.columns(3, gap="large")
 with col1:
     B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(b_def))
     B_user = st.slider(f'Ajustar B', float(b_min), float(b_max), float(B_val), label_visibility="collapsed")
-
 with col2:
     sig_val = st.number_input(f'σ: Conductividad ({u_sig})', float(sig_min), float(sig_max), float(sig_def))
     sigma_user = st.slider(f'Ajustar σ', float(sig_min), float(sig_max), float(sig_val), label_visibility="collapsed")
-
 with col3:
     D_val = st.number_input(f'D: Diámetro ({u_d})', float(d_min), float(d_max), float(d_def), format="%.4f")
     D_user = st.slider(f'Ajustar D', float(d_min), float(d_max), float(D_val), label_visibility="collapsed")
 
 st.write("---")
 
-# Factor de Error
 if 'edit_error' not in st.session_state:
     st.session_state.edit_error = False
 
@@ -178,27 +180,23 @@ with c_err2:
 with c_err1:
     error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
 
-# --- CÁLCULOS Y PROCESAMIENTO ---
+# --- CÁLCULOS ---
 if sistema == "Americano (G, mhos/in, in)":
     B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
 else:
     B_si, D_si, sigma_si = B_user, D_user, sigma_user
 
 if st.button('🚀 Generar curva de calibración'):
-    # --- ANIMACIÓN DE CARGA ---
     placeholder = st.empty()
     with placeholder.container():
         st.markdown(f"""
             <div class="loading-overlay">
                 <img src="{URL_GIF}" width="280">
-                <p style="color:#00d4ff; font-weight:bold; margin-top:15px; font-size:1.2rem;">
-                    Procesando simulación...
-                </p>
+                <p style="color:#00d4ff; font-weight:bold; margin-top:15px; font-size:1.2rem;">Procesando simulación...</p>
             </div>
         """, unsafe_allow_html=True)
-        time.sleep(2.0) # Tiempo de la animación
+        time.sleep(2.0)
     placeholder.empty()
-    # -------------------------
 
     A_m2 = np.pi * (D_si / 2)**2
     v = np.linspace(0.1, 5.0, 100)
@@ -216,7 +214,14 @@ if st.button('🚀 Generar curva de calibración'):
     ax.set_facecolor('none')
     st.pyplot(fig)
 
-    st.latex(rf"V_{{(mV)}} = {m_eq:.4f} \cdot Q_{{({u_q})}}")
+    # RECUADRO DE ECUACIÓN GRANDE
+    st.markdown(f"""
+        <div class="equation-box">
+            <div class="equation-large">
+                V<sub>(mV)</sub> = {m_eq:.4f} · Q<sub>({u_q})</sub>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
