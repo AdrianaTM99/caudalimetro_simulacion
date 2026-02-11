@@ -6,23 +6,24 @@ import time
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana", initial_sidebar_state="expanded")
 
-# ENLACE RAW GIF
+# ENLACE RAW CORREGIDO
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
-# 2. CSS Maestro (Ajustado para cubrir todo y fuentes grandes)
+# 2. CSS Maestro (Fusión de Estilos)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Fondo base */
+    /* Fondo de imagen base */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover;
         background-position: center;
+        background-repeat: no-repeat;
         background-attachment: fixed;
     }
 
-    /* CAPA CENTRAL - Ensanchada para cubrir todo */
+    /* CAPA CENTRAL CON DESENFOQUE (Solo en el centro) */
     [data-testid="stAppViewContainer"]::before {
         content: "";
         position: fixed;
@@ -30,32 +31,27 @@ st.markdown("""
         left: 50%;
         transform: translateX(-50%);
         width: 100%;
-        max-width: 1250px; /* Aumentado para cubrir la info */
+        max-width: 1150px; 
         height: 100vh;
-        background: rgba(0, 0, 0, 0.7); 
-        backdrop-filter: blur(5px); 
+        background: rgba(0, 0, 0, 0.6); 
+        backdrop-filter: blur(3px); 
+        -webkit-backdrop-filter: blur(3px);
         z-index: 0;
     }
 
-    /* BARRA LATERAL */
+    /* ESTILO BARRA LATERAL (Sidebar del Código 1) */
     [data-testid="stSidebar"] {
-        background-color: rgba(0, 0, 0, 0.95) !important;
+        background-color: rgba(0, 0, 0, 0.9) !important;
         border-right: 2px solid #00d4ff !important;
+        z-index: 100;
     }
-    
+
+    /* BOTÓN DE DESPLIEGUE (Flecha superior izquierda neón) */
     [data-testid="stSidebarCollapseButton"] {
         background-color: #00d4ff !important;
         color: black !important;
-    }
-
-    /* CONTENEDOR PRINCIPAL */
-    .block-container {
-        position: relative;
-        z-index: 1;
-        max-width: 1150px !important;
-        margin: 0 auto !important;
-        padding: 120px 2rem 4rem 2rem !important;
-        font-size: 1.3rem !important; /* Fuente general más grande */
+        border-radius: 5px !important;
+        top: 10px !important;
     }
 
     /* HEADER CENTRADO */
@@ -64,129 +60,188 @@ st.markdown("""
         top: 0;
         left: 0;
         width: 100vw;
-        z-index: 999;
+        background-color: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        z-index: 99;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
         justify-content: center;
     }
+
     .header-content {
         width: 100%;
-        max-width: 1250px;
-        background: rgba(0, 0, 0, 0.9);
-        padding: 20px;
-        text-align: center;
-        border-bottom: 3px solid #00d4ff;
-        border-bottom-left-radius: 20px;
-        border-bottom-right-radius: 20px;
+        max-width: 1100px;
+        padding: 10px 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-    /* FUENTES Y ETIQUETAS */
-    h1, h2, h3, h4 { color: #00d4ff !important; font-weight: 700 !important; }
-    label, p, .stMarkdown { font-size: 1.4rem !important; color: white !important; font-weight: 400 !important; }
-    
-    /* INPUTS Y SLIDERS */
-    div[data-testid="stNumberInput"] input { font-size: 1.3rem !important; }
-    div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; }
+    .header-content h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; font-family: 'Roboto'; }
 
-    /* ANIMACIÓN DE CARGA (OVERLAY) */
+    /* CONTENEDOR DE BLOQUE */
+    .block-container {
+        position: relative;
+        z-index: 1;
+        font-family: 'Roboto', sans-serif;
+        max-width: 1100px !important;
+        margin: 0 auto !important;
+        padding: 100px 2rem 4rem 2rem !important;
+        color: white !important;
+    }
+
+    /* UI NEÓN (Radios, Sliders, Botones) */
+    div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child { border: 2px solid #00d4ff !important; background-color: #000 !important; }
+    div[data-testid="stRadio"] [data-baseweb="radio"][aria-checked="true"] > div:first-child > div { background-color: #00d4ff !important; }
+    div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
+    div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
+
+    .stButton > button {
+        width: 100%;
+        background-color: #1a5276 !important;
+        color: white !important;
+        border-radius: 8px;
+        padding: 0.8rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border: 1px solid #00d4ff !important;
+    }
+
+    /* CAJA DE ECUACIÓN Y CARGA */
+    .equation-box {
+        background: rgba(0, 0, 0, 0.5);
+        border: 2px solid #00d4ff;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 20px auto;
+        text-align: center;
+        box-shadow: 0px 0px 15px rgba(0, 212, 255, 0.3);
+    }
+    .equation-large { font-size: 3rem !important; color: #00d4ff; font-weight: 700; }
+
     .loading-overlay {
         position: fixed;
-        top: 0; left: 0; width: 100vw; height: 100vh;
-        background: rgba(0,0,0,0.85);
-        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
         z-index: 9999;
-    }
-
-    .equation-box {
-        background: rgba(0, 212, 255, 0.1);
-        border: 2px solid #00d4ff;
-        border-radius: 20px;
-        padding: 40px;
-        margin-top: 30px;
         text-align: center;
-        font-size: 3.5rem !important;
-        color: #00d4ff;
-        font-weight: bold;
+        background: rgba(0, 0, 0, 0.95);
+        padding: 20px;
+        border-radius: 25px;
+        border: 2px solid #00d4ff;
     }
 
     header[data-testid="stHeader"] { visibility: hidden; }
+    p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
     </style>
 
     <div class="fixed-header">
         <div class="header-content">
-            <h1 style="margin:0; font-size: 2.2rem !important;">Simulación de Caudalímetro Electromagnético</h1>
+            <h1>Simulación de Caudalímetro Electromagnético</h1>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR ---
+# --- CONTENIDO DE LA BARRA LATERAL (SIDEBAR) ---
 with st.sidebar:
-    st.markdown("## 📋 Referencias de Fluido")
-    st.write("Conductividad típica (σ) en μS/cm:")
-    st.markdown("""
-    * **Agua Destilada:** 0.5
-    * **Agua Potable:** 500
-    * **Agua de Mar:** 50,000
-    * **Leche:** 5,000
-    * **Zumo de Frutas:** 3,000
-    * **Ácido Sulfúrico:** 700,000
-    """)
-    st.info("Oculta este panel con la flecha superior.")
+    st.markdown("<h2 style='color:#00d4ff;'>📋 Referencias σ</h2>", unsafe_allow_html=True)
+    st.write("Conductividades típicas para consulta:")
+    
+    data = {
+        "Fluido": ["Agua Destilada", "Agua Potable", "Agua de Mar", "Leche", "Zumo", "Ácido Sulf."],
+        "Valor (μS/cm)": [0.5, 500, 50000, 5000, 3000, 700000]
+    }
+    st.table(data)
+    
+    st.markdown("---")
+    st.info("💡 Haz clic en la flecha azul de arriba para ocultar este panel.")
 
-# --- CUERPO PRINCIPAL ---
-st.markdown("### 1. Sistema de Unidades")
-sistema = st.radio("", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
+# --- LÓGICA DE UNIDADES (Código 2) ---
+sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
-st.write("---")
-
-# --- ENTRADA DE DATOS (UNA DEBAJO DE OTRA) ---
-st.markdown("### 2. Parámetros de Simulación")
-
-# Campo B
-B_val = st.number_input('B: Campo Magnético', 0.1, 15000.0, 0.5)
-B_user = st.slider('Ajuste fino de B', 0.1, 15000.0, float(B_val), label_visibility="collapsed")
-
-# Conductividad sigma
-sig_val = st.number_input('σ: Conductividad', 1.0, 700000.0, 1000.0)
-sigma_user = st.slider('Ajuste fino de σ', 1.0, 700000.0, float(sig_val), label_visibility="collapsed")
-
-# Diámetro D
-D_val = st.number_input('D: Diámetro', 0.005, 20.0, 0.0127, format="%.4f")
-D_user = st.slider('Ajuste fino de D', 0.005, 20.0, float(D_val), label_visibility="collapsed")
+if sistema == "Métrico (T, μS/cm, m)":
+    u_b, u_sig, u_d, u_q = "T", "μS/cm", "m", "m³/s"
+    b_min, b_max, b_def = 0.1, 1.5, 0.5
+    sig_min, sig_max, sig_def = 1.0, 5000.0, 1000.0
+    d_min, d_max, d_def = 0.005, 0.500, 0.0127
+    conv_q = 1.0
+else:
+    u_b, u_sig, u_d, u_q = "G", "μmhos/in", "in", "GPM"
+    b_min, b_max, b_def = 1000.0, 15000.0, 5000.0
+    sig_min, sig_max, sig_def = 2.5, 12700.0, 2540.0
+    d_min, d_max, d_def = 0.2, 20.0, 0.5
+    conv_q = 15850.3
 
 st.write("---")
 
-# --- BOTÓN Y ANIMACIÓN ---
-if st.button('🚀 GENERAR CURVA DE CALIBRACIÓN'):
-    # Mostrar animación
-    loading_placeholder = st.empty()
-    with loading_placeholder:
+# --- PARÁMETROS (Código 2) ---
+st.markdown(f"#### Configuración de Parámetros ({sistema})")
+col1, col2, col3 = st.columns(3, gap="large")
+
+with col1:
+    B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(b_def))
+    B_user = st.slider(f'Ajustar B', float(b_min), float(b_max), float(B_val), key="B_slider", label_visibility="collapsed")
+with col2:
+    sig_val = st.number_input(f'σ: Conductividad ({u_sig})', float(sig_min), float(sig_max), float(sig_def))
+    sigma_user = st.slider(f'Ajustar σ', float(sig_min), float(sig_max), float(sig_val), key="sig_slider", label_visibility="collapsed")
+with col3:
+    D_val = st.number_input(f'D: Diámetro ({u_d})', float(d_min), float(d_max), float(d_def), format="%.4f")
+    D_user = st.slider(f'Ajustar D', float(d_min), float(d_max), float(D_val), key="D_slider", label_visibility="collapsed")
+
+st.write("---")
+
+if 'edit_error' not in st.session_state:
+    st.session_state.edit_error = False
+
+st.markdown("#### Factor de Error del Sistema")
+c_err1, c_err2 = st.columns([1, 3]) 
+with c_err1:
+    if st.button('🔄 Cambiar Factor'):
+        st.session_state.edit_error = not st.session_state.edit_error
+with c_err2:
+    error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
+
+# --- CÁLCULOS Y GENERACIÓN (Código 2) ---
+if sistema == "Americano (G, mhos/in, in)":
+    B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
+else:
+    B_si, D_si, sigma_si = B_user, D_user, sigma_user
+
+if st.button('🚀 Generar curva de calibración'):
+    placeholder = st.empty()
+    with placeholder.container():
         st.markdown(f"""
             <div class="loading-overlay">
                 <img src="{URL_GIF}" width="450">
-                <h2 style="color: #00d4ff; font-family: Roboto;">Procesando inducción electromagnética...</h2>
+                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.2rem;">Calculando flujo electromagnético...</p>
             </div>
         """, unsafe_allow_html=True)
-        time.sleep(3)
-    loading_placeholder.empty()
+        time.sleep(2.5)
+    placeholder.empty()
 
-    # Cálculos
+    A_m2 = np.pi * (D_si / 2)**2
     v = np.linspace(0.1, 5.0, 100)
-    V_mv = B_user * D_user * v * 1000  # Ejemplo simplificado
-    Q_plot = (np.pi * (D_user/2)**2) * v
-    
-    # Gráfica
-    fig, ax = plt.subplots(figsize=(10, 5))
+    f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
+    V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
+    Q_plot = (A_m2 * v) * conv_q
+    m_eq = V_mv[-1] / Q_plot[-1]
+
     plt.style.use('dark_background')
-    ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=4)
-    ax.set_xlabel("Caudal Q", fontsize=12)
-    ax.set_ylabel("Voltaje V (mV)", fontsize=12)
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=3)
+    ax.set_xlabel(f'Caudal Q ({u_q})')
+    ax.set_ylabel('Voltaje V (mV)')
     fig.patch.set_alpha(0.0)
     ax.set_facecolor('none')
     st.pyplot(fig)
 
-    # Resultado
-    m = V_mv[-1] / Q_plot[-1]
-    st.markdown(f'<div class="equation-box">V = {m:.4f} · Q</div>', unsafe_allow_html=True)
+    st.markdown(f"""
+        <div class="equation-box">
+            <div class="equation-large">
+                V<sub>(mV)</sub> = {m_eq:.4f} · Q<sub>({u_q})</sub>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
