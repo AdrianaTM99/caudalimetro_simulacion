@@ -5,7 +5,7 @@ import time
 
 # 1. Configuración de la página
 st.set_page_config(
-    layout="wide",
+    layout="centered",
     page_title="Simulador Adriana",
     initial_sidebar_state="auto"
 )
@@ -162,28 +162,26 @@ div[data-testid="stSlider"] [role="slider"] {
         height: calc(100vh - 130px) !important;
     }
 
-    /* =====================================
-   EVITAR QUE EL CONTENIDO SALTE
-    ===================================== */
+ /* =====================================
+EVITAR QUE EL CONTENIDO SALTE
+ ===================================== */
 
-    [data-testid="stAppViewContainer"] {
-        transition: none !important;
-    }
+[data-testid="stAppViewContainer"] {
+    transition: none !important;
+}
 
-    [data-testid="stMain"] {
-        transition: none !important;
-    }
+ [data-testid="stMain"] {
+      transition: none !important;
+}
 
-    [data-testid="stMainBlockContainer"] {
-        transition: none !important;
-    }
+[data-testid="stMainBlockContainer"] {
+    transition: none !important;
+}
 
-    /* Forzar ancho estable */
-    [data-testid="stMain"] > div {
-        max-width: 1100px !important;
-        margin: 0 auto !important;
-    }
-
+ /* Forzar ancho estable */
+[data-testid="stMain"] > div {
+    max-width: 1100px !important;
+    margin: 0 auto !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -394,45 +392,3 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
