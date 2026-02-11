@@ -165,7 +165,6 @@ div[data-testid="collapsedControl"] {
 </style>
 """, unsafe_allow_html=True)
 
-
 # CONTENIDO DE LA BARRA LATERAL
 with st.sidebar:
 
@@ -217,22 +216,101 @@ with st.sidebar:
         """)
 
 # --- LÓGICA DE UNIDADES ---
-sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
+sistema = st.radio(
+    "Selecciona el Sistema de Unidades:",
+    ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"),
+    horizontal=True
+)
 
+# Definimos conversiones
 if sistema == "Métrico (T, μS/cm, m)":
     u_b, u_sig, u_d, u_q = "T", "μS/cm", "m", "m³/s"
-    b_min, b_max, b_def = 0.1, 1.5, 0.5
-    sig_min, sig_max, sig_def = 1.0, 5000.0, 1000.0
-    d_min, d_max, d_def = 0.005, 0.500, 0.0127
-    conv_q = 1.0
+    conv_cond = 1
+    conv_diam = 1
+    conv_vel = 1
 else:
     u_b, u_sig, u_d, u_q = "G", "μmhos/in", "in", "GPM"
-    b_min, b_max, b_def = 1000.0, 15000.0, 5000.0
-    sig_min, sig_max, sig_def = 2.5, 12700.0, 2540.0
-    d_min, d_max, d_def = 0.2, 20.0, 0.5
-    conv_q = 15850.3
+    conv_cond = 2.54          # μS/cm → μmhos/in
+    conv_diam = 1 / 25.4      # mm → in
+    conv_vel = 3.28084        # m/s → ft/s
 
-st.write("---")
+
+# ================================
+# 📘 SIDEBAR DINÁMICA CON CONVERSIÓN
+# ================================
+with st.sidebar:
+
+    st.markdown("## 📘 Biblioteca Técnica")
+
+    # -------- CONDUCTIVIDADES --------
+    conductividades = {
+        "Agua destilada": (0.5, 5),
+        "Agua potable": (50, 1500),
+        "Agua de mar": (50000, 50000),
+        "Leche": (4000, 6000),
+        "Sangre": (7000, 7000),
+        "Soluciones salinas": (10000, 80000),
+        "Ácidos diluidos": (10000, 100000),
+    }
+
+    with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=True):
+
+        tabla = f"| Fluido | Conductividad ({u_sig}) |\n"
+        tabla += "|---------|----------------|\n"
+
+        for fluido, (min_v, max_v) in conductividades.items():
+            min_conv = min_v * conv_cond
+            max_conv = max_v * conv_cond
+
+            if min_v == max_v:
+                valor = f"{min_conv:.1f} {u_sig}"
+            else:
+                valor = f"{min_conv:.1f} – {max_conv:.1f} {u_sig}"
+
+            tabla += f"| {fluido} | {valor} |\n"
+
+        st.markdown(tabla)
+
+    # -------- DIÁMETROS --------
+    diametros = {
+        "DN15": 15,
+        "DN25": 25,
+        "DN50": 50,
+        "DN100": 100,
+        "DN200": 200,
+        "DN500": 500,
+    }
+
+    with st.expander("🔵 Diámetros Nominales y Usos", expanded=True):
+
+        tabla = f"| DN | Diámetro ({u_d}) |\n"
+        tabla += "|----|---------------|\n"
+
+        for dn, valor_mm in diametros.items():
+            valor_conv = valor_mm * conv_diam
+            tabla += f"| {dn} | {valor_conv:.2f} {u_d} |\n"
+
+        st.markdown(tabla)
+
+    # -------- VELOCIDADES --------
+    velocidades = {
+        "Agua potable": (1, 3),
+        "Industria química": (1, 5),
+        "Lodos": (0.5, 2),
+        "Alimentos": (1, 4),
+    }
+
+    with st.expander("🌊 Velocidades Recomendadas", expanded=True):
+
+        tabla = f"| Aplicación | Velocidad Recomendada ({'m/s' if sistema.startswith('Métrico') else 'ft/s'}) |\n"
+        tabla += "|-------------|----------------------|\n"
+
+        for app, (min_v, max_v) in velocidades.items():
+            min_conv = min_v * conv_vel
+            max_conv = max_v * conv_vel
+            tabla += f"| {app} | {min_conv:.2f} – {max_conv:.2f} |\n"
+
+        st.markdown(tabla)
 
 # --- PARÁMETROS ---
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
@@ -310,6 +388,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
