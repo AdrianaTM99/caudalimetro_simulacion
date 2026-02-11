@@ -6,8 +6,8 @@ import time
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# Enlaces para la animación
-URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/blob/main/caudalimetro%20con%20rayitas_3.gif"
+# ENLACE CORREGIDO (URL RAW para que cargue el GIF)
+URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
 # 2. CSS Maestro
 st.markdown("""
@@ -31,7 +31,7 @@ st.markdown("""
         font-family: 'Roboto', sans-serif;
     }
 
-    /* ESTILO PARA LA CAPA DE CARGA */
+    /* ESTILO PARA LA CAPA DE CARGA (Ajustado para imagen grande y recuadro pequeño) */
     .loading-overlay {
         position: fixed;
         top: 50%;
@@ -39,11 +39,11 @@ st.markdown("""
         transform: translate(-50%, -50%);
         z-index: 9999;
         text-align: center;
-        background: rgba(0, 0, 0, 0.85);
-        padding: 40px;
-        border-radius: 20px;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 20px; /* Reducido para que no sea un bloque gigante */
+        border-radius: 25px;
         border: 2px solid #00d4ff;
-        box-shadow: 0px 0px 20px rgba(0, 212, 255, 0.5);
+        box-shadow: 0px 0px 30px rgba(0, 212, 255, 0.6);
     }
 
     [data-testid="stAppViewContainer"] {
@@ -52,8 +52,8 @@ st.markdown("""
                 to right, 
                 transparent 0%, 
                 transparent calc(50% - 550px), 
-                rgba(0, 0, 0, 0.5) calc(50% - 550px), 
-                rgba(0, 0, 0, 0.5) calc(50% + 550px), 
+                rgba(0, 0, 0, 0.6) calc(50% - 550px), 
+                rgba(0, 0, 0, 0.6) calc(50% + 550px), 
                 transparent calc(50% + 550px), 
                 transparent 100%
             ),
@@ -62,6 +62,8 @@ st.markdown("""
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
+        /* EFECTO DE DESENFOQUE AL FONDO NEGRO */
+        backdrop-filter: blur(10px); 
     }
 
     .fixed-header {
@@ -69,8 +71,8 @@ st.markdown("""
         top: 0;
         left: 0;
         width: 100vw;
-        background-color: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(4px);
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
         z-index: 999;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
@@ -171,7 +173,6 @@ if 'edit_error' not in st.session_state:
     st.session_state.edit_error = False
 
 st.markdown("#### Factor de Error del Sistema")
-# AQUÍ CAMBIÉ EL ORDEN: Botón a la izquierda (columna 1) y Slider a la derecha (columna 2)
 c_err1, c_err2 = st.columns([1, 3]) 
 with c_err1:
     if st.button('🔄 Cambiar Factor'):
@@ -190,11 +191,11 @@ if st.button('🚀 Generar curva de calibración'):
     with placeholder.container():
         st.markdown(f"""
             <div class="loading-overlay">
-                <img src="{URL_GIF}" width="280">
-                <p style="color:#00d4ff; font-weight:bold; margin-top:15px; font-size:1.2rem;">Procesando simulación...</p>
+                <img src="{URL_GIF}" width="450">
+                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.2rem;">Calculando flujo electromagnético...</p>
             </div>
         """, unsafe_allow_html=True)
-        time.sleep(2.0)
+        time.sleep(2.5) # Un poquito más de tiempo para disfrutar el GIF
     placeholder.empty()
 
     A_m2 = np.pi * (D_si / 2)**2
