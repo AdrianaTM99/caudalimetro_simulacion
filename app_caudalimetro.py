@@ -23,7 +23,7 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* CAPA CENTRAL CON DESENFOQUE (Glassmorphism) */
+    /* CAPA CENTRAL CON DESENFOQUE */
     [data-testid="stAppViewContainer"]::before {
         content: "";
         position: fixed;
@@ -34,15 +34,18 @@ st.markdown("""
         max-width: 1150px; 
         height: 100vh;
         background: rgba(0, 0, 0, 0.6); 
-        
-        /* DESENFOQUE SUAVE (3px como pediste) */
         backdrop-filter: blur(3px); 
         -webkit-backdrop-filter: blur(3px);
-        
         z-index: 0;
     }
 
-    /* Contenido sobre el desenfoque */
+    /* Estilo para el Sidebar (Tabla de la izquierda) */
+    [data-testid="stSidebar"] {
+        background-color: rgba(0, 0, 0, 0.8) !important;
+        backdrop-filter: blur(10px);
+        border-right: 1px solid #00d4ff;
+    }
+
     .block-container {
         position: relative;
         z-index: 1;
@@ -139,8 +142,42 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- LÓGICA DE UNIDADES ---
+# --- SIDEBAR: LISTA DE CONDUCTIVIDADES ---
+with st.sidebar:
+    st.markdown("### 📋 Referencia de Fluidos")
+    st.write("Conductividades típicas para configurar el parámetro σ.")
+    
+    # Datos base en μS/cm
+    fluidos = {
+        "Agua Destilada": 0.5,
+        "Agua Potable": 500,
+        "Agua de Mar": 50000,
+        "Leche": 5000,
+        "Zumo de Frutas": 3000,
+        "Ácido Sulfúrico (30%)": 700000
+    }
+    
+    # Determinamos el factor de conversión según el sistema seleccionado
+    # El sistema se define abajo, pero Streamlit permite usarlo si está en el flujo
+    # Para evitar errores, definiremos el radio aquí mismo en el sidebar o usaremos una clave.
+    
+    st.markdown("---")
+    st.info("Selecciona el sistema en la pantalla principal para actualizar estas unidades.")
+
+# --- LÓGICA DE UNIDADES (Pantalla Principal) ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
+
+# Actualizar tabla del sidebar según sistema
+with st.sidebar:
+    if sistema == "Métrico (T, μS/cm, m)":
+        unit_label = "μS/cm"
+        tabla_data = {f: f"{v:,} {unit_label}" for f, v in fluidos.items()}
+    else:
+        unit_label = "μmhos/in"
+        # Conversión aproximada: 1 μS/cm = 2.54 μmhos/in
+        tabla_data = {f: f"{v * 2.54:,} {unit_label}" for f, v in fluidos.items()}
+    
+    st.table(list(tabla_data.items()))
 
 if sistema == "Métrico (T, μS/cm, m)":
     u_b, u_sig, u_d, u_q = "T", "μS/cm", "m", "m³/s"
@@ -196,7 +233,7 @@ if st.button('🚀 Generar curva de calibración'):
         st.markdown(f"""
             <div class="loading-overlay">
                 <img src="{URL_GIF}" width="360">
-                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.2rem;">
+                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.2rem;">Procesando simulación...</p>
             </div>
         """, unsafe_allow_html=True)
         time.sleep(2.5)
@@ -228,4 +265,3 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
-
