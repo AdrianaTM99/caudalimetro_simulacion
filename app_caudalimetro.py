@@ -25,7 +25,7 @@ st.markdown("""
         box-shadow: 0px 0px 15px rgba(0, 212, 255, 0.3);
     }
     .equation-large {
-        font-size: 3rem !important; /* Doble de grande */
+        font-size: 3rem !important;
         color: #00d4ff;
         font-weight: 700;
         font-family: 'Roboto', sans-serif;
@@ -46,7 +46,6 @@ st.markdown("""
         box-shadow: 0px 0px 20px rgba(0, 212, 255, 0.5);
     }
 
-    /* Fondo de imagen base FIJO */
     [data-testid="stAppViewContainer"] {
         background-image: 
             linear-gradient(
@@ -101,7 +100,6 @@ st.markdown("""
     .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; font-weight: 300 !important; margin: 0; color: white; }
 
-    /* Radio Buttons y Sliders */
     div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
         border: 2px solid #00d4ff !important;
         background-color: #000000 !important;
@@ -173,11 +171,12 @@ if 'edit_error' not in st.session_state:
     st.session_state.edit_error = False
 
 st.markdown("#### Factor de Error del Sistema")
-c_err1, c_err2 = st.columns([3, 1])
-with c_err2:
+# AQUÍ CAMBIÉ EL ORDEN: Botón a la izquierda (columna 1) y Slider a la derecha (columna 2)
+c_err1, c_err2 = st.columns([1, 3]) 
+with c_err1:
     if st.button('🔄 Cambiar Factor'):
         st.session_state.edit_error = not st.session_state.edit_error
-with c_err1:
+with c_err2:
     error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
 
 # --- CÁLCULOS ---
@@ -214,7 +213,6 @@ if st.button('🚀 Generar curva de calibración'):
     ax.set_facecolor('none')
     st.pyplot(fig)
 
-    # RECUADRO DE ECUACIÓN GRANDE
     st.markdown(f"""
         <div class="equation-box">
             <div class="equation-large">
