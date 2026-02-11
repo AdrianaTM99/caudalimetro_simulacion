@@ -65,7 +65,7 @@ st.markdown("""
         background-attachment: fixed;
         
         /* Modifica este valor (20px) para aumentar o disminuir el desenfoque */
-        backdrop-filter: blur(20px); 
+        backdrop-filter: blur(20000px); 
         -webkit-backdrop-filter: blur(20px);
     }
 
@@ -227,3 +227,4 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
+
