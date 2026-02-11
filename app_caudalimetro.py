@@ -37,11 +37,15 @@ st.markdown("""
 ============================= */
 .title-bar {
     position: fixed;
-    top: 10px;  /* 🔥 lo bajamos un poco */
-    left: 0;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
-    background: rgba(0,0,0,0.95);
-    padding: 30px 10px;
+    max-width: 1150px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 35px 10px;
     text-align: center;
     z-index: 1000;
     border-bottom: 2px solid #00d4ff;
@@ -50,14 +54,12 @@ st.markdown("""
 /* TÍTULO */
 .main-title {
     font-family: 'Poppins', sans-serif;
-    font-size: 2.6rem;
+    font-size: 2.8rem;
     font-weight: 800;
     background: linear-gradient(90deg, #00d4ff, #0099ff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
-    padding: 0 15px;
-    white-space: normal;
     word-wrap: break-word;
 }
 
@@ -70,20 +72,20 @@ st.markdown("""
 }
 
 /* =============================
-   EFECTO DE DESENFOQUE CENTRAL
+   DESENFOQUE CENTRAL
 ============================= */
 [data-testid="stAppViewContainer"]::before {
     content: "";
     position: fixed;
-    top: 120px;
+    top: 150px;
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
     max-width: 1150px;
-    height: calc(100vh - 120px);
+    height: calc(100vh - 150px);
     background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     z-index: 0;
 }
 
@@ -94,12 +96,35 @@ st.markdown("""
     font-family: 'Roboto', sans-serif;
     max-width: 1100px !important;
     margin: 0 auto !important;
-    padding: 170px 2rem 4rem 2rem !important;
+    padding: 180px 2rem 4rem 2rem !important;
     color: white !important;
 }
 
 /* =============================
-   BOTONES Y SLIDERS
+   SIDEBAR (MISMO FONDO QUE HEADER)
+============================= */
+section[data-testid="stSidebar"] {
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-right: 2px solid #00d4ff;
+    position: fixed !important;
+    top: 150px !important;
+    height: calc(100vh - 150px) !important;
+}
+
+/* =============================
+   BOTÓN SIEMPRE VISIBLE
+============================= */
+div[data-testid="collapsedControl"] {
+    position: fixed !important;
+    top: 20px !important;
+    left: 20px !important;
+    z-index: 1100 !important;
+}
+
+/* =============================
+   SLIDERS Y RADIO AZUL
 ============================= */
 div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
     border: 2px solid #00d4ff !important;
@@ -120,35 +145,35 @@ div[data-testid="stSlider"] [role="slider"] {
 }
 
 /* =============================
-   AJUSTES PARA MÓVIL
+   MÓVIL
 ============================= */
 @media (max-width: 768px) {
 
     .main-title {
-        font-size: 1.6rem;  /* 🔥 más pequeño en teléfono */
+        font-size: 1.6rem;
     }
 
     .subtitle {
-        font-size: 0.85rem;
-    }
-
-    .title-bar {
-        padding: 20px 10px;
+        font-size: 0.8rem;
     }
 
     .block-container {
-        padding: 140px 1rem 2rem 1rem !important;
-        max-width: 100% !important;
+        padding: 160px 1rem 2rem 1rem !important;
     }
 
     [data-testid="stAppViewContainer"]::before {
-        top: 110px;
-        height: calc(100vh - 110px);
+        top: 130px;
+        height: calc(100vh - 130px);
+    }
+
+    section[data-testid="stSidebar"] {
+        top: 130px !important;
+        height: calc(100vh - 130px) !important;
     }
 }
-
 </style>
 """, unsafe_allow_html=True)
+
 
 
 st.markdown("""
@@ -390,6 +415,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
