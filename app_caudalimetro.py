@@ -218,17 +218,21 @@ st.write("---")
 
 # --- PARÁMETROS ---
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
-col1, col2, col3 = st.columns(3, gap="large")
 
-with col1:
-    B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(b_def))
-    B_user = st.slider(f'Ajustar B', float(b_min), float(b_max), float(B_val), key="B_slider", label_visibility="collapsed")
-with col2:
-    sig_val = st.number_input(f'σ: Conductividad ({u_sig})', float(sig_min), float(sig_max), float(sig_def))
-    sigma_user = st.slider(f'Ajustar σ', float(sig_min), float(sig_max), float(sig_val), key="sig_slider", label_visibility="collapsed")
-with col3:
-    D_val = st.number_input(f'D: Diámetro ({u_d})', float(d_min), float(d_max), float(d_def), format="%.4f")
-    D_user = st.slider(f'Ajustar D', float(d_min), float(d_max), float(D_val), key="D_slider", label_visibility="collapsed")
+
+B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(b_def))
+B_user = st.slider('Ajustar B', float(b_min), float(b_max), float(B_val), key="B_slider")
+
+st.write("")
+
+sig_val = st.number_input(f'σ: Conductividad ({u_sig})', float(sig_min), float(sig_max), float(sig_def))
+sigma_user = st.slider('Ajustar σ', float(sig_min), float(sig_max), float(sig_val), key="sig_slider")
+
+st.write("")
+
+D_val = st.number_input(f'D: Diámetro ({u_d})', float(d_min), float(d_max), float(d_def), format="%.4f")
+D_user = st.slider('Ajustar D', float(d_min), float(d_max), float(D_val), key="D_slider")
+
 
 st.write("---")
 
@@ -288,6 +292,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
