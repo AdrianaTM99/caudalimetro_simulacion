@@ -142,8 +142,8 @@ st.markdown("""
         font-size: 1.2rem;
         font-weight: bold;
     }
+    p, label { font-size: 1.1rem !important; color: white !important; }
 
-    p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
     </style>
 
     <div class="fixed-header">
@@ -335,5 +335,6 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
