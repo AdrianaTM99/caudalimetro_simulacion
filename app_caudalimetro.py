@@ -37,7 +37,7 @@ st.markdown("""
     content: "";
     position: fixed;
 
-    /* 👇 EMPIEZA DEBAJO DEL HEADER */
+    /*EMPIEZA DEBAJO DEL HEADER */
     top: 70px;
 
     left: 50%;
@@ -45,7 +45,7 @@ st.markdown("""
     width: 100%;
     max-width: 1150px;
 
-    /* 👇 ALTURA AJUSTADA */
+    /* ALTURA AJUSTADA */
     height: calc(100vh - 70px);
 
     background: rgba(0, 0, 0, 0.6);
@@ -162,7 +162,7 @@ section[data-testid="stSidebar"] {
     border-right: 2px solid #00d4ff;
     position: fixed !important;
 
-    /* 👇 BAJAMOS LA BARRA DEBAJO DEL HEADER */
+    /*BAJAMOS LA BARRA DEBAJO DEL HEADER */
     top: 70px !important;
     height: calc(100vh - 70px) !important;
 
@@ -195,7 +195,7 @@ div[data-testid="collapsedControl"] {
 """, unsafe_allow_html=True)
 
 
-# 📘 CONTENIDO DE LA BARRA LATERAL
+# CONTENIDO DE LA BARRA LATERAL
 with st.sidebar:
 
     st.markdown("## 📘 Biblioteca Técnica")
@@ -335,6 +335,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
