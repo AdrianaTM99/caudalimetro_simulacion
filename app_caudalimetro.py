@@ -18,6 +18,27 @@ st.set_page_config(
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
 # 2. CSS Maestro con efecto de desenfoque SOLO en el centro
+
+/* RADIO BUTTON AZUL */
+div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
+    border: 2px solid #00d4ff !important;
+    background-color: #000 !important;
+}
+
+div[data-testid="stRadio"] [aria-checked="true"] > div:first-child > div {
+    background-color: #00d4ff !important;
+}
+
+/* SLIDER AZUL */
+div[data-testid="stSlider"] > div > div > div > div {
+    background-color: #00d4ff !important;
+}
+
+div[data-testid="stSlider"] [role="slider"] {
+    background-color: #00d4ff !important;
+    border: 2px solid white !important;
+}
+
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -267,6 +288,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
