@@ -34,26 +34,36 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
 /* TÍTULO PRINCIPAL */
+/* BARRA SUPERIOR DEL TÍTULO */
+.title-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.95);
+    padding: 20px 0;
+    text-align: center;
+    z-index: 1000;
+    border-bottom: 2px solid #00d4ff;
+}
+
+/* TEXTO DEL TÍTULO */
 .main-title {
     font-family: 'Poppins', sans-serif;
-    font-size: 3rem;
+    font-size: 2.8rem;
     font-weight: 800;
-    text-align: center;
     background: linear-gradient(90deg, #00d4ff, #ff8c00);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-top: 40px;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
+    margin: 0;
 }
 
 /* SUBTÍTULO */
 .subtitle {
     font-family: 'Poppins', sans-serif;
-    font-size: 1.2rem;
-    text-align: center;
+    font-size: 1.1rem;
     color: #cccccc;
-    margin-bottom: 40px;
+    margin-top: 5px;
 }
 
 
@@ -298,6 +308,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
