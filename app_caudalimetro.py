@@ -9,18 +9,26 @@ st.set_page_config(layout="wide", page_title="Simulador Adriana")
 # ENLACE RAW CORREGIDO
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
-# 2. CSS Maestro con efecto de desenfoque SOLO en el centro
+# 2. CSS Maestro (TODO EN AZUL NEÓN)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Fondo de imagen base (Nítida) */
+    /* Fondo de imagen base */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
+    }
+
+    /* FORZAR VISIBILIDAD DE LA FLECHA DEL SIDEBAR */
+    [data-testid="stSidebarCollapseButton"] {
+        background-color: rgba(0, 212, 255, 0.2) !important;
+        color: #00d4ff !important;
+        border: 1px solid #00d4ff !important;
+        top: 80px !important; /* Bajado para que no choque con el header */
     }
 
     /* CAPA CENTRAL CON DESENFOQUE */
@@ -39,7 +47,12 @@ st.markdown("""
         z-index: 0;
     }
 
-    /* Forzar que el contenido esté sobre el desenfoque */
+    /* Estilo para el Sidebar */
+    [data-testid="stSidebar"] {
+        background-color: rgba(0, 0, 0, 0.9) !important;
+        border-right: 2px solid #00d4ff !important;
+    }
+
     .block-container {
         position: relative;
         z-index: 1;
@@ -59,6 +72,61 @@ st.markdown("""
         text-align: center;
         box-shadow: 0px 0px 15px rgba(0, 212, 255, 0.3);
     }
+    
+    .equation-large {
+        font-size: 3rem !important;
+        color: #00d4ff;
+        font-weight: 700;
+    }
+
+    .fixed-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        background-color: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        z-index: 999;
+        border-bottom: 1px solid #00d4ff;
+        display: flex;
+        justify-content: center;
+    }
+
+    .header-content {
+        width: 100%;
+        max-width: 1100px;
+        padding: 10px 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    header[data-testid="stHeader"] { visibility: hidden; }
+    .stApp { background: transparent !important; }
+
+    .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
+
+    /* UNIDADES Y SLIDERS EN AZUL NEÓN (Eliminado naranja) */
+    div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
+        border: 2px solid #00d4ff !important;
+        background-color: #000000 !important;
+    }
+    div[data-testid="stRadio"] [data-baseweb="radio"][aria-checked="true"] > div:first-child > div {
+        background-color: #00d4ff !important;
+    }
+    
+    div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
+    div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
+
+    .stButton > button {
+        width: 100%;
+        background-color: #1a5276 !important;
+        color: white !important;
+        border: 1px solid #00d4ff !important;
+        border-radius: 8px;
+        padding: 0.8rem;
+        font-weight: bold;
+    }
 
     .loading-overlay {
         position: fixed;
@@ -73,48 +141,6 @@ st.markdown("""
         border: 2px solid #00d4ff;
     }
 
-    .fixed-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        background-color: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(10px);
-        z-index: 999;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        display: flex;
-        justify-content: center;
-    }
-
-    .header-content {
-        width: 100%;
-        max-width: 1100px;
-        padding: 10px 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    header[data-testid="stHeader"] { visibility: hidden; }
-    .stApp { background: transparent !important; }
-
-    .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
-
-    /* Estilo para el Expander (botón de fluidos) */
-    .stExpander {
-        background: rgba(0, 0, 0, 0.4) !important;
-        border: 1px solid #00d4ff !important;
-        border-radius: 10px !important;
-    }
-
-    .stButton > button {
-        width: 100%;
-        background-color: #1a5276 !important;
-        color: white !important;
-        border-radius: 8px;
-        font-weight: bold;
-    }
-
     p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
     </style>
 
@@ -126,7 +152,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # --- DATOS DE FLUIDOS ---
-fluidos_base = {
+fluidos = {
     "Agua Destilada": 0.5,
     "Agua Potable": 500,
     "Agua de Mar": 50000,
@@ -138,15 +164,18 @@ fluidos_base = {
 # --- LÓGICA DE UNIDADES ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
-# BOTÓN DE FLUIDOS (Debajo del título, arriba a la izquierda)
-with st.expander("📋 Ver Referencia de Conductividades"):
+# SIDEBAR (BARRA LATERAL)
+with st.sidebar:
+    st.markdown("### 📋 Referencia de Fluidos")
+    st.write("Conductividades típicas para configurar el parámetro σ.")
     if sistema == "Métrico (T, μS/cm, m)":
         u_label = "μS/cm"
-        tabla = {f: f"{v:,} {u_label}" for f, v in fluidos_base.items()}
+        tabla_data = {f: f"{v:,} {u_label}" for f, v in fluidos.items()}
     else:
         u_label = "μmhos/in"
-        tabla = {f: f"{v * 2.54:,} {u_label}" for f, v in fluidos_base.items()}
-    st.table(list(tabla.items()))
+        tabla_data = {f: f"{v * 2.54:,} {u_label}" for f, v in fluidos.items()}
+    st.table(list(tabla_data.items()))
+    st.info("Usa la flecha arriba a la izquierda para ocultar esta barra.")
 
 if sistema == "Métrico (T, μS/cm, m)":
     u_b, u_sig, u_d, u_q = "T", "μS/cm", "m", "m³/s"
@@ -179,24 +208,7 @@ with col3:
 
 st.write("---")
 
-# --- FACTOR DE ERROR ---
-if 'edit_error' not in st.session_state:
-    st.session_state.edit_error = False
-
-st.markdown("#### Factor de Error del Sistema")
-c_err1, c_err2 = st.columns([1, 3]) 
-with c_err1:
-    if st.button('🔄 Cambiar Factor'):
-        st.session_state.edit_error = not st.session_state.edit_error
-with c_err2:
-    error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
-
-# --- CÁLCULOS ---
-if sistema == "Americano (G, mhos/in, in)":
-    B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
-else:
-    B_si, D_si, sigma_si = B_user, D_user, sigma_user
-
+# --- BOTÓN Y SIMULACIÓN ---
 if st.button('🚀 Generar curva de calibración'):
     placeholder = st.empty()
     with placeholder.container():
@@ -209,10 +221,11 @@ if st.button('🚀 Generar curva de calibración'):
         time.sleep(2.5)
     placeholder.empty()
 
+    B_si, D_si, sigma_si = (B_user, D_user, sigma_user) if sistema == "Métrico (T, μS/cm, m)" else (B_user/10000.0, D_user*0.0254, sigma_user/2.54)
     A_m2 = np.pi * (D_si / 2)**2
     v = np.linspace(0.1, 5.0, 100)
     f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
-    V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
+    V_mv = (B_si * D_si * v * f_cond * 1000)
     Q_plot = (A_m2 * v) * conv_q
     m_eq = V_mv[-1] / Q_plot[-1]
 
