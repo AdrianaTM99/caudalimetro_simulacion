@@ -42,7 +42,7 @@ st.markdown("""
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
 
-    padding: 30px 0 20px 0;
+    padding: 31px 0 10px 0;
     text-align: center;
     z-index: 1000;
     border-bottom: 2px solid #00d4ff;
@@ -380,6 +380,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
