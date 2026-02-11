@@ -272,7 +272,7 @@ with st.sidebar:
         "DN500": 500,
     }
 
-    with st.expander("🔵 Diámetros Nominales", expanded=True):
+    with st.expander("🔵 Diámetros Nominales", expanded=False):
 
         tabla = f"| DN | Diámetro ({u_d}) |\n"
         tabla += "|----|---------------|\n"
@@ -293,7 +293,7 @@ with st.sidebar:
 
     unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
 
-    with st.expander("🌊 Velocidades Recomendadas", expanded=True):
+    with st.expander("🌊 Velocidades Recomendadas", expanded=False):
 
         tabla = f"| Aplicación | Velocidad Recomendada ({unidad_vel}) |\n"
         tabla += "|-------------|----------------------|\n"
@@ -382,6 +382,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
