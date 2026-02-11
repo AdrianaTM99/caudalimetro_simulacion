@@ -124,8 +124,9 @@ div[data-testid="collapsedControl"] {
     position: fixed !important;
     top: 20px !important;
     left: 20px !important;
-    z-index: 1100 !important;
+    z-index: 9999 !important;
 }
+
 
 /* =============================
    SLIDERS Y RADIO AZUL
@@ -384,6 +385,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
