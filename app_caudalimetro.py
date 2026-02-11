@@ -113,7 +113,7 @@ div[data-testid="stSlider"] [role="slider"] {
 label,
 div[data-testid="stMarkdownContainer"] p,
 div[data-testid="stRadio"] label {
-    font-size: 1.35rem !important;
+    font-size: 1.15rem !important;
 }
 
 }
@@ -391,6 +391,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
