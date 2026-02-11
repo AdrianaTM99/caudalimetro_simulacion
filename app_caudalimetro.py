@@ -9,12 +9,12 @@ st.set_page_config(layout="wide", page_title="Simulador Adriana")
 # ENLACE RAW CORREGIDO
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
-# 2. CSS Maestro (Reforzado)
+# 2. CSS Maestro con efecto de desenfoque SOLO en el centro
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Fondo de imagen base */
+    /* Fondo de imagen base (Nítida) */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover;
@@ -39,25 +39,38 @@ st.markdown("""
         z-index: 0;
     }
 
-    /* Estilo para el Sidebar */
-    [data-testid="stSidebar"] {
-        background-color: rgba(0, 0, 0, 0.9) !important;
-        border-right: 2px solid #00d4ff !important;
-    }
-    
-    /* Hacer que el botón de cerrar de la barra lateral sea visible */
-    [data-testid="stSidebarNav"] + div {
-        color: #00d4ff !important;
-    }
-
+    /* Forzar que el contenido esté sobre el desenfoque */
     .block-container {
         position: relative;
         z-index: 1;
         font-family: 'Roboto', sans-serif;
         max-width: 1100px !important;
         margin: 0 auto !important;
-        padding: 80px 2rem 4rem 2rem !important;
+        padding: 100px 2rem 4rem 2rem !important;
         color: white !important;
+    }
+
+    .equation-box {
+        background: rgba(0, 0, 0, 0.5);
+        border: 2px solid #00d4ff;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 20px auto;
+        text-align: center;
+        box-shadow: 0px 0px 15px rgba(0, 212, 255, 0.3);
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.95);
+        padding: 20px;
+        border-radius: 25px;
+        border: 2px solid #00d4ff;
     }
 
     .fixed-header {
@@ -65,33 +78,41 @@ st.markdown("""
         top: 0;
         left: 0;
         width: 100vw;
-        background-color: rgba(0, 0, 0, 0.85);
+        background-color: rgba(0, 0, 0, 0.8);
         backdrop-filter: blur(10px);
         z-index: 999;
-        border-bottom: 1px solid #00d4ff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
         justify-content: center;
-        height: 70px;
     }
 
     .header-content {
         width: 100%;
         max-width: 1100px;
-        padding: 15px 2rem;
-        text-align: center;
+        padding: 10px 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     header[data-testid="stHeader"] { visibility: hidden; }
     .stApp { background: transparent !important; }
 
-    .fixed-header h1 { font-size: 1.6rem !important; font-weight: 700 !important; margin: 0; color: white; }
+    .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
 
-    /* Botones personalizados */
+    /* Estilo para el Expander (botón de fluidos) */
+    .stExpander {
+        background: rgba(0, 0, 0, 0.4) !important;
+        border: 1px solid #00d4ff !important;
+        border-radius: 10px !important;
+    }
+
     .stButton > button {
         width: 100%;
         background-color: #1a5276 !important;
         color: white !important;
-        border: 1px solid #00d4ff !important;
+        border-radius: 8px;
+        font-weight: bold;
     }
 
     p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
@@ -104,8 +125,8 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR CONTENIDO ---
-fluidos = {
+# --- DATOS DE FLUIDOS ---
+fluidos_base = {
     "Agua Destilada": 0.5,
     "Agua Potable": 500,
     "Agua de Mar": 50000,
@@ -114,27 +135,17 @@ fluidos = {
     "Ácido Sulfúrico (30%)": 700000
 }
 
-with st.sidebar:
-    st.markdown("### 📋 Tabla de Conductividades")
-    st.write("Valores de referencia para ajustar σ:")
-
-# --- PANTALLA PRINCIPAL ---
-col_btn, _ = st.columns([1, 2])
-with col_btn:
-    # Este botón ayuda a que el usuario sepa que existe una barra lateral
-    if st.button("📋 Ver Tabla de Fluidos"):
-        st.info("Desliza tu mouse hacia el borde izquierdo de la pantalla o busca la flecha arriba a la izquierda.")
-
+# --- LÓGICA DE UNIDADES ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
-# Actualizar tabla del sidebar
-with st.sidebar:
+# BOTÓN DE FLUIDOS (Debajo del título, arriba a la izquierda)
+with st.expander("📋 Ver Referencia de Conductividades"):
     if sistema == "Métrico (T, μS/cm, m)":
-        unit = "μS/cm"
-        tabla = {f: f"{v:,} {unit}" for f, v in fluidos.items()}
+        u_label = "μS/cm"
+        tabla = {f: f"{v:,} {u_label}" for f, v in fluidos_base.items()}
     else:
-        unit = "μmhos/in"
-        tabla = {f: f"{v * 2.54:,} {unit}" for f, v in fluidos.items()}
+        u_label = "μmhos/in"
+        tabla = {f: f"{v * 2.54:,} {u_label}" for f, v in fluidos_base.items()}
     st.table(list(tabla.items()))
 
 if sistema == "Métrico (T, μS/cm, m)":
@@ -151,6 +162,8 @@ else:
     conv_q = 15850.3
 
 st.write("---")
+
+# --- PARÁMETROS ---
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 col1, col2, col3 = st.columns(3, gap="large")
 
@@ -166,34 +179,59 @@ with col3:
 
 st.write("---")
 
+# --- FACTOR DE ERROR ---
+if 'edit_error' not in st.session_state:
+    st.session_state.edit_error = False
+
+st.markdown("#### Factor de Error del Sistema")
+c_err1, c_err2 = st.columns([1, 3]) 
+with c_err1:
+    if st.button('🔄 Cambiar Factor'):
+        st.session_state.edit_error = not st.session_state.edit_error
+with c_err2:
+    error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
+
+# --- CÁLCULOS ---
+if sistema == "Americano (G, mhos/in, in)":
+    B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
+else:
+    B_si, D_si, sigma_si = B_user, D_user, sigma_user
+
 if st.button('🚀 Generar curva de calibración'):
     placeholder = st.empty()
     with placeholder.container():
         st.markdown(f"""
-            <div style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:9999; text-align:center; background:rgba(0,0,0,0.9); padding:20px; border-radius:20px; border:2px solid #00d4ff;">
+            <div class="loading-overlay">
                 <img src="{URL_GIF}" width="360">
-                <p style="color:#00d4ff; font-weight:bold;">Simulando flujo...</p>
+                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.2rem;">Calculando flujo electromagnético...</p>
             </div>
         """, unsafe_allow_html=True)
         time.sleep(2.5)
     placeholder.empty()
 
-    A_m2 = np.pi * (D_user / 2)**2 if sistema == "Métrico (T, μS/cm, m)" else np.pi * ((D_user * 0.0254) / 2)**2
+    A_m2 = np.pi * (D_si / 2)**2
     v = np.linspace(0.1, 5.0, 100)
-    # Ecuación de Faraday simplificada V = B * D * v
-    # En sistema americano convertimos unidades para el cálculo
-    B_calc = B_user if sistema == "Métrico (T, μS/cm, m)" else B_user / 10000.0
-    D_calc = D_user if sistema == "Métrico (T, μS/cm, m)" else D_user * 0.0254
-    
-    V_mv = (B_calc * D_calc * v * 1000) 
+    f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
+    V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v) * conv_q
+    m_eq = V_mv[-1] / Q_plot[-1]
 
-    fig, ax = plt.subplots(figsize=(10, 4))
     plt.style.use('dark_background')
-    ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=2)
-    ax.set_xlabel(f"Caudal ({u_q})")
-    ax.set_ylabel("Voltaje (mV)")
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=3)
+    ax.set_xlabel(f'Caudal Q ({u_q})')
+    ax.set_ylabel('Voltaje V (mV)')
+    fig.patch.set_alpha(0.0)
+    ax.set_facecolor('none')
     st.pyplot(fig)
+
+    st.markdown(f"""
+        <div class="equation-box">
+            <div class="equation-large">
+                V<sub>(mV)</sub> = {m_eq:.4f} · Q<sub>({u_q})</sub>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
