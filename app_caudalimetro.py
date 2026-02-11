@@ -102,7 +102,6 @@ st.markdown("""
     <div class="fixed-header">
         <div class="header-content">
             <h1>Simulación de Caudalímetro Electromagnético</h1>
-            <h3>Por: Adriana Teixeira Mendoza</h3>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -215,3 +214,4 @@ if st.session_state.generado:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
+
