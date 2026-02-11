@@ -21,16 +21,6 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
     /* Fondo de imagen base (Nítida) */
-    [data-testid="stAppViewContainer"] {
-        background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }
-
-    /* CAPA CENTRAL CON DESENFOQUE (Glassmorphism) */
-    /* Aquí es donde sucede la magia: el linear-gradient tiene transparencia */
     [data-testid="stAppViewContainer"]::before {
     content: "";
     position: fixed;
@@ -51,8 +41,12 @@ st.markdown("""
     -webkit-backdrop-filter: blur(3px);
 
     z-index: 0;
-}
+    }
 
+
+    /* CAPA CENTRAL CON DESENFOQUE (Glassmorphism) */
+    /* Aquí es donde sucede la magia: el linear-gradient tiene transparencia */
+    
     /* Forzar que el contenido esté sobre el desenfoque */
     .block-container {
         position: relative;
@@ -333,6 +327,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
