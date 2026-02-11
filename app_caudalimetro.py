@@ -35,13 +35,14 @@ section[data-testid="stSidebar"] {
 
 div[data-testid="collapsedControl"] {
     position: fixed !important;
-    top: 14px !important;
-    left: 14px !important;
-    z-index: 5000 !important;
-    background-color: rgba(0,0,0,0.8) !important;
-    padding: 6px 10px !important;
-    border-radius: 8px !important;
+    top: 18px !important;
+    left: 18px !important;
+    z-index: 99999 !important;
+    background-color: rgba(0,0,0,0.9) !important;
+    padding: 8px 12px !important;
+    border-radius: 10px !important;
     border: 1px solid #00d4ff !important;
+
 }
 
 
