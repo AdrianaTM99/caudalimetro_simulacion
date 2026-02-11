@@ -9,14 +9,53 @@ st.set_page_config(layout="wide", page_title="Simulador Adriana")
 # ENLACE RAW CORREGIDO
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
-# 2. CSS Maestro
+# 2. CSS Maestro con efecto de desenfoque SOLO en el centro
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* ESTILO PARA EL RECUADRO DE LA ECUACIÓN */
+    /* Fondo de imagen base (Nítida) */
+    [data-testid="stAppViewContainer"] {
+        background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+
+    /* CAPA CENTRAL CON DESENFOQUE (Glassmorphism) */
+    /* Aquí es donde sucede la magia: el linear-gradient tiene transparencia */
+    [data-testid="stAppViewContainer"]::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 1150px; /* Ajustado al ancho del contenido */
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.6); /* Color negro con 60% de opacidad */
+        
+        /* ESTA ES LA LÍNEA QUE DESENFOCA SOLO EL CENTRO */
+        backdrop-filter: blur(20px); 
+        -webkit-backdrop-filter: blur(20px);
+        
+        z-index: 0;
+    }
+
+    /* Forzar que el contenido esté sobre el desenfoque */
+    .block-container {
+        position: relative;
+        z-index: 1;
+        font-family: 'Roboto', sans-serif;
+        max-width: 1100px !important;
+        margin: 0 auto !important;
+        padding: 100px 2rem 4rem 2rem !important;
+        color: white !important;
+    }
+
     .equation-box {
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0, 0, 0, 0.5);
         border: 2px solid #00d4ff;
         border-radius: 15px;
         padding: 30px;
@@ -28,10 +67,8 @@ st.markdown("""
         font-size: 3rem !important;
         color: #00d4ff;
         font-weight: 700;
-        font-family: 'Roboto', sans-serif;
     }
 
-    /* ESTILO PARA LA CAPA DE CARGA */
     .loading-overlay {
         position: fixed;
         top: 50%;
@@ -39,34 +76,10 @@ st.markdown("""
         transform: translate(-50%, -50%);
         z-index: 9999;
         text-align: center;
-        background: rgba(0, 0, 0, 0.9);
+        background: rgba(0, 0, 0, 0.95);
         padding: 20px;
         border-radius: 25px;
         border: 2px solid #00d4ff;
-        box-shadow: 0px 0px 30px rgba(0, 212, 255, 0.6);
-    }
-
-    /* --- AQUÍ ESTÁ EL CAMBIO DEL DESENFOQUE --- */
-    [data-testid="stAppViewContainer"] {
-        background-image: 
-            linear-gradient(
-                to right, 
-                transparent 0%, 
-                transparent calc(50% - 550px), 
-                rgba(0, 0, 0, 0.5) calc(50% - 550px), 
-                rgba(0, 0, 0, 0.5) calc(50% + 550px), 
-                transparent calc(50% + 550px), 
-                transparent 100%
-            ),
-            url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        
-        /* Modifica este valor (20px) para aumentar o disminuir el desenfoque */
-        backdrop-filter: blur(20000px); 
-        -webkit-backdrop-filter: blur(200000px);
     }
 
     .fixed-header {
@@ -74,8 +87,8 @@ st.markdown("""
         top: 0;
         left: 0;
         width: 100vw;
-        background-color: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(8px);
+        background-color: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
         z-index: 999;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         display: flex;
@@ -93,14 +106,6 @@ st.markdown("""
 
     header[data-testid="stHeader"] { visibility: hidden; }
     .stApp { background: transparent !important; }
-
-    .block-container {
-        font-family: 'Roboto', sans-serif;
-        max-width: 1100px !important;
-        margin: 0 auto !important;
-        padding: 100px 2rem 4rem 2rem !important;
-        color: white !important;
-    }
 
     .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; font-weight: 300 !important; margin: 0; color: white; }
@@ -124,7 +129,6 @@ st.markdown("""
         padding: 0.8rem;
         font-size: 1.2rem;
         font-weight: bold;
-        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
@@ -162,13 +166,13 @@ col1, col2, col3 = st.columns(3, gap="large")
 
 with col1:
     B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(b_def))
-    B_user = st.slider(f'Ajustar B', float(b_min), float(b_max), float(B_val), label_visibility="collapsed")
+    B_user = st.slider(f'Ajustar B', float(b_min), float(b_max), float(B_val), key="B_slider", label_visibility="collapsed")
 with col2:
     sig_val = st.number_input(f'σ: Conductividad ({u_sig})', float(sig_min), float(sig_max), float(sig_def))
-    sigma_user = st.slider(f'Ajustar σ', float(sig_min), float(sig_max), float(sig_val), label_visibility="collapsed")
+    sigma_user = st.slider(f'Ajustar σ', float(sig_min), float(sig_max), float(sig_val), key="sig_slider", label_visibility="collapsed")
 with col3:
     D_val = st.number_input(f'D: Diámetro ({u_d})', float(d_min), float(d_max), float(d_def), format="%.4f")
-    D_user = st.slider(f'Ajustar D', float(d_min), float(d_max), float(D_val), label_visibility="collapsed")
+    D_user = st.slider(f'Ajustar D', float(d_min), float(d_max), float(D_val), key="D_slider", label_visibility="collapsed")
 
 st.write("---")
 
@@ -185,6 +189,7 @@ with c_err2:
 
 # --- CÁLCULOS ---
 if sistema == "Americano (G, mhos/in, in)":
+    # Corregido: Usar B_user para B_si
     B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
 else:
     B_si, D_si, sigma_si = B_user, D_user, sigma_user
@@ -227,5 +232,3 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
-
-
