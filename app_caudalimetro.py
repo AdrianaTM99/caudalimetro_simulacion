@@ -7,7 +7,7 @@ import time
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
 # Enlaces para la animación
-URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20chikito.gif"
+URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/blob/main/caudalimetro%20con%20rayitas_3.gif"
 
 # 2. CSS Maestro
 st.markdown("""
@@ -31,7 +31,7 @@ st.markdown("""
         font-family: 'Roboto', sans-serif;
     }
 
-    /* ESTILO PARA LA CAPA DE CARGA (Ajustado para imagen más grande) */
+    /* ESTILO PARA LA CAPA DE CARGA */
     .loading-overlay {
         position: fixed;
         top: 50%;
@@ -39,12 +39,11 @@ st.markdown("""
         transform: translate(-50%, -50%);
         z-index: 9999;
         text-align: center;
-        background: rgba(0, 0, 0, 0.9); /* Un poco más opaco para que resalte el GIF */
-        padding: 50px;
-        border-radius: 30px;
+        background: rgba(0, 0, 0, 0.85);
+        padding: 40px;
+        border-radius: 20px;
         border: 2px solid #00d4ff;
-        box-shadow: 0px 0px 40px rgba(0, 212, 255, 0.6);
-        min-width: 550px; /* Asegura espacio para el GIF grande */
+        box-shadow: 0px 0px 20px rgba(0, 212, 255, 0.5);
     }
 
     [data-testid="stAppViewContainer"] {
@@ -172,6 +171,7 @@ if 'edit_error' not in st.session_state:
     st.session_state.edit_error = False
 
 st.markdown("#### Factor de Error del Sistema")
+# AQUÍ CAMBIÉ EL ORDEN: Botón a la izquierda (columna 1) y Slider a la derecha (columna 2)
 c_err1, c_err2 = st.columns([1, 3]) 
 with c_err1:
     if st.button('🔄 Cambiar Factor'):
@@ -190,8 +190,8 @@ if st.button('🚀 Generar curva de calibración'):
     with placeholder.container():
         st.markdown(f"""
             <div class="loading-overlay">
-                <img src="{URL_GIF}" width="500">
-                <p style="color:#00d4ff; font-weight:bold; margin-top:20px; font-size:1.5rem;">Procesando simulación...</p>
+                <img src="{URL_GIF}" width="280">
+                <p style="color:#00d4ff; font-weight:bold; margin-top:15px; font-size:1.2rem;">Procesando simulación...</p>
             </div>
         """, unsafe_allow_html=True)
         time.sleep(2.0)
