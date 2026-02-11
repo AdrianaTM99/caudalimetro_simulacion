@@ -5,7 +5,7 @@ import time
 
 # 1. Configuración de la página
 st.set_page_config(
-    layout="centered",
+    layout="wide",
     page_title="Simulador Adriana",
     initial_sidebar_state="auto"
 )
@@ -392,5 +392,6 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
