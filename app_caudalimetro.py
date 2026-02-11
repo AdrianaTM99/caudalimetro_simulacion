@@ -196,7 +196,7 @@ if st.button('🚀 Generar curva de calibración'):
         st.markdown(f"""
             <div class="loading-overlay">
                 <img src="{URL_GIF}" width="360">
-                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.2rem;">Calculando flujo electromagnético...</p>
+                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.2rem;">
             </div>
         """, unsafe_allow_html=True)
         time.sleep(2.5)
@@ -228,3 +228,4 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
