@@ -34,7 +34,7 @@ st.markdown("""
 /* BARRA SUPERIOR DEL TÍTULO */
 .title-bar {
     position: fixed;
-    top: 0.000001;
+    top: 0;
     left: 0;
     width: 100%;
     background: rgba(0,0,0,0.6);
@@ -372,6 +372,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
