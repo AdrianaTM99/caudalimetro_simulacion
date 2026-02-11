@@ -103,12 +103,6 @@ div[data-testid="stSlider"] [role="slider"] {
     color: white !important;
 }
 
-.fixed-header h1 {
-    margin: 0;
-    font-size: 1.8rem;
-    color: white;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -152,21 +146,7 @@ div[data-testid="collapsedControl"] {
     border: 1px solid #00d4ff !important;
 }
 
-/* HEADER SIEMPRE ENCIMA */
-.fixed-header {
-    z-index: 1001 !important;
-}
-
 </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<div class="main-title">
-Simulador de Caudalímetro Electromagnético
-</div>
-<div class="subtitle">
-Modelado y calibración digital de flujo industrial
-</div>
 """, unsafe_allow_html=True)
 
 
@@ -314,6 +294,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
