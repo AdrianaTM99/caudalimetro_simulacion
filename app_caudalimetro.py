@@ -24,7 +24,6 @@ st.markdown("""
     }
 
     /* CAPA CENTRAL CON DESENFOQUE (Glassmorphism) */
-    /* Aquí es donde sucede la magia: el linear-gradient tiene transparencia */
     [data-testid="stAppViewContainer"]::before {
         content: "";
         position: fixed;
@@ -32,18 +31,18 @@ st.markdown("""
         left: 50%;
         transform: translateX(-50%);
         width: 100%;
-        max-width: 1150px; /* Ajustado al ancho del contenido */
+        max-width: 1150px; 
         height: 100vh;
-        background: rgba(0, 0, 0, 0.6); /* Color negro con 60% de opacidad */
+        background: rgba(0, 0, 0, 0.6); 
         
-        /* ESTA ES LA LÍNEA QUE DESENFOCA SOLO EL CENTRO */
+        /* DESENFOQUE SUAVE (3px como pediste) */
         backdrop-filter: blur(3px); 
         -webkit-backdrop-filter: blur(3px);
         
         z-index: 0;
     }
 
-    /* Forzar que el contenido esté sobre el desenfoque */
+    /* Contenido sobre el desenfoque */
     .block-container {
         position: relative;
         z-index: 1;
@@ -108,7 +107,6 @@ st.markdown("""
     .stApp { background: transparent !important; }
 
     .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
-    .fixed-header h3 { font-size: 1.1rem !important; font-weight: 300 !important; margin: 0; color: white; }
 
     div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
         border: 2px solid #00d4ff !important;
@@ -188,7 +186,6 @@ with c_err2:
 
 # --- CÁLCULOS ---
 if sistema == "Americano (G, mhos/in, in)":
-    # Corregido: Usar B_user para B_si
     B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
 else:
     B_si, D_si, sigma_si = B_user, D_user, sigma_user
@@ -198,7 +195,7 @@ if st.button('🚀 Generar curva de calibración'):
     with placeholder.container():
         st.markdown(f"""
             <div class="loading-overlay">
-                <img src="{URL_GIF}" width="450">
+                <img src="{URL_GIF}" width="360">
                 <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.2rem;">Calculando flujo electromagnético...</p>
             </div>
         """, unsafe_allow_html=True)
@@ -231,8 +228,3 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
-
-
-
-
-
