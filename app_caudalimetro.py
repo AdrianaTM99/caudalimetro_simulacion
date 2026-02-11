@@ -7,7 +7,7 @@ import time
 st.set_page_config(
     layout="centered",
     page_title="Simulador Adriana",
-    initial_sidebar_state="auto"
+    initial_sidebar_state="wide"
 )
 
 
@@ -94,12 +94,12 @@ st.markdown("""
     position: relative;
     z-index: 1;
     font-family: 'Roboto', sans-serif;
-    width: 1100px !important;
     max-width: 1100px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+    width: 100% !important;
+    margin: 0 auto !important;
     padding: 180px 2rem 4rem 2rem !important;
     color: white !important;
+
 }
 
 
@@ -392,3 +392,4 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
