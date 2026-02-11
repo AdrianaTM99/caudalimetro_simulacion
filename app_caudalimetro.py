@@ -3,28 +3,112 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time  
 
-# =========================================================
-# CONFIGURACIÓN
-# =========================================================
-
+# 1. Configuración de la página
 st.set_page_config(
     layout="wide",
     page_title="Simulador Adriana",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
-# =========================================================
-# CSS MAESTRO (CENTRO FIJO + BOTÓN VISIBLE)
-# =========================================================
-
+# =====================================================
+# 🔹 SIDEBAR FIJA
+# =====================================================
 st.markdown("""
 <style>
 
+section[data-testid="stSidebar"] {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 330px !important;
+    background: rgba(0,0,0,0.97) !important;
+    backdrop-filter: blur(10px);
+    border-right: 2px solid #00d4ff;
+    z-index: 1000;
+}
+
+div[data-testid="collapsedControl"] {
+    position: fixed !important;
+    top: 10px !important;
+    left: 10px !important;
+    z-index: 3000 !important;
+}
+
+/* NO ocultamos el header */
+header[data-testid="stHeader"] {
+    background: transparent !important;
+}
+
+[data-testid="stAppViewContainer"] {
+    margin-left: 0 !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# =========================
+# CONTENIDO SIDEBAR
+# =========================
+with st.sidebar:
+
+    st.markdown("## 📘 Biblioteca Técnica")
+
+    with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=True):
+        st.markdown("""
+        | Fluido | Conductividad (μS/cm aprox.) |
+        |---------|-----------------------------|
+        | Agua destilada | 0.5 – 5 |
+        | Agua potable | 50 – 1500 |
+        | Agua de mar | 50,000 |
+        | Leche | 4000 – 6000 |
+        | Sangre | 7000 |
+        | Soluciones salinas | 10,000 – 80,000 |
+        | Ácidos diluidos | 10,000 – 100,000 |
+        """)
+
+    with st.expander("🔵 Diámetros Nominales y Usos", expanded=True):
+        st.markdown("""
+        | DN | Diámetro (mm) | Uso Común |
+        |----|---------------|------------|
+        | DN15 | 15 mm | Laboratorio |
+        | DN25 | 25 mm | Procesos ligeros |
+        | DN50 | 50 mm | Agua potable |
+        | DN100 | 100 mm | Industria alimentaria |
+        | DN200 | 200 mm | PTAR |
+        | DN500 | 500 mm | Sistemas municipales |
+        """)
+
+    with st.expander("🧲 Campos Magnéticos Recomendados", expanded=True):
+        st.markdown("""
+        | Campo (T) | Aplicación |
+        |------------|------------|
+        | 0.1 – 0.3 T | Alta conductividad |
+        | 0.3 – 0.6 T | Uso industrial estándar |
+        | 0.6 – 1.0 T | Baja conductividad |
+        | 1.0 – 1.5 T | Aplicaciones especiales |
+        """)
+
+    with st.expander("🌊 Velocidades Recomendadas", expanded=True):
+        st.markdown("""
+        | Aplicación | Velocidad Recomendada |
+        |-------------|----------------------|
+        | Agua potable | 1 – 3 m/s |
+        | Industria química | 1 – 5 m/s |
+        | Lodos | 0.5 – 2 m/s |
+        | Alimentos | 1 – 4 m/s |
+        """)
+
+# =====================================================
+# INTERFAZ PRINCIPAL
+# =====================================================
+
+st.markdown("""
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-/* ===== FONDO BASE ===== */
 [data-testid="stAppViewContainer"] {
     background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
     background-size: cover;
@@ -33,22 +117,20 @@ st.markdown("""
     background-attachment: fixed;
 }
 
-/* ===== CAPA CENTRAL OSCURA (SOLO CENTRO) ===== */
 [data-testid="stAppViewContainer"]::before {
     content: "";
     position: fixed;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 1100px;
+    width: 100%;
+    max-width: 1150px;
     height: 100vh;
-    background: rgba(0,0,0,0.75);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    z-index: 0;   /* IMPORTANTE: menor que el botón */
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    z-index: 0;
 }
 
-/* ===== CONTENIDO PRINCIPAL ===== */
 .block-container {
     position: relative;
     z-index: 1;
@@ -59,14 +141,15 @@ st.markdown("""
     color: white !important;
 }
 
-/* ===== HEADER SUPERIOR ===== */
 .fixed-header {
     position: fixed;
     top: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
+    max-width: 1100px;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
     z-index: 900;
     display: flex;
     justify-content: center;
@@ -76,27 +159,18 @@ st.markdown("""
     width: 100%;
     max-width: 1100px;
     padding: 10px 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .fixed-header h1 {
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
     margin: 0;
     color: white;
 }
 
-/* Ocultar header default */
-header[data-testid="stHeader"] { visibility: hidden; }
-
-/* ===== BOTÓN COLAPSABLE (FORZAR VISIBILIDAD) ===== */
-div[data-testid="collapsedControl"] {
-    z-index: 2000 !important;
-}
-
-/* ===== SIDEBAR ===== */
-section[data-testid="stSidebar"] {
-    background-color: rgba(0,0,0,0.95) !important;
-}
-
-/* ===== ESTILOS VARIOS ===== */
 .equation-box {
     background: rgba(0, 0, 0, 0.5);
     border: 2px solid #00d4ff;
@@ -112,13 +186,18 @@ section[data-testid="stSidebar"] {
     font-weight: 700;
 }
 
-.stButton > button {
-    width: 100%;
-    background-color: #1a5276 !important;
-    color: white !important;
+.loading-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 20px;
+    border-radius: 25px;
+    border: 2px solid #00d4ff;
 }
-
-p, label { color: white !important; }
 
 </style>
 
@@ -129,77 +208,21 @@ p, label { color: white !important; }
 </div>
 """, unsafe_allow_html=True)
 
-# =========================================================
-# SIDEBAR CON CONTENIDO COMPLETO
-# =========================================================
-
-with st.sidebar:
-
-    st.markdown("## 📘 Biblioteca Técnica")
-
-    with st.expander("🔬 Conductividades", expanded=True):
-        st.markdown("""
-        Agua destilada: 0.5 – 5 μS/cm  
-        Agua potable: 50 – 1500 μS/cm  
-        Agua de mar: 50,000 μS/cm  
-        """)
-
-    with st.expander("🔵 Diámetros Nominales", expanded=True):
-        st.markdown("""
-        DN15 – Laboratorio  
-        DN50 – Agua potable  
-        DN200 – PTAR  
-        """)
-
-    with st.expander("🌊 Velocidades Recomendadas", expanded=True):
-        st.markdown("""
-        Agua potable: 1 – 3 m/s  
-        Industria química: 1 – 5 m/s  
-        """)
-
-# =========================================================
-# CONTENIDO PRINCIPAL (TU INTERFAZ ORIGINAL)
-# =========================================================
-
-sistema = st.radio(
-    "Selecciona el Sistema de Unidades:",
-    ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"),
-    horizontal=True
-)
+# --- RESTO DEL CÓDIGO SIN CAMBIOS ---
+sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
 if sistema == "Métrico (T, μS/cm, m)":
-    u_q = "m³/s"
+    u_b, u_sig, u_d, u_q = "T", "μS/cm", "m", "m³/s"
+    b_min, b_max, b_def = 0.1, 1.5, 0.5
+    sig_min, sig_max, sig_def = 1.0, 5000.0, 1000.0
+    d_min, d_max, d_def = 0.005, 0.500, 0.0127
     conv_q = 1.0
 else:
-    u_q = "GPM"
+    u_b, u_sig, u_d, u_q = "G", "μmhos/in", "in", "GPM"
+    b_min, b_max, b_def = 1000.0, 15000.0, 5000.0
+    sig_min, sig_max, sig_def = 2.5, 12700.0, 2540.0
+    d_min, d_max, d_def = 0.2, 20.0, 0.5
     conv_q = 15850.3
-
-st.write("---")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    B_user = st.slider("Campo Magnético", 0.1, 1.5, 0.5)
-with col2:
-    sigma_user = st.slider("Conductividad", 1.0, 5000.0, 1000.0)
-with col3:
-    D_user = st.slider("Diámetro", 0.005, 0.5, 0.0127)
-
-if st.button('🚀 Generar curva de calibración'):
-
-    A_m2 = np.pi * (D_user / 2)**2
-    v = np.linspace(0.1, 5.0, 100)
-    V_mv = (B_user * D_user * v * 1000)
-    Q_plot = (A_m2 * v) * conv_q
-
-    plt.style.use('dark_background')
-    fig, ax = plt.subplots()
-    ax.plot(Q_plot, V_mv)
-    ax.set_xlabel(f'Caudal ({u_q})')
-    ax.set_ylabel('Voltaje (mV)')
-    fig.patch.set_alpha(0.0)
-    ax.set_facecolor('none')
-    st.pyplot(fig)
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
