@@ -213,5 +213,6 @@ if st.session_state.generado:
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.write("---")
-st.caption("Adriana Teixeira Mendoza 2026")
+st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
