@@ -189,7 +189,7 @@ st.markdown("""
         align-items: center;
     }
 
-    header[data-testid="stHeader"] { visibility: hidden; }
+    header[data-testid="stHeader"] { visibility: visible; }
     .stApp { background: transparent !important; }
 
     .fixed-header h1 { 
@@ -308,3 +308,4 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
