@@ -9,7 +9,7 @@ st.set_page_config(layout="wide", page_title="Simulador Adriana")
 # ENLACE RAW CORREGIDO
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
-# 2. CSS Maestro con corrección para el botón del Sidebar
+# 2. CSS Maestro (Reforzado)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -21,16 +21,6 @@ st.markdown("""
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
-    }
-
-    /* BOTÓN DEL SIDEBAR (FLECHA): Forzar visibilidad y color */
-    [data-testid="stSidebarCollapseButton"] {
-        background-color: rgba(0, 212, 255, 0.2) !important;
-        color: #00d4ff !important;
-        border-radius: 50% !important;
-        top: 15px !important;
-        left: 15px !important;
-        z-index: 10000;
     }
 
     /* CAPA CENTRAL CON DESENFOQUE */
@@ -51,9 +41,13 @@ st.markdown("""
 
     /* Estilo para el Sidebar */
     [data-testid="stSidebar"] {
-        background-color: rgba(0, 0, 0, 0.8) !important;
-        backdrop-filter: blur(10px);
-        border-right: 1px solid #00d4ff;
+        background-color: rgba(0, 0, 0, 0.9) !important;
+        border-right: 2px solid #00d4ff !important;
+    }
+    
+    /* Hacer que el botón de cerrar de la barra lateral sea visible */
+    [data-testid="stSidebarNav"] + div {
+        color: #00d4ff !important;
     }
 
     .block-container {
@@ -62,31 +56,8 @@ st.markdown("""
         font-family: 'Roboto', sans-serif;
         max-width: 1100px !important;
         margin: 0 auto !important;
-        padding: 100px 2rem 4rem 2rem !important;
+        padding: 80px 2rem 4rem 2rem !important;
         color: white !important;
-    }
-
-    .equation-box {
-        background: rgba(0, 0, 0, 0.5);
-        border: 2px solid #00d4ff;
-        border-radius: 15px;
-        padding: 30px;
-        margin: 20px auto;
-        text-align: center;
-        box-shadow: 0px 0px 15px rgba(0, 212, 255, 0.3);
-    }
-
-    .loading-overlay {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 9999;
-        text-align: center;
-        background: rgba(0, 0, 0, 0.95);
-        padding: 20px;
-        border-radius: 25px;
-        border: 2px solid #00d4ff;
     }
 
     .fixed-header {
@@ -94,41 +65,33 @@ st.markdown("""
         top: 0;
         left: 0;
         width: 100vw;
-        background-color: rgba(0, 0, 0, 0.8);
+        background-color: rgba(0, 0, 0, 0.85);
         backdrop-filter: blur(10px);
         z-index: 999;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid #00d4ff;
         display: flex;
         justify-content: center;
+        height: 70px;
     }
 
     .header-content {
         width: 100%;
         max-width: 1100px;
-        padding: 10px 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        padding: 15px 2rem;
+        text-align: center;
     }
 
     header[data-testid="stHeader"] { visibility: hidden; }
     .stApp { background: transparent !important; }
 
-    .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
+    .fixed-header h1 { font-size: 1.6rem !important; font-weight: 700 !important; margin: 0; color: white; }
 
-    div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
-        border: 2px solid #00d4ff !important;
-        background-color: #000000 !important;
-    }
-    div[data-testid="stRadio"] [data-baseweb="radio"][aria-checked="true"] > div:first-child > div {
-        background-color: #00d4ff !important;
-    }
-
+    /* Botones personalizados */
     .stButton > button {
         width: 100%;
         background-color: #1a5276 !important;
         color: white !important;
-        font-weight: bold;
+        border: 1px solid #00d4ff !important;
     }
 
     p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
@@ -141,33 +104,38 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR: LISTA DE CONDUCTIVIDADES ---
-with st.sidebar:
-    st.markdown("### 📋 Referencia de Fluidos")
-    st.write("Conductividades típicas para configurar el parámetro σ.")
-    
-    fluidos = {
-        "Agua Destilada": 0.5,
-        "Agua Potable": 500,
-        "Agua de Mar": 50000,
-        "Leche": 5000,
-        "Zumo de Frutas": 3000,
-        "Ácido Sulfúrico (30%)": 700000
-    }
+# --- SIDEBAR CONTENIDO ---
+fluidos = {
+    "Agua Destilada": 0.5,
+    "Agua Potable": 500,
+    "Agua de Mar": 50000,
+    "Leche": 5000,
+    "Zumo de Frutas": 3000,
+    "Ácido Sulfúrico (30%)": 700000
+}
 
-# --- LÓGICA DE UNIDADES ---
+with st.sidebar:
+    st.markdown("### 📋 Tabla de Conductividades")
+    st.write("Valores de referencia para ajustar σ:")
+
+# --- PANTALLA PRINCIPAL ---
+col_btn, _ = st.columns([1, 2])
+with col_btn:
+    # Este botón ayuda a que el usuario sepa que existe una barra lateral
+    if st.button("📋 Ver Tabla de Fluidos"):
+        st.info("Desliza tu mouse hacia el borde izquierdo de la pantalla o busca la flecha arriba a la izquierda.")
+
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
+# Actualizar tabla del sidebar
 with st.sidebar:
     if sistema == "Métrico (T, μS/cm, m)":
-        unit_label = "μS/cm"
-        tabla_data = {f: f"{v:,} {unit_label}" for f, v in fluidos.items()}
+        unit = "μS/cm"
+        tabla = {f: f"{v:,} {unit}" for f, v in fluidos.items()}
     else:
-        unit_label = "μmhos/in"
-        tabla_data = {f: f"{v * 2.54:,} {unit_label}" for f, v in fluidos.items()}
-    
-    st.table(list(tabla_data.items()))
-    st.info("Puedes cerrar esta barra con la flecha de arriba.")
+        unit = "μmhos/in"
+        tabla = {f: f"{v * 2.54:,} {unit}" for f, v in fluidos.items()}
+    st.table(list(tabla.items()))
 
 if sistema == "Métrico (T, μS/cm, m)":
     u_b, u_sig, u_d, u_q = "T", "μS/cm", "m", "m³/s"
@@ -183,8 +151,6 @@ else:
     conv_q = 15850.3
 
 st.write("---")
-
-# --- PARÁMETROS ---
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 col1, col2, col3 = st.columns(3, gap="large")
 
@@ -200,33 +166,33 @@ with col3:
 
 st.write("---")
 
-# --- BOTÓN DE CÁLCULO ---
 if st.button('🚀 Generar curva de calibración'):
     placeholder = st.empty()
     with placeholder.container():
         st.markdown(f"""
-            <div class="loading-overlay">
+            <div style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:9999; text-align:center; background:rgba(0,0,0,0.9); padding:20px; border-radius:20px; border:2px solid #00d4ff;">
                 <img src="{URL_GIF}" width="360">
-                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.2rem;">Procesando simulación...</p>
+                <p style="color:#00d4ff; font-weight:bold;">Simulando flujo...</p>
             </div>
         """, unsafe_allow_html=True)
         time.sleep(2.5)
     placeholder.empty()
 
-    # Cálculos simplificados para la curva
-    A_m2 = np.pi * (D_si / 2)**2
+    A_m2 = np.pi * (D_user / 2)**2 if sistema == "Métrico (T, μS/cm, m)" else np.pi * ((D_user * 0.0254) / 2)**2
     v = np.linspace(0.1, 5.0, 100)
-    f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
-    V_mv = (B_si * D_si * v * f_cond * 1000)
-    Q_plot = (A_m2 * v) * conv_q
+    # Ecuación de Faraday simplificada V = B * D * v
+    # En sistema americano convertimos unidades para el cálculo
+    B_calc = B_user if sistema == "Métrico (T, μS/cm, m)" else B_user / 10000.0
+    D_calc = D_user if sistema == "Métrico (T, μS/cm, m)" else D_user * 0.0254
     
+    V_mv = (B_calc * D_calc * v * 1000) 
+    Q_plot = (A_m2 * v) * conv_q
+
+    fig, ax = plt.subplots(figsize=(10, 4))
     plt.style.use('dark_background')
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=3)
-    ax.set_xlabel(f'Caudal Q ({u_q})')
-    ax.set_ylabel('Voltaje V (mV)')
-    fig.patch.set_alpha(0.0)
-    ax.set_facecolor('none')
+    ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=2)
+    ax.set_xlabel(f"Caudal ({u_q})")
+    ax.set_ylabel("Voltaje (mV)")
     st.pyplot(fig)
 
 st.write("---")
