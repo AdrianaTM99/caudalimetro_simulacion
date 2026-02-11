@@ -9,18 +9,28 @@ st.set_page_config(layout="wide", page_title="Simulador Adriana")
 # ENLACE RAW CORREGIDO
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
-# 2. CSS Maestro con efecto de desenfoque SOLO en el centro
+# 2. CSS Maestro con corrección para el botón del Sidebar
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Fondo de imagen base (Nítida) */
+    /* Fondo de imagen base */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
+    }
+
+    /* BOTÓN DEL SIDEBAR (FLECHA): Forzar visibilidad y color */
+    [data-testid="stSidebarCollapseButton"] {
+        background-color: rgba(0, 212, 255, 0.2) !important;
+        color: #00d4ff !important;
+        border-radius: 50% !important;
+        top: 15px !important;
+        left: 15px !important;
+        z-index: 10000;
     }
 
     /* CAPA CENTRAL CON DESENFOQUE */
@@ -39,7 +49,7 @@ st.markdown("""
         z-index: 0;
     }
 
-    /* Estilo para el Sidebar (Tabla de la izquierda) */
+    /* Estilo para el Sidebar */
     [data-testid="stSidebar"] {
         background-color: rgba(0, 0, 0, 0.8) !important;
         backdrop-filter: blur(10px);
@@ -64,11 +74,6 @@ st.markdown("""
         margin: 20px auto;
         text-align: center;
         box-shadow: 0px 0px 15px rgba(0, 212, 255, 0.3);
-    }
-    .equation-large {
-        font-size: 3rem !important;
-        color: #00d4ff;
-        font-weight: 700;
     }
 
     .loading-overlay {
@@ -119,16 +124,10 @@ st.markdown("""
         background-color: #00d4ff !important;
     }
 
-    div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
-    div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
-
     .stButton > button {
         width: 100%;
         background-color: #1a5276 !important;
         color: white !important;
-        border-radius: 8px;
-        padding: 0.8rem;
-        font-size: 1.2rem;
         font-weight: bold;
     }
 
@@ -147,7 +146,6 @@ with st.sidebar:
     st.markdown("### 📋 Referencia de Fluidos")
     st.write("Conductividades típicas para configurar el parámetro σ.")
     
-    # Datos base en μS/cm
     fluidos = {
         "Agua Destilada": 0.5,
         "Agua Potable": 500,
@@ -156,28 +154,20 @@ with st.sidebar:
         "Zumo de Frutas": 3000,
         "Ácido Sulfúrico (30%)": 700000
     }
-    
-    # Determinamos el factor de conversión según el sistema seleccionado
-    # El sistema se define abajo, pero Streamlit permite usarlo si está en el flujo
-    # Para evitar errores, definiremos el radio aquí mismo en el sidebar o usaremos una clave.
-    
-    st.markdown("---")
-    st.info("Selecciona el sistema en la pantalla principal para actualizar estas unidades.")
 
-# --- LÓGICA DE UNIDADES (Pantalla Principal) ---
+# --- LÓGICA DE UNIDADES ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
-# Actualizar tabla del sidebar según sistema
 with st.sidebar:
     if sistema == "Métrico (T, μS/cm, m)":
         unit_label = "μS/cm"
         tabla_data = {f: f"{v:,} {unit_label}" for f, v in fluidos.items()}
     else:
         unit_label = "μmhos/in"
-        # Conversión aproximada: 1 μS/cm = 2.54 μmhos/in
         tabla_data = {f: f"{v * 2.54:,} {unit_label}" for f, v in fluidos.items()}
     
     st.table(list(tabla_data.items()))
+    st.info("Puedes cerrar esta barra con la flecha de arriba.")
 
 if sistema == "Métrico (T, μS/cm, m)":
     u_b, u_sig, u_d, u_q = "T", "μS/cm", "m", "m³/s"
@@ -210,23 +200,7 @@ with col3:
 
 st.write("---")
 
-if 'edit_error' not in st.session_state:
-    st.session_state.edit_error = False
-
-st.markdown("#### Factor de Error del Sistema")
-c_err1, c_err2 = st.columns([1, 3]) 
-with c_err1:
-    if st.button('🔄 Cambiar Factor'):
-        st.session_state.edit_error = not st.session_state.edit_error
-with c_err2:
-    error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
-
-# --- CÁLCULOS ---
-if sistema == "Americano (G, mhos/in, in)":
-    B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
-else:
-    B_si, D_si, sigma_si = B_user, D_user, sigma_user
-
+# --- BOTÓN DE CÁLCULO ---
 if st.button('🚀 Generar curva de calibración'):
     placeholder = st.empty()
     with placeholder.container():
@@ -239,13 +213,13 @@ if st.button('🚀 Generar curva de calibración'):
         time.sleep(2.5)
     placeholder.empty()
 
+    # Cálculos simplificados para la curva
     A_m2 = np.pi * (D_si / 2)**2
     v = np.linspace(0.1, 5.0, 100)
     f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
-    V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
+    V_mv = (B_si * D_si * v * f_cond * 1000)
     Q_plot = (A_m2 * v) * conv_q
-    m_eq = V_mv[-1] / Q_plot[-1]
-
+    
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=3)
@@ -254,14 +228,6 @@ if st.button('🚀 Generar curva de calibración'):
     fig.patch.set_alpha(0.0)
     ax.set_facecolor('none')
     st.pyplot(fig)
-
-    st.markdown(f"""
-        <div class="equation-box">
-            <div class="equation-large">
-                V<sub>(mV)</sub> = {m_eq:.4f} · Q<sub>({u_q})</sub>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
