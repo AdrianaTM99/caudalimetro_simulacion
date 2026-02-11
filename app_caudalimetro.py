@@ -13,7 +13,7 @@ st.set_page_config(
 # Enlace RAW
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
-# 2. CSS Maestro
+# 2. CSS Maestro Optimizado para Móvil (Responsive)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -25,21 +25,23 @@ st.markdown("""
         background-size: cover; background-position: center; background-attachment: fixed;
     }
 
+    /* Pantalla de carga compacta y adaptable */
     .loading-overlay {
         position: fixed;
-        top: 50%; 
-        left: 50%; 
-        transform: translate(-50%, -50%) scale(0.8); 
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
         z-index: 9999;
         text-align: center;
         background: rgba(0, 0, 0, 0.9);
-        padding: 40px;
+        padding: 20px;
         border-radius: 20px;
         border: 2px solid #00d4ff;
+        width: 280px; /* Ancho fijo para que no se deforme en móvil */
     }
-
-    div[data-baseweb="radio"] div[aria-checked="true"] { background-color: #00d4ff !important; border-color: #00d4ff !important; }
     
+    .loading-overlay img { width: 180px; height: auto; }
+
+    /* Header fijo para PC */
     .fixed-header {
         position: fixed; top: 0; left: 0; width: 100vw;
         background-color: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
@@ -61,27 +63,39 @@ st.markdown("""
 
     .equation-container {
         background: rgba(0, 212, 255, 0.1); border: 2px solid #00d4ff;
-        border-radius: 15px; padding: 30px; margin: 40px auto;
+        border-radius: 15px; padding: 25px; margin: 20px auto;
         text-align: center; max-width: 850px;
     }
 
     .equation-text {
-        font-size: 3.5rem !important; color: #00d4ff;
+        font-size: 3rem !important; color: #00d4ff;
         font-family: 'Roboto', sans-serif; font-weight: 700;
     }
 
+    /* AJUSTES PARA DISPOSITIVOS MÓVILES */
+    @media (max-width: 768px) {
+        .fixed-header {
+            position: relative !important; /* Deja de flotar para dar espacio */
+            height: auto !important;
+            padding: 20px 10px !important;
+        }
+        .header-content { flex-direction: column; }
+        .fixed-header h3 { position: static !important; transform: none !important; margin-top: 10px !important; }
+        .fixed-header h1 { font-size: 1.3rem !important; text-align: center; }
+        
+        .equation-text { font-size: 1.5rem !important; } /* Ecuación más pequeña en móvil */
+        
+        .loading-overlay { width: 70% !important; scale: 0.8; }
+    }
+
+    div[data-baseweb="radio"] div[aria-checked="true"] { background-color: #00d4ff !important; border-color: #00d4ff !important; }
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     .stButton > button {
         width: 100%; background-color: #1a5276 !important; color: white !important;
         border: 1px solid #00d4ff; border-radius: 8px; font-weight: bold;
     }
 
-    .sidebar-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; color: white; }
-    .sidebar-table th { color: #00d4ff; border-bottom: 1px solid #00d4ff; text-align: left; padding: 8px; }
-    .sidebar-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-
     header[data-testid="stHeader"] { visibility: hidden; }
-    .stApp { background: transparent !important; }
     p, label { font-size: 1.1rem !important; color: white !important; }
     </style>
 
@@ -111,8 +125,8 @@ with st.sidebar:
     st.markdown("### Referencias Técnicas")
     with st.expander("📊 Ver Tabla de Conductividades", expanded=False):
         st.markdown(f"""
-            <table class="sidebar-table">
-                <tr><th>Fluido</th><th>{u_sig}</th></tr>
+            <table style="width:100%; color:white; border-collapse:collapse; font-size:0.9rem;">
+                <tr><th style="border-bottom:1px solid #00d4ff; text-align:left;">Fluido</th><th style="border-bottom:1px solid #00d4ff;">{u_sig}</th></tr>
                 <tr><td>Agua Destilada</td><td>{val_dest}</td></tr>
                 <tr><td>Agua Potable</td><td>{val_pot}</td></tr>
                 <tr><td>Agua de Mar</td><td>{val_mar}</td></tr>
@@ -123,20 +137,20 @@ with st.sidebar:
 st.write("---")
 
 # --- 5. PARÁMETROS ---
-st.markdown(f"#### Configuración de Parámetros ({sistema})")
-col1, col2, col3 = st.columns(3, gap="large")
+st.markdown(f"#### Parámetros ({sistema})")
+col1, col2, col3 = st.columns([1,1,1])
 
 with col1:
-    B_val = st.number_input(f'B: Campo Magnético ({u_b})', float(b_min), float(b_max), float(b_def))
+    B_val = st.number_input(f'B ({u_b})', float(b_min), float(b_max), float(b_def))
     B_user = st.slider(f'S_B', float(b_min), float(b_max), float(B_val), label_visibility="collapsed")
 with col2:
-    sig_val = st.number_input(f'σ: Conductividad ({u_sig})', float(sig_min), float(sig_max), float(sig_def))
+    sig_val = st.number_input(f'σ ({u_sig})', float(sig_min), float(sig_max), float(sig_def))
     sigma_user = st.slider(f'S_Sig', float(sig_min), float(sig_max), float(sig_val), label_visibility="collapsed")
 with col3:
-    D_val = st.number_input(f'D: Diámetro ({u_d})', float(d_min), float(d_max), float(d_def), format="%.4f")
+    D_val = st.number_input(f'D ({u_d})', float(d_min), float(d_max), float(d_def), format="%.4f")
     D_user = st.slider(f'S_D', float(d_min), float(d_max), float(D_val), label_visibility="collapsed")
 
-error_factor = st.slider('Ajuste de Error del Sistema (K)', 0.80, 1.20, 1.00, 0.01)
+error_factor = st.slider('Factor de Ajuste (K)', 0.80, 1.20, 1.00, 0.01)
 
 if 'generado' not in st.session_state:
     st.session_state.generado = False
@@ -144,18 +158,14 @@ if 'generado' not in st.session_state:
 # --- 6. PROCESAMIENTO ---
 if st.button('🚀 Generar curva de calibración'):
     placeholder = st.empty()
-    
     with placeholder.container():
         st.markdown(f"""
             <div class="loading-overlay">
-                <img src="{URL_GIF}" width="300">
-                <br><br>
-                <p style="color:#00d4ff; font-weight:bold; margin-top:15px;">Calculando flujo electromagnético...</p>
+                <img src="{URL_GIF}">
+                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:0.9rem;">Calculando flujo...</p>
             </div>
         """, unsafe_allow_html=True)
-        
         time.sleep(2.0)
-
     placeholder.empty()
         
     if sistema == "Americano (G, mhos/in, in)":
@@ -176,41 +186,32 @@ if st.button('🚀 Generar curva de calibración'):
 
 # --- 7. RESULTADOS ---
 if st.session_state.generado:
-    m_eq = st.session_state.m_eq
-    Q_plot = st.session_state.Q_plot
-    V_mv = st.session_state.V_mv
-
+    fig, ax = plt.subplots(figsize=(10, 5))
     plt.style.use('dark_background')
-    fig, ax = plt.subplots(figsize=(10, 4))
-    ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=3)
+    ax.plot(st.session_state.Q_plot, st.session_state.V_mv, color='#00d4ff', linewidth=3)
     ax.set_xlabel(f'Caudal Q ({u_q})')
     ax.set_ylabel('Voltaje V (mV)')
+    ax.grid(True, alpha=0.2)
     fig.patch.set_alpha(0.0)
     ax.set_facecolor('none')
     st.pyplot(fig)
 
-    
-
     st.markdown(f"""
         <div class="equation-container">
-            <div class="equation-text">V<sub>(mV)</sub> = {m_eq:.4f} · Q<sub>({u_q})</sub></div>
+            <div class="equation-text">V<sub>(mV)</sub> = {st.session_state.m_eq:.4f} · Q</div>
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div style="background-color: rgba(26, 82, 118, 0.4); padding: 25px; border-radius: 12px; border: 1px solid #00d4ff;">', unsafe_allow_html=True)
-    st.markdown('<span style="color: white; font-size: 1.6rem; font-weight: 700;">Calculadora de Predicción</span>', unsafe_allow_html=True)
-    
-    col_a, col_b = st.columns(2)
-    with col_a:
-        q_input = st.number_input(f"Caudal (Q) en {u_q}:", value=1.0, format="%.4f", key="q_in")
-        st.write(f"**Resultado: {q_input * m_eq:.4f} mV**")
-    with col_b:
-        v_input = st.number_input(f"Voltaje (V) en mV:", value=1.0, format="%.4f", key="v_in")
-        st.write(f"**Resultado: {v_input / m_eq if m_eq != 0 else 0:.4f} {u_q}**")
+    st.markdown('<div style="background-color: rgba(26, 82, 118, 0.4); padding: 20px; border-radius: 12px; border: 1px solid #00d4ff;">', unsafe_allow_html=True)
+    st.write("### Calculadora de Predicción")
+    c_a, c_b = st.columns(2)
+    with c_a:
+        q_in = st.number_input(f"Q en {u_q}:", value=1.0, format="%.4f")
+        st.write(f"**V = {q_in * st.session_state.m_eq:.4f} mV**")
+    with c_b:
+        v_in = st.number_input(f"V en mV:", value=1.0, format="%.4f")
+        st.write(f"**Q = {v_in / st.session_state.m_eq if st.session_state.m_eq != 0 else 0:.4f} {u_q}**")
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
-
-
-
