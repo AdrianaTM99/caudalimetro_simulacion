@@ -16,10 +16,14 @@ URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/cauda
 
 # 2. CSS Maestro con efecto de desenfoque SOLO en el centro
 
-st.markdown("""
+sst.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
+/* =============================
+   FONDO GENERAL
+============================= */
 [data-testid="stAppViewContainer"] {
     background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
     background-size: cover;
@@ -27,24 +31,23 @@ st.markdown("""
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
-/* IMPORTAR FUENTE BONITA */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
-/* TÍTULO PRINCIPAL */
-/* BARRA SUPERIOR DEL TÍTULO */
+/* =============================
+   HEADER SUPERIOR
+============================= */
 .title-bar {
     position: fixed;
-    top: 0;
+    top: 10px;  /* 🔥 lo bajamos un poco */
     left: 0;
     width: 100%;
     background: rgba(0,0,0,0.95);
-    padding: 35px 0;
+    padding: 30px 10px;
     text-align: center;
     z-index: 1000;
     border-bottom: 2px solid #00d4ff;
 }
 
-/* TEXTO DEL TÍTULO */
+/* TÍTULO */
 .main-title {
     font-family: 'Poppins', sans-serif;
     font-size: 2.6rem;
@@ -54,8 +57,6 @@ st.markdown("""
     -webkit-text-fill-color: transparent;
     margin: 0;
     padding: 0 15px;
-
-    /* 🔥 CLAVE PARA QUE NO SE CORTE */
     white-space: normal;
     word-wrap: break-word;
 }
@@ -68,9 +69,38 @@ st.markdown("""
     margin-top: 5px;
 }
 
+/* =============================
+   EFECTO DE DESENFOQUE CENTRAL
+============================= */
+[data-testid="stAppViewContainer"]::before {
+    content: "";
+    position: fixed;
+    top: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1150px;
+    height: calc(100vh - 120px);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 0;
+}
 
+/* CONTENIDO */
+.block-container {
+    position: relative;
+    z-index: 1;
+    font-family: 'Roboto', sans-serif;
+    max-width: 1100px !important;
+    margin: 0 auto !important;
+    padding: 170px 2rem 4rem 2rem !important;
+    color: white !important;
+}
 
-/* RADIO BUTTON AZUL */
+/* =============================
+   BOTONES Y SLIDERS
+============================= */
 div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
     border: 2px solid #00d4ff !important;
     background-color: #000 !important;
@@ -80,7 +110,6 @@ div[data-testid="stRadio"] [aria-checked="true"] > div:first-child > div {
     background-color: #00d4ff !important;
 }
 
-/* SLIDER AZUL */
 div[data-testid="stSlider"] > div > div > div > div {
     background-color: #00d4ff !important;
 }
@@ -90,51 +119,21 @@ div[data-testid="stSlider"] [role="slider"] {
     border: 2px solid white !important;
 }
 
-[data-testid="stAppViewContainer"]::before {
-    content: "";
-    position: fixed;
-    top: 70px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 1150px;
-    top: 120px;
-    height: calc(100vh - 120px);
-
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-    z-index: 0;
-}
-
-.block-container {
-    position: relative;
-    z-index: 1;
-    font-family: 'Roboto', sans-serif;
-    max-width: 1100px !important;
-    margin: 0 auto !important;
-    padding: 160px 2rem 4rem 2rem !important;
-    color: white !important;
-}
-/* =========================
+/* =============================
    AJUSTES PARA MÓVIL
-========================= */
-.title-bar {
-    position: fixed;
-    top: 10px; /* 🔥 lo bajamos un poco */
-    left: 0;
-    width: 100%;
-    background: rgba(0,0,0,0.95);
-    padding: 20px 10px;
-    text-align: center;
-    z-index: 1000;
-    border-bottom: 2px solid #00d4ff;
-}
+============================= */
+@media (max-width: 768px) {
 
-
+    .main-title {
+        font-size: 1.6rem;  /* 🔥 más pequeño en teléfono */
+    }
 
     .subtitle {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+    }
+
+    .title-bar {
+        padding: 20px 10px;
     }
 
     .block-container {
@@ -142,13 +141,15 @@ div[data-testid="stSlider"] [role="slider"] {
         max-width: 100% !important;
     }
 
-    section[data-testid="stSidebar"] {
-        top: 60px !important;
-        height: calc(100vh - 60px) !important;
+    [data-testid="stAppViewContainer"]::before {
+        top: 110px;
+        height: calc(100vh - 110px);
     }
+}
 
 </style>
 """, unsafe_allow_html=True)
+
 
 st.markdown("""
 <div class="title-bar">
@@ -389,6 +390,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
