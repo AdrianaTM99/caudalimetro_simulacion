@@ -1,14 +1,33 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import time  # <--- Agregado para controlar el tiempo de la animación
 
 # 1. Configuración de la página
 st.set_page_config(layout="wide", page_title="Simulador Adriana")
 
-# 2. CSS Maestro (Colores de botones más opacos y diseño corregido)
+# Enlaces para la animación
+URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20chikito.gif"
+
+# 2. CSS Maestro (Agregado estilo de loading-overlay)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+    /* ESTILO PARA LA CAPA DE CARGA */
+    .loading-overlay {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.85);
+        padding: 40px;
+        border-radius: 20px;
+        border: 2px solid #00d4ff;
+        box-shadow: 0px 0px 20px rgba(0, 212, 255, 0.5);
+    }
 
     /* Fondo de imagen base FIJO */
     [data-testid="stAppViewContainer"] {
@@ -66,7 +85,7 @@ st.markdown("""
     .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
     .fixed-header h3 { font-size: 1.1rem !important; font-weight: 300 !important; margin: 0; color: white; }
 
-    /* ESTILO DE RADIO BUTTONS (AZUL Y NEGRO) */
+    /* ESTILO DE RADIO BUTTONS */
     div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
         border: 2px solid #00d4ff !important;
         background-color: #000000 !important;
@@ -80,14 +99,12 @@ st.markdown("""
         border: 2px solid black !important;
     }
 
-    /* Sliders (mantenemos el cian para que resalten sobre el negro) */
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
-    /* --- BOTONES CON AZUL MÁS OPACO Y OSCURO --- */
     .stButton > button {
         width: 100%;
-        background-color: #1a5276 !important; /* Azul cobalto opaco */
+        background-color: #1a5276 !important;
         color: white !important;
         border-radius: 8px;
         padding: 0.8rem;
@@ -98,7 +115,7 @@ st.markdown("""
     }
 
     .stButton > button:hover {
-        background-color: #21618c !important; /* Un poco más claro al pasar el mouse */
+        background-color: #21618c !important;
         border-color: #00d4ff !important;
     }
 
@@ -161,21 +178,34 @@ with c_err2:
 with c_err1:
     error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
 
-# --- CÁLCULOS ---
+# --- CÁLCULOS Y PROCESAMIENTO ---
 if sistema == "Americano (G, mhos/in, in)":
     B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
 else:
     B_si, D_si, sigma_si = B_user, D_user, sigma_user
 
 if st.button('🚀 Generar curva de calibración'):
+    # --- ANIMACIÓN DE CARGA ---
+    placeholder = st.empty()
+    with placeholder.container():
+        st.markdown(f"""
+            <div class="loading-overlay">
+                <img src="{URL_GIF}" width="280">
+                <p style="color:#00d4ff; font-weight:bold; margin-top:15px; font-size:1.2rem;">
+                    Procesando simulación...
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+        time.sleep(2.0) # Tiempo de la animación
+    placeholder.empty()
+    # -------------------------
+
     A_m2 = np.pi * (D_si / 2)**2
     v = np.linspace(0.1, 5.0, 100)
     f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
     V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v) * conv_q
     m_eq = V_mv[-1] / Q_plot[-1]
-
-    
 
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(10, 5))
