@@ -9,7 +9,7 @@ st.set_page_config(layout="wide", page_title="Simulador Adriana", initial_sideba
 # ENLACE RAW
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
-# 2. CSS MAESTRO (SOLUCIÓN AL DESPLAZAMIENTO)
+# 2. CSS MAESTRO (BLOQUEO DE MOVIMIENTO LATERAL)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
@@ -23,30 +23,29 @@ st.markdown("""
         background-attachment: fixed;
     }
 
-    /* --- CAPA CENTRAL NEGRA (FIJA) --- */
-    /* Usamos fixed y left: 50% para que nunca se mueva al abrir el sidebar */
+    /* --- CAPA CENTRAL NEGRA FIJA --- */
     [data-testid="stAppViewContainer"]::before {
         content: "";
         position: fixed;
         top: 0; 
         left: 50%; 
         transform: translateX(-50%);
-        width: 100%; 
-        max-width: 1150px; 
+        width: 100vw; /* Ocupa todo el ancho visual */
+        max-width: 1200px; 
         height: 100vh;
         background: rgba(0, 0, 0, 0.65); 
         backdrop-filter: blur(4px); 
         z-index: 0;
     }
 
-    /* --- BARRA LATERAL --- */
+    /* --- BARRA LATERAL (SIDEBAR) --- */
     [data-testid="stSidebar"] {
         background-color: rgba(0, 0, 0, 0.95) !important;
         border-right: 2px solid #00d4ff !important;
         z-index: 10000 !important;
     }
 
-    /* --- BOTÓN DE DESPLIEGUE --- */
+    /* --- BOTÓN DE DESPLIEGUE (Azul Neón) --- */
     [data-testid="stSidebarCollapseButton"] {
         color: #00d4ff !important;
         background-color: rgba(0,0,0,0.8) !important;
@@ -58,23 +57,23 @@ st.markdown("""
         z-index: 1000001 !important;
     }
 
-    /* --- CONTENEDOR PRINCIPAL FIJO --- */
-    /* Forzamos a que el contenido no se desplace con el margen de Streamlit */
-    .stMainBlockContainer {
-        margin-left: auto !important;
-        margin-right: auto !important;
+    /* --- FIJACIÓN DEL CONTENIDO CENTRAL --- */
+    /* Este bloque evita que el contenido se desplace a la derecha */
+    [data-testid="stAppViewBlockContainer"] {
+        max-width: 1100px !important;
+        padding-top: 130px !important;
+        margin: 0 auto !important;
+        position: relative !important;
+        left: 0 !important; /* Anula el desplazamiento de Streamlit */
     }
 
     .block-container {
         position: relative; 
         z-index: 1;
-        max-width: 1100px !important; 
-        margin: 0 auto !important;
-        padding: 130px 2rem 4rem 2rem !important;
         font-family: 'Roboto', sans-serif;
     }
 
-    /* --- HEADER PERSONALIZADO --- */
+    /* --- HEADER (Título) --- */
     .fixed-header {
         position: fixed; top: 0; left: 0; width: 100vw;
         z-index: 900;
@@ -93,7 +92,7 @@ st.markdown("""
 
     header[data-testid="stHeader"] { background: transparent !important; }
 
-    /* --- COMPONENTES UI --- */
+    /* --- ESTILOS NEÓN --- */
     div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
         border: 2px solid #00d4ff !important; background-color: #000 !important;
     }
@@ -107,6 +106,7 @@ st.markdown("""
         border: 1px solid #00d4ff !important; border-radius: 8px; padding: 0.8rem;
     }
 
+    /* Animación de Carga */
     .loading-overlay {
         position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
         z-index: 9999; text-align: center; background: rgba(0,0,0,0.95);
@@ -146,7 +146,7 @@ with st.sidebar:
         tabla = {f: f"{v * 2.54:,} {u_label}" for f, v in fluidos.items()}
     st.table(list(tabla.items()))
     st.write("---")
-    st.info("💡 Haz clic en la flecha azul (esquina superior izquierda) para cerrar este panel.")
+    st.info("💡 Haz clic en la flecha azul superior para abrir o cerrar este panel.")
 
 st.write("---")
 
@@ -186,12 +186,13 @@ else:
     B_si, D_si, sigma_si = B_user, D_user, sigma_user
 
 if st.button('🚀 Generar curva de calibración'):
+    # Animación de carga con GIF
     placeholder = st.empty()
     with placeholder.container():
         st.markdown(f"""
             <div class="loading-overlay">
                 <img src="{URL_GIF}" width="450">
-                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.5rem;">Calculando flujo...</p>
+                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.5rem;">Simulando Inducción...</p>
             </div>
         """, unsafe_allow_html=True)
         time.sleep(2.5)
@@ -204,6 +205,7 @@ if st.button('🚀 Generar curva de calibración'):
     Q_plot = (A_m2 * v) * conv_q
     m_eq = V_mv[-1] / Q_plot[-1] if Q_plot[-1] != 0 else 0
 
+    # Gráfica
     plt.style.use('dark_background')
     fig, ax = plt.subplots(figsize=(10, 5))
     ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=3)
@@ -213,6 +215,7 @@ if st.button('🚀 Generar curva de calibración'):
     ax.set_facecolor('none')
     st.pyplot(fig)
 
+    # Resultado
     st.markdown(f"""
         <div class="equation-box">
             <h2 style="color:#00d4ff; font-size: 2.5rem; margin:0;">V = {m_eq:.4f} · Q</h2>
