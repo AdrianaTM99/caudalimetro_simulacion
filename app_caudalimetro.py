@@ -145,6 +145,28 @@ st.markdown("""
         </div>
     </div>
     """, unsafe_allow_html=True)
+# 🔵 ESTILO DE SIDEBAR DESPLEGABLE
+st.markdown("""
+<style>
+
+section[data-testid="stSidebar"] {
+    background: rgba(0,0,0,0.97) !important;
+    border-right: 2px solid #00d4ff;
+}
+
+div[data-testid="collapsedControl"] {
+    position: fixed !important;
+    top: 18px !important;
+    left: 18px !important;
+    z-index: 99999 !important;
+    background-color: rgba(0,0,0,0.9) !important;
+    padding: 8px 12px !important;
+    border-radius: 10px !important;
+    border: 1px solid #00d4ff !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 # --- LÓGICA DE UNIDADES ---
 sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
@@ -236,3 +258,4 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
