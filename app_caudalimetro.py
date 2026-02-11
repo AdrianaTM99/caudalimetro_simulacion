@@ -228,11 +228,25 @@ if sistema == "Métrico (T, μS/cm, m)":
     conv_cond = 1
     conv_diam = 1
     conv_vel = 1
+
+    # Rangos métricos
+    b_min, b_max, b_def = 0.1, 1.5, 0.5
+    sig_min, sig_max, sig_def = 1.0, 5000.0, 1000.0
+    d_min, d_max, d_def = 0.005, 0.500, 0.0127
+    conv_q = 1.0
+
 else:
     u_b, u_sig, u_d, u_q = "G", "μmhos/in", "in", "GPM"
-    conv_cond = 2.54          # μS/cm → μmhos/in
-    conv_diam = 1 / 25.4      # mm → in
-    conv_vel = 3.28084        # m/s → ft/s
+    conv_cond = 2.54
+    conv_diam = 1 / 25.4
+    conv_vel = 3.28084
+
+    # Rangos americanos
+    b_min, b_max, b_def = 1000.0, 15000.0, 5000.0
+    sig_min, sig_max, sig_def = 2.5, 12700.0, 2540.0
+    d_min, d_max, d_def = 0.2, 20.0, 0.5
+    conv_q = 15850.3
+
 
 
 # ================================
@@ -388,6 +402,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
