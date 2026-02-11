@@ -1,4 +1,4 @@
-Usando este codigo de referencia,deja la interfaz como esta y agregale esa lista de conductividades
+
 
 import streamlit as st
 import numpy as np
@@ -177,3 +177,4 @@ if st.session_state.generado:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
+
