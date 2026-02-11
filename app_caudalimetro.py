@@ -227,9 +227,9 @@ with st.sidebar:
             max_conv = max_v * conv_cond
 
             if min_v == max_v:
-                valor = f"{min_conv:.1f} {u_sig}"
+                valor = f"{min_conv:.1f}"
             else:
-                valor = f"{min_conv:.1f} – {max_conv:.1f} {u_sig}"
+                valor = f"{min_conv:.1f} – {max_conv:.1f}"
 
             tabla += f"| {fluido} | {valor} |\n"
 
@@ -245,14 +245,14 @@ with st.sidebar:
         "DN500": 500,
     }
 
-    with st.expander("🔵 Diámetros Nominales y Usos", expanded=True):
+    with st.expander("🔵 Diámetros Nominales", expanded=True):
 
         tabla = f"| DN | Diámetro ({u_d}) |\n"
         tabla += "|----|---------------|\n"
 
         for dn, valor_mm in diametros.items():
             valor_conv = valor_mm * conv_diam
-            tabla += f"| {dn} | {valor_conv:.2f} {u_d} |\n"
+            tabla += f"| {dn} | {valor_conv:.2f} |\n"
 
         st.markdown(tabla)
 
@@ -264,9 +264,11 @@ with st.sidebar:
         "Alimentos": (1, 4),
     }
 
+    unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
+
     with st.expander("🌊 Velocidades Recomendadas", expanded=True):
 
-        tabla = f"| Aplicación | Velocidad Recomendada ({'m/s' if sistema.startswith('Métrico') else 'ft/s'}) |\n"
+        tabla = f"| Aplicación | Velocidad Recomendada ({unidad_vel}) |\n"
         tabla += "|-------------|----------------------|\n"
 
         for app, (min_v, max_v) in velocidades.items():
@@ -275,6 +277,7 @@ with st.sidebar:
             tabla += f"| {app} | {min_conv:.2f} – {max_conv:.2f} |\n"
 
         st.markdown(tabla)
+
 
 # --- PARÁMETROS ---
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
@@ -352,6 +355,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
