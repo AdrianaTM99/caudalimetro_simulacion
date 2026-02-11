@@ -244,7 +244,7 @@ with st.sidebar:
         "Ácidos diluidos": (10000, 100000),
     }
 
-    with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=True):
+    with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=False):
 
         tabla = f"| Fluido | Conductividad ({u_sig}) |\n"
         tabla += "|---------|----------------|\n"
@@ -382,6 +382,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
