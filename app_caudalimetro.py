@@ -7,7 +7,7 @@ import time
 st.set_page_config(
     layout="wide",
     page_title="Simulador Adriana",
-    initial_sidebar_state="auto"
+    initial_sidebar_state="collapsed"
 )
 
 
@@ -19,11 +19,7 @@ URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/cauda
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
-/* =============================
-   FONDO GENERAL
-============================= */
 [data-testid="stAppViewContainer"] {
     background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
     background-size: cover;
@@ -31,34 +27,32 @@ st.markdown("""
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
+/* IMPORTAR FUENTE BONITA */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
-/* =============================
-   HEADER SUPERIOR
-============================= */
+/* TÍTULO PRINCIPAL */
+/* BARRA SUPERIOR DEL TÍTULO */
 .title-bar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    padding: 35px 10px;
+    background: rgba(0,0,0,0.95);
+    padding: 35px 0;
     text-align: center;
-    z-index: 500;
+    z-index: 1000;
     border-bottom: 2px solid #00d4ff;
 }
 
-/* TÍTULO */
+/* TEXTO DEL TÍTULO */
 .main-title {
     font-family: 'Poppins', sans-serif;
     font-size: 2.8rem;
     font-weight: 800;
-    background: linear-gradient(90deg, #00d4ff, #0099ff);
+    background: linear-gradient(90deg, #00d4ff, #ff8c00);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
-    word-wrap: break-word;
 }
 
 /* SUBTÍTULO */
@@ -69,54 +63,9 @@ st.markdown("""
     margin-top: 5px;
 }
 
-/* =============================
-   DESENFOQUE CENTRAL
-============================= */
-[data-testid="stAppViewContainer"]::before {
-    content: "";
-    position: fixed;
-    top: 150px;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    width: 1100px;
-    height: calc(100vh - 150px);
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    z-index: 0;
-    pointer-events: none;
-}
 
 
-/* CONTENIDO */
-.block-container {
-    position: relative;
-    z-index: 1;
-    font-family: 'Roboto', sans-serif;
-    max-width: 1100px !important;
-    width: 100% !important;
-    margin: 0 auto !important;
-    padding: 180px 2rem 4rem 2rem !important;
-    color: white !important;
-
-}
-
-
-/* =============================
-   SIDEBAR (MISMO FONDO QUE HEADER)
-============================= */
-section[data-testid="stSidebar"] {
-    background: rgba(0, 0, 0, 0.6) !important;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border-right: 2px solid #00d4ff;
-    z-index: 999 !important;
-}
-
-/* =============================
-   SLIDERS Y RADIO AZUL
-============================= */
+/* RADIO BUTTON AZUL */
 div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
     border: 2px solid #00d4ff !important;
     background-color: #000 !important;
@@ -126,6 +75,7 @@ div[data-testid="stRadio"] [aria-checked="true"] > div:first-child > div {
     background-color: #00d4ff !important;
 }
 
+/* SLIDER AZUL */
 div[data-testid="stSlider"] > div > div > div > div {
     background-color: #00d4ff !important;
 }
@@ -135,58 +85,33 @@ div[data-testid="stSlider"] [role="slider"] {
     border: 2px solid white !important;
 }
 
-/* =============================
-   MÓVIL
-============================= */
-@media (max-width: 768px) {
-
-    .main-title {
-        font-size: 1.6rem;
-    }
-
-    .subtitle {
-        font-size: 0.8rem;
-    }
-
-    .block-container {
-        padding: 160px 1rem 2rem 1rem !important;
-    }
-
-    [data-testid="stAppViewContainer"]::before {
-        top: 130px;
-        height: calc(100vh - 130px);
-    }
-
-    section[data-testid="stSidebar"] {
-        top: 130px !important;
-        height: calc(100vh - 130px) !important;
-    }
-
- /* =====================================
-EVITAR QUE EL CONTENIDO SALTE
- ===================================== */
-
-[data-testid="stAppViewContainer"] {
-    transition: none !important;
+[data-testid="stAppViewContainer"]::before {
+    content: "";
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1150px;
+    height: calc(100vh - 70px);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 0;
 }
 
- [data-testid="stMain"] {
-      transition: none !important;
-}
-
-[data-testid="stMainBlockContainer"] {
-    transition: none !important;
-}
-
- /* Forzar ancho estable */
-[data-testid="stMain"] > div {
+.block-container {
+    position: relative;
+    z-index: 1;
+    font-family: 'Roboto', sans-serif;
     max-width: 1100px !important;
     margin: 0 auto !important;
+    padding: 200px 2rem 4rem 2rem !important;
+    color: white !important;
 }
+
 </style>
 """, unsafe_allow_html=True)
-
-
 
 st.markdown("""
 <div class="title-bar">
@@ -200,7 +125,42 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+# 🔵 ESTILO DE SIDEBAR DESPLEGABLE
+st.markdown("""
+<style>
 
+/* SIDEBAR */
+section[data-testid="stSidebar"] {
+    background: rgba(0,0,0,0.97) !important;
+    border-right: 2px solid #00d4ff;
+    position: fixed !important;
+
+    /*BAJAMOS LA BARRA DEBAJO DEL HEADER */
+    top: 70px !important;
+    height: calc(100vh - 70px) !important;
+
+    z-index: 998 !important;
+}
+
+/* CONTENIDO NO SE DESPLACE */
+[data-testid="stAppViewContainer"] {
+    margin-left: 0 !important;
+}
+
+/* BOTÓN SIEMPRE VISIBLE */
+div[data-testid="collapsedControl"] {
+    position: fixed !important;
+    top: 18px !important;
+    left: 18px !important;
+    z-index: 1002 !important;
+    background-color: rgba(0,0,0,0.9) !important;
+    padding: 8px 12px !important;
+    border-radius: 10px !important;
+    border: 1px solid #00d4ff !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 # --- LÓGICA DE UNIDADES ---
 sistema = st.radio(
@@ -254,7 +214,7 @@ with st.sidebar:
         "Ácidos diluidos": (10000, 100000),
     }
 
-    with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=False):
+    with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=True):
 
         tabla = f"| Fluido | Conductividad ({u_sig}) |\n"
         tabla += "|---------|----------------|\n"
@@ -282,7 +242,7 @@ with st.sidebar:
         "DN500": 500,
     }
 
-    with st.expander("🔵 Diámetros Nominales", expanded=False):
+    with st.expander("🔵 Diámetros Nominales", expanded=True):
 
         tabla = f"| DN | Diámetro ({u_d}) |\n"
         tabla += "|----|---------------|\n"
@@ -303,7 +263,7 @@ with st.sidebar:
 
     unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
 
-    with st.expander("🌊 Velocidades Recomendadas", expanded=False):
+    with st.expander("🌊 Velocidades Recomendadas", expanded=True):
 
         tabla = f"| Aplicación | Velocidad Recomendada ({unidad_vel}) |\n"
         tabla += "|-------------|----------------------|\n"
@@ -392,6 +352,3 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
-
-
-
