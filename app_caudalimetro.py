@@ -4,26 +4,25 @@ import matplotlib.pyplot as plt
 import time  
 
 # 1. Configuración de la página
-st.set_page_config(layout="wide", page_title="Simulador Adriana")
+st.set_page_config(layout="wide", page_title="Simulador Adriana", initial_sidebar_state="expanded")
 
 # ENLACE RAW CORREGIDO
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
-# 2. CSS Maestro (Todo Azul Neón + Encabezado Centrado)
+# 2. CSS Maestro con BOTÓN DE BARRA LATERAL FORZADO
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Fondo de imagen base */
+    /* Fondo base */
     [data-testid="stAppViewContainer"] {
         background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
         background-size: cover;
         background-position: center;
-        background-repeat: no-repeat;
         background-attachment: fixed;
     }
 
-    /* CAPA CENTRAL CON DESENFOQUE */
+    /* CAPA CENTRAL DESENFOCADA */
     [data-testid="stAppViewContainer"]::before {
         content: "";
         position: fixed;
@@ -35,167 +34,120 @@ st.markdown("""
         height: 100vh;
         background: rgba(0, 0, 0, 0.6); 
         backdrop-filter: blur(3px); 
-        -webkit-backdrop-filter: blur(3px);
         z-index: 0;
     }
 
-    /* HEADER AJUSTADO SOLO AL CENTRO */
+    /* HEADER FLOTANTE CENTRADO */
     .fixed-header {
         position: fixed;
         top: 0;
         left: 0;
         width: 100vw;
-        background-color: transparent;
         z-index: 999;
         display: flex;
         justify-content: center;
     }
-
     .header-content {
         width: 100%;
         max-width: 1150px;
-        background-color: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(10px);
-        padding: 15px 2rem;
+        background-color: rgba(0, 0, 0, 0.9);
+        padding: 15px;
         text-align: center;
         border-bottom: 2px solid #00d4ff;
         border-bottom-left-radius: 15px;
         border-bottom-right-radius: 15px;
     }
 
-    header[data-testid="stHeader"] { visibility: hidden; }
-    .stApp { background: transparent !important; }
-
-    /* Forzar visibilidad del botón de la barra lateral en azul neón */
-    [data-testid="stSidebarCollapseButton"] {
-        background-color: rgba(0, 212, 255, 0.2) !important;
-        color: #00d4ff !important;
-        border: 1px solid #00d4ff !important;
-        top: 85px !important;
+    /* FORZAR EL BOTÓN DEL SIDEBAR (FLECHA) */
+    /* Lo hacemos gigante y con brillo neón */
+    button[kind="headerNoPadding"] {
+        background-color: #00d4ff !important;
+        color: black !important;
+        width: 50px !important;
+        height: 50px !important;
+        position: fixed !important;
+        top: 20px !important;
+        left: 20px !important;
+        z-index: 1000000 !important;
+        border-radius: 10px !important;
+        box-shadow: 0px 0px 20px #00d4ff !important;
+        display: flex !important;
+        visibility: visible !important;
     }
 
-    /* Estilo barra lateral */
+    /* ESTILO BARRA LATERAL */
     [data-testid="stSidebar"] {
-        background-color: rgba(0, 0, 0, 0.9) !important;
-        border-right: 2px solid #00d4ff !important;
+        background-color: rgba(0, 0, 0, 0.95) !important;
+        border-right: 3px solid #00d4ff !important;
     }
 
+    /* Ajuste de contenido para no chocar con el header */
     .block-container {
         position: relative;
         z-index: 1;
-        font-family: 'Roboto', sans-serif;
         max-width: 1100px !important;
         margin: 0 auto !important;
-        padding: 120px 2rem 4rem 2rem !important;
-        color: white !important;
+        padding: 130px 2rem 2rem 2rem !important;
     }
 
-    /* Sliders y Radio en Azul Neón */
-    div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
-        border: 2px solid #00d4ff !important;
-        background-color: #000000 !important;
-    }
-    div[data-testid="stRadio"] [data-baseweb="radio"][aria-checked="true"] > div:first-child > div {
-        background-color: #00d4ff !important;
-    }
+    /* Colores Neón para Sliders y Radios */
+    div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child { border: 2px solid #00d4ff !important; }
+    div[data-testid="stRadio"] [data-baseweb="radio"][aria-checked="true"] > div:first-child > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
     div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
 
-    .stButton > button {
-        width: 100%;
-        background-color: #1a5276 !important;
-        color: white !important;
-        border: 1px solid #00d4ff !important;
-        border-radius: 8px;
-        font-weight: bold;
-    }
-
-    .equation-box {
-        background: rgba(0, 0, 0, 0.5);
-        border: 2px solid #00d4ff;
-        border-radius: 15px;
-        padding: 30px;
-        margin: 20px auto;
-        text-align: center;
-    }
-    .equation-large { font-size: 2.5rem; color: #00d4ff; font-weight: 700; }
-
-    p, label, .stMarkdown { font-size: 1.1rem !important; color: white !important; }
+    header[data-testid="stHeader"] { visibility: hidden; }
     </style>
 
     <div class="fixed-header">
         <div class="header-content">
-            <h1>Simulación de Caudalímetro Electromagnético</h1>
+            <h1 style="color: white; margin: 0; font-family: 'Roboto';">Simulación de Caudalímetro Electromagnético</h1>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR: LISTA DE CONDUCTIVIDADES ---
-fluidos = {
-    "Agua Destilada": 0.5, "Agua Potable": 500, "Agua de Mar": 50000,
-    "Leche": 5000, "Zumo de Frutas": 3000, "Ácido Sulfúrico (30%)": 700000
-}
-
+# --- CONTENIDO BARRA LATERAL ---
 with st.sidebar:
-    st.markdown("### 📋 Panel de Referencia")
-    st.write("Valores típicos de conductividad (σ):")
-    # Tabla dinámica según el sistema seleccionado
+    st.markdown("<h2 style='color:#00d4ff;'>📋 Referencias</h2>", unsafe_allow_html=True)
+    st.write("Conductividad (σ) según el fluido:")
     
-# --- LÓGICA PRINCIPAL ---
-col_sidebar_trigger, _ = st.columns([1, 3])
-with col_sidebar_trigger:
-    if st.button("📂 Abrir/Cerrar Referencias"):
-        st.info("Usa la flecha azul neón en la esquina superior izquierda.")
+    fluidos = {
+        "Agua Destilada": 0.5, "Agua Potable": 500, "Agua de Mar": 50000,
+        "Leche": 5000, "Zumo de Frutas": 3000, "Ácido Sulfúrico (30%)": 700000
+    }
+    
+    # Tabla dinámica
+    st.table(list(fluidos.items()))
+    st.info("Para ocultar, pulsa la flecha dentro de este panel.")
 
-sistema = st.radio("Selecciona el Sistema de Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
-
-# Actualizar tabla en sidebar
-with st.sidebar:
-    if sistema == "Métrico (T, μS/cm, m)":
-        tabla = {f: f"{v:,} μS/cm" for f, v in fluidos.items()}
-    else:
-        tabla = {f: f"{v * 2.54:,} μmhos/in" for f, v in fluidos.items()}
-    st.table(list(tabla.items()))
+# --- CUERPO PRINCIPAL ---
+st.markdown("### Ajustes del Sistema")
+sistema = st.radio("Unidades:", ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"), horizontal=True)
 
 st.write("---")
 
-# --- PARÁMETROS ---
-st.markdown(f"#### Parámetros de Simulación ({sistema})")
-col1, col2, col3 = st.columns(3, gap="large")
-
+col1, col2, col3 = st.columns(3)
 with col1:
-    B_val = st.number_input(f'B: Campo Magnético', 0.1, 15000.0, 0.5)
-    B_user = st.slider('Ajuste fino B', 0.1, 15000.0, float(B_val), label_visibility="collapsed")
+    B = st.slider('B: Campo Magnético', 0.1, 1.5, 0.5)
 with col2:
-    sig_val = st.number_input(f'σ: Conductividad', 1.0, 700000.0, 1000.0)
-    sigma_user = st.slider('Ajuste fino σ', 1.0, 700000.0, float(sig_val), label_visibility="collapsed")
+    sigma = st.slider('σ: Conductividad', 1.0, 5000.0, 1000.0)
 with col3:
-    D_val = st.number_input(f'D: Diámetro', 0.005, 20.0, 0.0127, format="%.4f")
-    D_user = st.slider('Ajuste fino D', 0.005, 20.0, float(D_val), label_visibility="collapsed")
+    D = st.slider('D: Diámetro', 0.005, 0.5, 0.0127)
 
-st.write("---")
-
-# --- SIMULACIÓN ---
-if st.button('🚀 Generar curva de calibración'):
+if st.button('🚀 Ejecutar Simulación'):
     placeholder = st.empty()
     with placeholder.container():
-        st.markdown(f'<div style="text-align:center;"><img src="{URL_GIF}" width="400"><p style="color:#00d4ff;">Procesando datos...</p></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align:center;"><img src="{URL_GIF}" width="350"></div>', unsafe_allow_html=True)
         time.sleep(2)
     placeholder.empty()
 
-    # Cálculos simplificados
-    v = np.linspace(0.1, 5.0, 100)
-    V_mv = (B_user * D_user * v * 0.95) # Factor de ejemplo
-    Q_plot = (np.pi * (D_user/2)**2) * v
-    
-    fig, ax = plt.subplots(figsize=(10, 4))
+    # Gráfica
+    x = np.linspace(0, 10, 100)
+    y = B * D * x
+    fig, ax = plt.subplots()
     plt.style.use('dark_background')
-    ax.plot(Q_plot, V_mv, color='#00d4ff', linewidth=2)
-    ax.set_xlabel("Caudal")
-    ax.set_ylabel("Voltaje (mV)")
+    ax.plot(x, y, color='#00d4ff', linewidth=3)
+    ax.set_title("Relación Voltaje vs Caudal", color="#00d4ff")
     st.pyplot(fig)
 
-    st.markdown(f'<div class="equation-box"><div class="equation-large">V = {(V_mv[-1]/Q_plot[-1]):.4f} · Q</div></div>', unsafe_allow_html=True)
-
-st.write("---")
-st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+st.caption("Adriana Teixeira Mendoza - UCV 2026")
