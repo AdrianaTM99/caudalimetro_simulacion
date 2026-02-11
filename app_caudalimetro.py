@@ -19,6 +19,18 @@ URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/cauda
 
 # 2. CSS Maestro con efecto de desenfoque SOLO en el centro
 
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+[data-testid="stAppViewContainer"] {
+    background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
 /* RADIO BUTTON AZUL */
 div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
     border: 2px solid #00d4ff !important;
@@ -37,18 +49,6 @@ div[data-testid="stSlider"] > div > div > div > div {
 div[data-testid="stSlider"] [role="slider"] {
     background-color: #00d4ff !important;
     border: 2px solid white !important;
-}
-
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-
-[data-testid="stAppViewContainer"] {
-    background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
 }
 
 [data-testid="stAppViewContainer"]::before {
@@ -288,6 +288,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
