@@ -107,10 +107,14 @@ div[data-testid="stSlider"] [role="slider"] {
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<div class="fixed-header">
-    <h1>Simulación de Caudalímetro Electromagnético</h1>
+<div class="main-title">
+Simulador de Caudalímetro Electromagnético
+</div>
+<div class="subtitle">
+Modelado y calibración digital de flujo industrial
 </div>
 """, unsafe_allow_html=True)
+
 
 # 🔵 ESTILO DE SIDEBAR DESPLEGABLE
 st.markdown("""
@@ -294,6 +298,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
