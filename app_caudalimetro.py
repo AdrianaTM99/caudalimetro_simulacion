@@ -156,7 +156,7 @@ st.markdown("""
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        z-index: 9999;
+        z-index: 2000;
         text-align: center;
         background: rgba(0, 0, 0, 0.95);
         padding: 20px;
@@ -190,6 +190,16 @@ st.markdown("""
     }
 
     header[data-testid="stHeader"] { visibility: visible; }
+    button[kind="header"] {
+    position: fixed !important;
+    top: 12px !important;
+    left: 12px !important;
+    z-index: 5000 !important;
+    background-color: rgba(0,0,0,0.7) !important;
+    border: 1px solid #00d4ff !important;
+    border-radius: 8px !important;
+}
+
     .stApp { background: transparent !important; }
 
     .fixed-header h1 { 
@@ -308,5 +318,6 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
