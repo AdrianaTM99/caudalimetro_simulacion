@@ -19,139 +19,71 @@ URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/cauda
 
 # 2. CSS Maestro con efecto de desenfoque SOLO en el centro
 st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-    /* Fondo de imagen base (Nítida) */
-    [data-testid="stAppViewContainer"] {
-        background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }
+[data-testid="stAppViewContainer"] {
+    background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
 
-    /* CAPA CENTRAL CON DESENFOQUE (Glassmorphism) */
-    /* Aquí es donde sucede la magia: el linear-gradient tiene transparencia */
-    [data-testid="stAppViewContainer"]::before {
+[data-testid="stAppViewContainer"]::before {
     content: "";
     position: fixed;
-
-    /*EMPIEZA DEBAJO DEL HEADER */
     top: 70px;
-
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
     max-width: 1150px;
-
-    /* ALTURA AJUSTADA */
     height: calc(100vh - 70px);
-
     background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px); 
+    backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
-
     z-index: 0;
 }
 
-    /* Forzar que el contenido esté sobre el desenfoque */
-    .block-container {
-        position: relative;
-        z-index: 1;
-        font-family: 'Roboto', sans-serif;
-        max-width: 1100px !important;
-        margin: 0 auto !important;
-        padding: 100px 2rem 4rem 2rem !important;
-        color: white !important;
-    }
+.block-container {
+    position: relative;
+    z-index: 1;
+    font-family: 'Roboto', sans-serif;
+    max-width: 1100px !important;
+    margin: 0 auto !important;
+    padding: 100px 2rem 4rem 2rem !important;
+    color: white !important;
+}
 
-    .equation-box {
-        background: rgba(0, 0, 0, 0.5);
-        border: 2px solid #00d4ff;
-        border-radius: 15px;
-        padding: 30px;
-        margin: 20px auto;
-        text-align: center;
-        box-shadow: 0px 0px 15px rgba(0, 212, 255, 0.3);
-    }
-    .equation-large {
-        font-size: 3rem !important;
-        color: #00d4ff;
-        font-weight: 700;
-    }
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+}
 
-    .loading-overlay {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 9999;
-        text-align: center;
-        background: rgba(0, 0, 0, 0.95);
-        padding: 20px;
-        border-radius: 25px;
-        border: 2px solid #00d4ff;
-    }
+.fixed-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: white;
+}
 
-    .fixed-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        background-color: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(10px);
-        z-index: 999;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        display: flex;
-        justify-content: center;
-    }
+</style>
+""", unsafe_allow_html=True)
 
-    .header-content {
-        width: 100%;
-        max-width: 1100px;
-        padding: 10px 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+st.markdown("""
+<div class="fixed-header">
+    <h1>Simulación de Caudalímetro Electromagnético</h1>
+</div>
+""", unsafe_allow_html=True)
 
-    header[data-testid="stHeader"] { visibility: visible; }
-    .stApp { background: transparent !important; }
-
-    .fixed-header h1 { font-size: 1.8rem !important; font-weight: 700 !important; margin: 0; color: white; }
-    .fixed-header h3 { font-size: 1.1rem !important; font-weight: 300 !important; margin: 0; color: white; }
-
-    div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
-        border: 2px solid #00d4ff !important;
-        background-color: #000000 !important;
-    }
-    div[data-testid="stRadio"] [data-baseweb="radio"][aria-checked="true"] > div:first-child > div {
-        background-color: #00d4ff !important;
-    }
-
-    div[data-testid="stSlider"] > div > div > div > div { background-color: #00d4ff !important; }
-    div[data-testid="stSlider"] [role="slider"] { background-color: #00d4ff !important; border: 2px solid white !important; }
-
-    .stButton > button {
-        width: 100%;
-        background-color: #1a5276 !important;
-        color: white !important;
-        border-radius: 8px;
-        padding: 0.8rem;
-        font-size: 1.2rem;
-        font-weight: bold;
-    }
-    p, label { font-size: 1.1rem !important; color: white !important; }
-
-    </style>
-
-    <div class="fixed-header">
-        <div class="header-content">
-            <h1>Simulación de Caudalímetro Electromagnético</h1>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
 # 🔵 ESTILO DE SIDEBAR DESPLEGABLE
 st.markdown("""
 <style>
@@ -335,6 +267,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
