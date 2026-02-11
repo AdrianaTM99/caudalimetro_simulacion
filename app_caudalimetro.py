@@ -30,6 +30,33 @@ st.markdown("""
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
+/* IMPORTAR FUENTE BONITA */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+
+/* TÍTULO PRINCIPAL */
+.main-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    background: linear-gradient(90deg, #00d4ff, #ff8c00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: 40px;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+/* SUBTÍTULO */
+.subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    text-align: center;
+    color: #cccccc;
+    margin-bottom: 40px;
+}
+
+
 
 /* RADIO BUTTON AZUL */
 div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
@@ -74,20 +101,6 @@ div[data-testid="stSlider"] [role="slider"] {
     margin: 0 auto !important;
     padding: 100px 2rem 4rem 2rem !important;
     color: white !important;
-}
-
-.fixed-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 70px;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1001;
 }
 
 .fixed-header h1 {
@@ -145,6 +158,15 @@ div[data-testid="collapsedControl"] {
 }
 
 </style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div class="main-title">
+Simulador de Caudalímetro Electromagnético
+</div>
+<div class="subtitle">
+Modelado y calibración digital de flujo industrial
+</div>
 """, unsafe_allow_html=True)
 
 
@@ -292,6 +314,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
