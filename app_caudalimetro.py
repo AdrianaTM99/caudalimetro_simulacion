@@ -54,7 +54,7 @@ st.markdown("""
     -webkit-backdrop-filter: blur(3px);
 
     z-index: 0;
-    }
+}
 
     /* Forzar que el contenido esté sobre el desenfoque */
     .block-container {
@@ -336,3 +336,4 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
