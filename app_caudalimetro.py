@@ -110,7 +110,7 @@ div[data-testid="stSlider"] [role="slider"] {
 
 /* ===== TAMAÑO UNIFORME DE TEXTOS ===== */
 label {
-    font-size: 3rem !important;
+    font-size: 1000rem !important;
 }
 
     position: relative;
@@ -386,6 +386,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
