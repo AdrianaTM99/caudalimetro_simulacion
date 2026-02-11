@@ -137,7 +137,6 @@ st.markdown("""
     <div class="fixed-header">
         <div class="header-content">
             <h1>Simulación de Caudalímetro Electromagnético</h1>
-            <h3>Por: Adriana Teixeira Mendoza</h3>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -231,7 +230,8 @@ if st.button('🚀 Generar curva de calibración'):
     """, unsafe_allow_html=True)
 
 st.write("---")
-st.caption("Adriana Teixeira Mendoza 2026")
+st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
