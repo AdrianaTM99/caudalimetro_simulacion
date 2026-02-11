@@ -37,8 +37,8 @@ st.markdown("""
         background: rgba(0, 0, 0, 0.6); /* Color negro con 60% de opacidad */
         
         /* ESTA ES LA LÍNEA QUE DESENFOCA SOLO EL CENTRO */
-        backdrop-filter: blur(20px); 
-        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(10px); 
+        -webkit-backdrop-filter: blur(10px);
         
         z-index: 0;
     }
@@ -232,3 +232,4 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza 2026")
+
