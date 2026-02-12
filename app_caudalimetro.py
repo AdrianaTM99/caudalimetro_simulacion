@@ -91,6 +91,17 @@ div[data-testid="stSlider"] [role="slider"] {
     border: 2px solid white !important;
 }
 
+
+/* ===== NÚMEROS INGRESADOS EN BLANCO ===== */
+div[data-testid="stNumberInput"] input {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+div[data-testid="stNumberInput"] input:focus {
+    color: white !important;
+}
+
 [data-testid="stAppViewContainer"]::before {
     content: "";
     position: fixed;
@@ -401,3 +412,4 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
