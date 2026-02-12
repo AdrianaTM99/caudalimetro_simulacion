@@ -404,7 +404,7 @@ if st.session_state.mostrar_grafica:
     m_eq = V_mv[-1] / Q_plot[-1]
     x_min, x_max = Q_plot.min(), Q_plot.max()
     y_min, y_max = V_mv.min(), V_mv.max()
-    Q_line = np.linspace(0, x_max * 1.5, 300)
+    Q_line = np.linspace(0, Q_plot.max() * 100, 2000)
     V_line = m_eq * Q_line
 
 
@@ -470,6 +470,7 @@ if st.session_state.mostrar_grafica:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
