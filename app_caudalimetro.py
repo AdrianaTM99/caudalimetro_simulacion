@@ -92,15 +92,16 @@ div[data-testid="stSlider"] [role="slider"] {
 }
 
 
-/* ===== NÚMEROS INGRESADOS EN BLANCO ===== */
-div[data-testid="stNumberInput"] input {
+/* ===== FORZAR NÚMEROS EN BLANCO ===== */
+div[data-testid="stNumberInput"] input,
+div[data-testid="stNumberInput"] input[type="number"],
+div[data-testid="stNumberInput"] input[type="text"] {
     color: white !important;
+    -webkit-text-fill-color: white !important;
+    caret-color: white !important;
     font-weight: 600 !important;
 }
 
-div[data-testid="stNumberInput"] input:focus {
-    color: white !important;
-}
 
 [data-testid="stAppViewContainer"]::before {
     content: "";
@@ -412,4 +413,5 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
