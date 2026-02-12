@@ -4,16 +4,6 @@ import plotly.graph_objects as go
 
 import time  
 
-# Detectar si es pantalla pequeña (teléfono)
-is_mobile = st.session_state.get("mobile_mode", False)
-
-st.markdown("""
-<script>
-const isMobile = window.innerWidth < 900;
-window.parent.postMessage({mobile: isMobile}, "*");
-</script>
-""", unsafe_allow_html=True)
-
 # 1. Configuración de la página
 st.set_page_config(
     layout="wide",
@@ -404,12 +394,6 @@ if st.button('🚀 Generar curva de calibración'):
     V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v) * conv_q
     m_eq = V_mv[-1] / Q_plot[-1]
-    mover_grafica = st.toggle("📱 Activar movimiento en gráfica", value=False)
-
-
-    # Solo mostrar botón si es pantalla pequeña
-    if st.session_state.get("mobile_mode", False):
-        mover_grafica = st.toggle("📱 Moverse en gráfica")
 
     fig = go.Figure()
 
@@ -431,13 +415,7 @@ if st.button('🚀 Generar curva de calibración'):
         hovermode="x unified"
     )
 
-    config_plot = {}
-
-    if st.session_state.get("mobile_mode", False) and not mover_grafica:
-        config_plot = {"staticPlot": True}
-
-    st.plotly_chart(fig, use_container_width=True, config=config_plot)
-
+    st.plotly_chart(fig, use_container_width=True)
 
 
     st.markdown(f"""
@@ -450,12 +428,3 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
-
-
-
-
-
-
-
-
-
