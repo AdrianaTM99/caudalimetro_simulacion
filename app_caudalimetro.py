@@ -121,6 +121,57 @@ h4 {
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<div class="title-bar">
+    <div class="main-title">
+        Simulador de Caudalímetro Electromagnético
+    </div>
+    <div class="subtitle">
+        Modelado y calibración digital de flujo industrial
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+
+# 🔵 ESTILO DE SIDEBAR DESPLEGABLE
+st.markdown("""
+<style>
+
+/* SIDEBAR */
+section[data-testid="stSidebar"] {
+    background: rgba(0,0,0,0.6) !important;
+    backdrop-filter: blur(3px) !important;
+    -webkit-backdrop-filter: blur(3px) !important;
+
+    border-right: 2px solid #00d4ff;
+    position: fixed !important;
+
+    /*BAJAMOS LA BARRA DEBAJO DEL HEADER */
+    top: 70px !important;
+    height: calc(100vh - 70px) !important;
+
+    z-index: 998 !important;
+}
+
+/* CONTENIDO NO SE DESPLACE */
+[data-testid="stAppViewContainer"] {
+    margin-left: 0 !important;
+}
+
+/* BOTÓN SIEMPRE VISIBLE */
+div[data-testid="collapsedControl"] {
+    position: fixed !important;
+    top: 18px !important;
+    left: 18px !important;
+    z-index: 1002 !important;
+    background-color: rgba(0,0,0,0.9) !important;
+    padding: 8px 12px !important;
+    border-radius: 10px !important;
+    border: 1px solid #00d4ff !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 # --- LÓGICA DE UNIDADES ---
 sistema = st.radio(
@@ -312,8 +363,3 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
-
-
-
-
-
