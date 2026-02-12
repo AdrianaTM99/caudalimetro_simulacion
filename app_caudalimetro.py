@@ -434,30 +434,25 @@ if st.session_state.mostrar_grafica:
         height=450,
         margin=dict(l=40, r=20, t=40, b=40),
         hovermode="x unified",
-        uirevision=True,   # 🔥 mantiene formato al mover
+        uirevision=True,
 
         xaxis=dict(
             title=f'Caudal Q ({u_q})',
-            zeroline=True,
+            range=[-Q_plot.max()*1.2, Q_plot.max()*1.2],  # 👈 zoom inicial controlado
             showgrid=True,
-            showline=True,
-            mirror=True,
-            ticks="outside",
-            tickformat=".3f",
-            autorange=True   # 👈 permite moverse sin romper ejes
+            zeroline=True,
+            ticks="outside"
         ),
 
         yaxis=dict(
             title='Voltaje V (mV)',
-            zeroline=True,
+            range=[-V_mv.max()*1.2, V_mv.max()*1.2],  # 👈 proporcional
             showgrid=True,
-            showline=True,
-            mirror=True,
-            ticks="outside",
-            tickformat=".3f",
-            autorange=True
+            zeroline=True,
+            ticks="outside"
         )
     )
+
 
     # =========================
     # BOTÓN DE INTERACCIÓN
@@ -489,6 +484,7 @@ if st.session_state.mostrar_grafica:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
