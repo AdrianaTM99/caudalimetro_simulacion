@@ -432,10 +432,10 @@ mover_grafica = False
 
     config_plot = {}
 
-if st.session_state.get("mobile_mode", False) and not mover_grafica:
-    config_plot = {"staticPlot": True}
+    if st.session_state.get("mobile_mode", False) and not mover_grafica:
+        config_plot = {"staticPlot": True}
 
-st.plotly_chart(fig, use_container_width=True, config=config_plot)
+    st.plotly_chart(fig, use_container_width=True, config=config_plot)
 
 
 
@@ -449,6 +449,7 @@ st.plotly_chart(fig, use_container_width=True, config=config_plot)
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
