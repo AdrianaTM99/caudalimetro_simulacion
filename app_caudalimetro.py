@@ -288,7 +288,7 @@ with st.sidebar:
         "Ácidos diluidos": (10000, 100000),
     }
 
-    with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=True):
+    with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=False):
 
         tabla = f"| Fluido | Conductividad ({u_sig}) |\n"
         tabla += "|---------|----------------|\n"
@@ -316,7 +316,7 @@ with st.sidebar:
         "DN500": 500,
     }
 
-    with st.expander("🔵 Diámetros Nominales", expanded=True):
+    with st.expander("🔵 Diámetros Nominales", expanded=False):
 
         tabla = f"| DN | Diámetro ({u_d}) |\n"
         tabla += "|----|---------------|\n"
@@ -337,7 +337,7 @@ with st.sidebar:
 
     unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
 
-    with st.expander("🌊 Velocidades Recomendadas", expanded=True):
+    with st.expander("🌊 Velocidades Recomendadas", expanded=False):
 
         tabla = f"| Aplicación | Velocidad Recomendada ({unidad_vel}) |\n"
         tabla += "|-------------|----------------------|\n"
@@ -376,7 +376,7 @@ if 'edit_error' not in st.session_state:
 st.markdown("#### Factor de Error del Sistema")
 c_err1, c_err2 = st.columns([1, 3]) 
 with c_err1:
-    if st.button('🔄 Cambiar Factor'):
+    if st.button('Cambiar Factor'):
         st.session_state.edit_error = not st.session_state.edit_error
 with c_err2:
     error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
@@ -390,7 +390,7 @@ else:
 if "mostrar_grafica" not in st.session_state:
     st.session_state.mostrar_grafica = False
 
-if st.button('🚀 Generar curva de calibración'):
+if st.button('Generar curva de calibración'):
     st.session_state.mostrar_grafica = True
 
 if st.session_state.mostrar_grafica:
@@ -450,7 +450,7 @@ if st.session_state.mostrar_grafica:
 
 
     # 🔵 BOTÓN DE INTERACCIÓN
-    if st.button("📱 Activar / Desactivar Interacción"):
+    if st.button("Activar / Desactivar Interacción"):
         st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
 
     st.plotly_chart(
@@ -470,6 +470,7 @@ if st.session_state.mostrar_grafica:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
