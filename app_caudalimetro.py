@@ -395,20 +395,26 @@ if st.button('Generar curva de calibración'):
 
 if st.session_state.mostrar_grafica:
 
-    # 🔽 TODO tu código de cálculos aquí
+    # =========================
+    # CÁLCULOS
+    # =========================
     A_m2 = np.pi * (D_si / 2)**2
     v = np.linspace(0.1, 5.0, 100)
+
     f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
+
     V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v) * conv_q
+
     m_eq = V_mv[-1] / Q_plot[-1]
-    x_min, x_max = Q_plot.min(), Q_plot.max()
-    y_min, y_max = V_mv.min(), V_mv.max()
-    Q_line = np.linspace(0, Q_plot.max() * 100, 2000)
+
+    # Línea extendida (efecto "infinita")
+    Q_line = np.linspace(-Q_plot.max()*100, Q_plot.max()*100, 2000)
     V_line = m_eq * Q_line
 
-
-    
+    # =========================
+    # GRÁFICA
+    # =========================
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(
@@ -422,44 +428,55 @@ if st.session_state.mostrar_grafica:
             'Voltaje: %{y:.4f} mV<extra></extra>'
     ))
 
-
-    # ===== FORZAR 6 DIVISIONES EXACTAS =====
-    
-    x_ticks = np.linspace(0, x_max, 6)
-    y_ticks = np.linspace(0, y_max, 6)
-
-    
     fig.update_layout(
         template="plotly_dark",
-        xaxis=dict(
-            title=f'Caudal Q ({u_q})',
-            range=[0, x_max],      # 👈 empieza en 0
-            tickvals=x_ticks,
-            fixedrange=False
-        ),
-        yaxis=dict(
-            title='Voltaje V (mV)',
-            range=[0, y_max],      # 👈 empieza en 0
-            tickvals=y_ticks,
-            fixedrange=False
-        ),
         height=450,
         margin=dict(l=40, r=20, t=40, b=40),
-        hovermode="x unified"
+        hovermode="x unified",
+        uirevision=True,   # 🔥 mantiene formato al mover
+
+        xaxis=dict(
+            title=f'Caudal Q ({u_q})',
+            zeroline=True,
+            showgrid=True,
+            showline=True,
+            mirror=True,
+            ticks="outside",
+            tickformat=".3f",
+            autorange=True   # 👈 permite moverse sin romper ejes
+        ),
+
+        yaxis=dict(
+            title='Voltaje V (mV)',
+            zeroline=True,
+            showgrid=True,
+            showline=True,
+            mirror=True,
+            ticks="outside",
+            tickformat=".3f",
+            autorange=True
+        )
     )
 
+    # =========================
+    # BOTÓN DE INTERACCIÓN
+    # =========================
+    col1, col2 = st.columns([1,4])
 
-    # 🔵 BOTÓN DE INTERACCIÓN
-    if st.button("Activar / Desactivar Interacción"):
-        st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
+    with col1:
+        if st.button("📱 Interacción"):
+            st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True,
-        config={"staticPlot": not st.session_state.grafica_interactiva}
-    )
+    with col2:
+        st.plotly_chart(
+            fig,
+            use_container_width=True,
+            config={"staticPlot": not st.session_state.grafica_interactiva}
+        )
 
-
+    # =========================
+    # ECUACIÓN MOSTRADA
+    # =========================
     st.markdown(f"""
         <div class="equation-box">
             <div class="equation-large">
@@ -468,8 +485,10 @@ if st.session_state.mostrar_grafica:
         </div>
     """, unsafe_allow_html=True)
 
+
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
