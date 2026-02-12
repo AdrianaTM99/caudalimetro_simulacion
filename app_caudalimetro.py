@@ -387,17 +387,9 @@ if "mostrar_grafica" not in st.session_state:
 if st.button('🚀 Generar curva de calibración'):
     st.session_state.mostrar_grafica = True
 
-    placeholder = st.empty()
-    with placeholder.container():
-        st.markdown(f"""
-            <div class="loading-overlay">
-                <img src="{URL_GIF}" width="450">
-                <p style="color:#00d4ff; font-weight:bold; margin-top:10px; font-size:1.2rem;">Calculando flujo electromagnético...</p>
-            </div>
-        """, unsafe_allow_html=True)
-        time.sleep(2.5)
-    placeholder.empty()
+if st.session_state.mostrar_grafica:
 
+    # 🔽 TODO tu código de cálculos aquí
     A_m2 = np.pi * (D_si / 2)**2
     v = np.linspace(0.1, 5.0, 100)
     f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
@@ -425,13 +417,9 @@ if st.button('🚀 Generar curva de calibración'):
         hovermode="x unified"
     )
 
-    # Botón para activar/desactivar interacción (solo se muestra si el usuario quiere)
+    # 🔵 BOTÓN DE INTERACCIÓN
     if st.button("📱 Activar / Desactivar Interacción"):
         st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
-
-    # Si está activada → interactiva
-    # Si está desactivada → modo imagen
-    config_plot = {} if st.session_state.grafica_interactiva else {"staticPlot": True}
 
     st.plotly_chart(
         fig,
@@ -450,5 +438,6 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
