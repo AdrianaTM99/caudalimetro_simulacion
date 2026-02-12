@@ -409,7 +409,8 @@ if st.session_state.mostrar_grafica:
     m_eq = V_mv[-1] / Q_plot[-1]
 
     # Línea extendida (efecto "infinita")
-    Q_line = np.linspace(-Q_plot.max()*100, Q_plot.max()*100, 4000)
+    Q_line = np.linspace(-1e6, 1e6, 10000)
+
     V_line = m_eq * Q_line
 
     # =========================
@@ -488,6 +489,7 @@ if st.session_state.mostrar_grafica:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
