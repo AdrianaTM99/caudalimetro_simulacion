@@ -115,31 +115,86 @@ div[data-testid="stSlider"] [role="slider"] {
     padding: 200px 2rem 4rem 2rem !important;
     color: white !important;
 }
- /* FORZAR TAMAÑO TEXTO CENTRAL */
+/* ========================= */
+/* 🔵 TÍTULO PRINCIPAL */
+/* ========================= */
+
+.title-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 30px 0 15px 0;
+    text-align: center;
+    z-index: 1000;
+    border-bottom: 2px solid #00d4ff;
+}
+
+.main-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #00d4ff;
+    margin: 0;
+}
+
+.subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    color: #cccccc;
+    margin-top: 8px;
+}
+
+/* CONTENIDO CENTRAL */
+.block-container {
+    position: relative;
+    z-index: 1;
+    font-family: 'Roboto', sans-serif;
+    max-width: 1100px !important;
+    margin: 0 auto !important;
+    padding: 230px 2rem 6rem 2rem !important;
+    color: white !important;
+}
+
 .block-container p,
 .block-container label,
 .block-container span,
 .block-container div {
-    font-size: 1.25rem !important;
+    font-size: 1.2rem !important;
+}
+
+/* MÁS ESPACIO ENTRE ELEMENTOS */
+.stNumberInput,
+.stSlider,
+.stButton,
+.stMarkdown {
+    margin-bottom: 30px !important;
 }
 
 
 /* RESPONSIVE TÍTULO */
 @media (max-width: 900px) {
+
     .main-title {
-        font-size: 1.2rem !important;
+        font-size: 1.4rem !important;
     }
 
     .subtitle {
-        font-size:0.85rem !important;
+        font-size: 0.9rem !important;
     }
 
     .block-container {
-        padding: 100px 1rem 3rem 1rem !important;
+        padding: 140px 1rem 4rem 1rem !important;
     }
 
-    .title-bar {
-        margin-top: 30px !important;
+    .block-container p,
+    .block-container label,
+    .block-container span,
+    .block-container div {
+        font-size: 1rem !important;
     }
 }
 
@@ -389,6 +444,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
