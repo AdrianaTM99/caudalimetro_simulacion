@@ -19,7 +19,6 @@ URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/cauda
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
 [data-testid="stAppViewContainer"] {
     background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
@@ -28,8 +27,11 @@ st.markdown("""
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
+/* IMPORTAR FUENTE BONITA */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
-/* BARRA SUPERIOR */
+/* TÍTULO PRINCIPAL */
+/* BARRA SUPERIOR DEL TÍTULO */
 .title-bar {
     position: fixed;
     top: 0;
@@ -38,22 +40,28 @@ st.markdown("""
     width: 100%;
     background: rgba(0,0,0,0.6);
     backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+
     padding: 35px 0 10px 0;
     text-align: center;
     z-index: 1000;
     border-bottom: 2px solid #00d4ff;
 }
 
+/* TEXTO DEL TÍTULO */
 .main-title {
     font-family: 'Poppins', sans-serif;
     font-size: 2.8rem;
     font-weight: 800;
-    background: linear-gradient(90deg, #00d4ff, #ff8c00);
+    background: linear-gradient(90deg, #00d4ff, #ff8c00
+
+);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
 }
 
+/* SUBTÍTULO */
 .subtitle {
     font-family: 'Poppins', sans-serif;
     font-size: 1.5rem;
@@ -61,7 +69,28 @@ st.markdown("""
     margin-top: 5px;
 }
 
-/* FONDO OSCURO CENTRAL */
+
+
+/* RADIO BUTTON AZUL */
+div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
+    border: 2px solid #00d4ff !important;
+    background-color: #000 !important;
+}
+
+div[data-testid="stRadio"] [aria-checked="true"] > div:first-child > div {
+    background-color: #00d4ff !important;
+}
+
+/* SLIDER AZUL */
+div[data-testid="stSlider"] > div > div > div > div {
+    background-color: #00d4ff !important;
+}
+
+div[data-testid="stSlider"] [role="slider"] {
+    background-color: #00d4ff !important;
+    border: 2px solid white !important;
+}
+
 [data-testid="stAppViewContainer"]::before {
     content: "";
     position: fixed;
@@ -73,10 +102,10 @@ st.markdown("""
     height: calc(100vh - 70px);
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
     z-index: 0;
 }
 
-/* CONTENEDOR CENTRAL */
 .block-container {
     position: relative;
     z-index: 1;
@@ -86,7 +115,21 @@ st.markdown("""
     padding: 200px 2rem 4rem 2rem !important;
     color: white !important;
 }
-/* ===== AUMENTAR TEXTO CENTRAL (EXCEPTO TÍTULO) ===== */
+/* RESPONSIVE TÍTULO */
+@media (max-width: 900px) {
+    .main-title {
+        font-size: 1.2rem !important;
+    }
+
+    .subtitle {
+        font-size:0.85rem !important;
+    }
+
+    .block-container {
+        padding: 100px 1rem 3rem 1rem !important;
+    }
+
+    /* ===== AUMENTAR TEXTO CENTRAL (EXCEPTO TÍTULO) ===== */
 .block-container p,
 .block-container label,
 .block-container div[data-testid="stMarkdownContainer"] p,
@@ -95,41 +138,12 @@ st.markdown("""
     font-size: 1.2rem !important;
 }
 
-/* 🔥 TAMAÑO GENERAL SOLO PARA CONTENIDO CENTRAL */
-/* Solo texto central */
-.block-container p,
-.block-container label,
-.block-container span,
-.block-container li,
-.block-container div[data-testid="stMarkdownContainer"] {
-    font-size: 1.15rem !important;
-}
-
-/* EXCLUSIONES */
-.main-title,
-.subtitle,
-h4 {
-    font-size: revert !important;
-}
-
-/* RESPONSIVE */
-@media (max-width: 900px) {
-    .main-title {
-        font-size: 1.2rem !important;
-    }
-
-    .subtitle {
-        font-size: 0.85rem !important;
-    }
-
-    .block-container {
-        padding: 100px 1rem 3rem 1rem !important;
-    }
 
     .title-bar {
         margin-top: 30px !important;
     }
 }
+
 
 </style>
 """, unsafe_allow_html=True)
@@ -376,5 +390,3 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
-
-
