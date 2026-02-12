@@ -415,15 +415,23 @@ if st.session_state.mostrar_grafica:
             'Voltaje: %{y:.4f} mV<extra></extra>'
     ))
 
-    fig.update_layout(
+    # ===== FORZAR 6 DIVISIONES EXACTAS =====
+    x_min, x_max = Q_plot.min(), Q_plot.max()
+    y_min, y_max = V_mv.min(), V_mv.max()
+    
+    x_ticks = np.linspace(x_min, x_max, 6)
+    y_ticks = np.linspace(y_min, y_max, 6)
+
+    
+   fig.update_layout(
     template="plotly_dark",
     xaxis=dict(
         title=f'Caudal Q ({u_q})',
-        nticks=6
+        tickvals=x_ticks
     ),
     yaxis=dict(
         title='Voltaje V (mV)',
-        nticks=6
+        tickvals=y_ticks
     ),
     height=450,
     margin=dict(l=40, r=20, t=40, b=40),
@@ -451,5 +459,6 @@ if st.session_state.mostrar_grafica:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
