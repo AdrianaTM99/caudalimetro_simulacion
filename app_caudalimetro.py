@@ -19,6 +19,7 @@ URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/cauda
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
 [data-testid="stAppViewContainer"] {
     background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
@@ -27,11 +28,8 @@ st.markdown("""
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
-/* IMPORTAR FUENTE BONITA */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
-/* TÍTULO PRINCIPAL */
-/* BARRA SUPERIOR DEL TÍTULO */
+/* BARRA SUPERIOR */
 .title-bar {
     position: fixed;
     top: 0;
@@ -40,28 +38,22 @@ st.markdown("""
     width: 100%;
     background: rgba(0,0,0,0.6);
     backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-
     padding: 35px 0 10px 0;
     text-align: center;
     z-index: 1000;
     border-bottom: 2px solid #00d4ff;
 }
 
-/* TEXTO DEL TÍTULO */
 .main-title {
     font-family: 'Poppins', sans-serif;
     font-size: 2.8rem;
     font-weight: 800;
-    background: linear-gradient(90deg, #00d4ff, #ff8c00
-
-);
+    background: linear-gradient(90deg, #00d4ff, #ff8c00);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
 }
 
-/* SUBTÍTULO */
 .subtitle {
     font-family: 'Poppins', sans-serif;
     font-size: 1.5rem;
@@ -69,28 +61,7 @@ st.markdown("""
     margin-top: 5px;
 }
 
-
-
-/* RADIO BUTTON AZUL */
-div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
-    border: 2px solid #00d4ff !important;
-    background-color: #000 !important;
-}
-
-div[data-testid="stRadio"] [aria-checked="true"] > div:first-child > div {
-    background-color: #00d4ff !important;
-}
-
-/* SLIDER AZUL */
-div[data-testid="stSlider"] > div > div > div > div {
-    background-color: #00d4ff !important;
-}
-
-div[data-testid="stSlider"] [role="slider"] {
-    background-color: #00d4ff !important;
-    border: 2px solid white !important;
-}
-
+/* FONDO OSCURO CENTRAL */
 [data-testid="stAppViewContainer"]::before {
     content: "";
     position: fixed;
@@ -102,10 +73,10 @@ div[data-testid="stSlider"] [role="slider"] {
     height: calc(100vh - 70px);
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
     z-index: 0;
 }
 
+/* CONTENEDOR CENTRAL */
 .block-container {
     position: relative;
     z-index: 1;
@@ -115,144 +86,41 @@ div[data-testid="stSlider"] [role="slider"] {
     padding: 200px 2rem 4rem 2rem !important;
     color: white !important;
 }
-/* ========================= */
-/* 🔵 TÍTULO PRINCIPAL */
-/* ========================= */
 
-.title-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(0,0,0,0.75);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    padding: 30px 0 15px 0;
-    text-align: center;
-    z-index: 1000;
-    border-bottom: 2px solid #00d4ff;
+/* 🔥 TAMAÑO GENERAL SOLO PARA CONTENIDO CENTRAL */
+.block-container * {
+    font-size: 1.15rem !important;
 }
 
-.main-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: #00d4ff;
-    margin: 0;
+/* EXCLUSIONES */
+.main-title,
+.subtitle,
+h4 {
+    font-size: revert !important;
 }
 
-.subtitle {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.2rem;
-    color: #cccccc;
-    margin-top: 8px;
-}
-
-/* CONTENIDO CENTRAL */
-.block-container {
-    position: relative;
-    z-index: 1;
-    font-family: 'Roboto', sans-serif;
-    max-width: 1100px !important;
-    margin: 0 auto !important;
-    padding: 230px 2rem 6rem 2rem !important;
-    color: white !important;
-}
-
-.block-container p,
-.block-container label,
-.block-container span,
-.block-container div {
-    font-size: 1.2rem !important;
-}
-
-/* MÁS ESPACIO ENTRE ELEMENTOS */
-.stNumberInput,
-.stSlider,
-.stButton,
-.stMarkdown {
-    margin-bottom: 30px !important;
-}
-
-
-/* RESPONSIVE TÍTULO */
+/* RESPONSIVE */
 @media (max-width: 900px) {
-
     .main-title {
-        font-size: 1.4rem !important;
+        font-size: 1.2rem !important;
     }
 
     .subtitle {
-        font-size: 0.9rem !important;
+        font-size: 0.85rem !important;
     }
 
     .block-container {
-        padding: 140px 1rem 4rem 1rem !important;
+        padding: 100px 1rem 3rem 1rem !important;
     }
 
-    .block-container p,
-    .block-container label,
-    .block-container span,
-    .block-container div {
-        font-size: 1rem !important;
+    .title-bar {
+        margin-top: 30px !important;
     }
 }
-
 
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<div class="title-bar">
-    <div class="main-title">
-        Simulador de Caudalímetro Electromagnético
-    </div>
-    <div class="subtitle">
-        Modelado y calibración digital de flujo industrial
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-
-# 🔵 ESTILO DE SIDEBAR DESPLEGABLE
-st.markdown("""
-<style>
-
-/* SIDEBAR */
-section[data-testid="stSidebar"] {
-    background: rgba(0,0,0,0.6) !important;
-    backdrop-filter: blur(3px) !important;
-    -webkit-backdrop-filter: blur(3px) !important;
-
-    border-right: 2px solid #00d4ff;
-    position: fixed !important;
-
-    /*BAJAMOS LA BARRA DEBAJO DEL HEADER */
-    top: 70px !important;
-    height: calc(100vh - 70px) !important;
-
-    z-index: 998 !important;
-}
-
-/* CONTENIDO NO SE DESPLACE */
-[data-testid="stAppViewContainer"] {
-    margin-left: 0 !important;
-}
-
-/* BOTÓN SIEMPRE VISIBLE */
-div[data-testid="collapsedControl"] {
-    position: fixed !important;
-    top: 18px !important;
-    left: 18px !important;
-    z-index: 1002 !important;
-    background-color: rgba(0,0,0,0.9) !important;
-    padding: 8px 12px !important;
-    border-radius: 10px !important;
-    border: 1px solid #00d4ff !important;
-}
-
-</style>
-""", unsafe_allow_html=True)
 
 # --- LÓGICA DE UNIDADES ---
 sistema = st.radio(
@@ -444,6 +312,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
