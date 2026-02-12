@@ -427,16 +427,21 @@ if st.session_state.mostrar_grafica:
         template="plotly_dark",
         xaxis=dict(
             title=f'Caudal Q ({u_q})',
-            tickvals=x_ticks
+            range=[0, x_max],      # 👈 empieza en 0
+            tickvals=x_ticks,
+            fixedrange=False
         ),
         yaxis=dict(
             title='Voltaje V (mV)',
-            tickvals=y_ticks
+            range=[0, y_max],      # 👈 empieza en 0
+            tickvals=y_ticks,
+            fixedrange=False
         ),
         height=450,
         margin=dict(l=40, r=20, t=40, b=40),
         hovermode="x unified"
     )
+
 
     # 🔵 BOTÓN DE INTERACCIÓN
     if st.button("📱 Activar / Desactivar Interacción"):
@@ -459,6 +464,7 @@ if st.session_state.mostrar_grafica:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
