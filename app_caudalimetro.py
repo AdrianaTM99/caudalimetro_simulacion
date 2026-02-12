@@ -416,23 +416,22 @@ if st.button('🚀 Generar curva de calibración'):
         hovermode="x unified"
     )
 
-    st.plotly_chart(fig, use_container_width=True, config=config_plot)
-
+     # ---------- CONTROL DE INTERACCIÓN ----------
     if "grafica_interactiva" not in st.session_state:
         st.session_state.grafica_interactiva = False
 
-    # Toggle para activar/desactivar interacción
     toggle = st.toggle(
         "📱 Activar interacción de gráfica",
         value=st.session_state.grafica_interactiva
-)
+    )
 
-st.session_state.grafica_interactiva = toggle
+    st.session_state.grafica_interactiva = toggle
 
-# Si NO está activa → gráfica fija
-config_plot = {"staticPlot": True} if not toggle else {}
+    # Si NO está activa → gráfica fija
+    config_plot = {"staticPlot": True} if not toggle else {}
 
-st.plotly_chart(fig, use_container_width=True, config=config_plot)
+    st.plotly_chart(fig, use_container_width=True, config=config_plot)
+
     st.markdown(f"""
         <div class="equation-box">
             <div class="equation-large">
@@ -443,6 +442,7 @@ st.plotly_chart(fig, use_container_width=True, config=config_plot)
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
