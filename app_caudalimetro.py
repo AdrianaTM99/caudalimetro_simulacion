@@ -440,20 +440,6 @@ if st.button('🚀 Generar curva de calibración'):
     )
 
 
-
-    if es_movil:
-    # Mostrar botón para activar/desactivar interacción
-        if st.button("📱 Activar / Desactivar Interacción"):
-            st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
-
-        config_plot = {} if st.session_state.grafica_interactiva else {"staticPlot": True}
-    else:
-        # En PC siempre interactiva
-        config_plot = {}
-
-    st.plotly_chart(fig, use_container_width=True, config=config_plot)
-
-
     st.markdown(f"""
         <div class="equation-box">
             <div class="equation-large">
@@ -464,4 +450,5 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
