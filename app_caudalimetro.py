@@ -11,16 +11,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Detectar si es móvil por ancho
-st.markdown("""
-<script>
-const isMobile = window.innerWidth < 900;
-window.parent.postMessage({mobile: isMobile}, "*");
-</script>
-""", unsafe_allow_html=True)
 
-if "mobile_mode" not in st.session_state:
-    st.session_state.mobile_mode = False
 
 # ENLACE RAW CORREGIDO
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
@@ -425,22 +416,23 @@ if st.button('🚀 Generar curva de calibración'):
         hovermode="x unified"
     )
 
+    st.plotly_chart(fig, use_container_width=True, config=config_plot)
+
     if "grafica_interactiva" not in st.session_state:
         st.session_state.grafica_interactiva = False
 
-    config_plot = {}
+    # Toggle para activar/desactivar interacción
+    toggle = st.toggle(
+        "📱 Activar interacción de gráfica",
+        value=st.session_state.grafica_interactiva
+)
 
-    # Si es móvil → empieza fija
-    if st.session_state.mobile_mode:
-        if st.button("📱 Activar / Desactivar interacción"):
-            st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
+st.session_state.grafica_interactiva = toggle
 
-        if not st.session_state.grafica_interactiva:
-            config_plot = {"staticPlot": True}
-    
-    st.plotly_chart(fig, use_container_width=True, config=config_plot)
+# Si NO está activa → gráfica fija
+config_plot = {"staticPlot": True} if not toggle else {}
 
-
+st.plotly_chart(fig, use_container_width=True, config=config_plot)
     st.markdown(f"""
         <div class="equation-box">
             <div class="equation-large">
@@ -451,5 +443,6 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
