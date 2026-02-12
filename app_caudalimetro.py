@@ -425,10 +425,21 @@ if st.button('🚀 Generar curva de calibración'):
         hovermode="x unified"
     )
 
-    if st.runtime.scriptrunner.script_run_context.get_script_run_ctx().session_info.client.request.headers.get("User-Agent","").lower().find("mobile") != -1:
-        es_movil = True
-    else:
-        es_movil = False
+    # Botón para activar/desactivar interacción (solo se muestra si el usuario quiere)
+    if st.button("📱 Activar / Desactivar Interacción"):
+        st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
+
+    # Si está activada → interactiva
+    # Si está desactivada → modo imagen
+    config_plot = {} if st.session_state.grafica_interactiva else {"staticPlot": True}
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+        config={"staticPlot": not st.session_state.grafica_interactiva}
+    )
+
+
 
     if es_movil:
     # Mostrar botón para activar/desactivar interacción
@@ -453,3 +464,4 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
