@@ -10,7 +10,12 @@ st.set_page_config(
     page_title="Simulador Adriana",
     initial_sidebar_state="collapsed"
 )
+# Detectar si es pantalla pequeña (aprox móvil)
+is_mobile = st.session_state.get("is_mobile", False)
 
+# Inicializar estado de gráfica
+if "grafica_interactiva" not in st.session_state:
+    st.session_state.grafica_interactiva = False
 
 
 # ENLACE RAW CORREGIDO
@@ -376,8 +381,12 @@ if sistema == "Americano (G, mhos/in, in)":
     B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
 else:
     B_si, D_si, sigma_si = B_user, D_user, sigma_user
+if "mostrar_grafica" not in st.session_state:
+    st.session_state.mostrar_grafica = False
 
 if st.button('🚀 Generar curva de calibración'):
+    st.session_state.mostrar_grafica = True
+
     placeholder = st.empty()
     with placeholder.container():
         st.markdown(f"""
@@ -416,21 +425,23 @@ if st.button('🚀 Generar curva de calibración'):
         hovermode="x unified"
     )
 
-     # ---------- CONTROL DE INTERACCIÓN ----------
-    if "grafica_interactiva" not in st.session_state:
-        st.session_state.grafica_interactiva = False
+    if st.runtime.scriptrunner.script_run_context.get_script_run_ctx().session_info.client.request.headers.get("User-Agent","").lower().find("mobile") != -1:
+        es_movil = True
+    else:
+        es_movil = False
 
-    toggle = st.toggle(
-        "📱 Activar interacción de gráfica",
-        value=st.session_state.grafica_interactiva
-    )
+    if es_movil:
+    # Mostrar botón para activar/desactivar interacción
+        if st.button("📱 Activar / Desactivar Interacción"):
+            st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
 
-    st.session_state.grafica_interactiva = toggle
-
-    # Si NO está activa → gráfica fija
-    config_plot = {"staticPlot": True} if not toggle else {}
+        config_plot = {} if st.session_state.grafica_interactiva else {"staticPlot": True}
+    else:
+        # En PC siempre interactiva
+        config_plot = {}
 
     st.plotly_chart(fig, use_container_width=True, config=config_plot)
+
 
     st.markdown(f"""
         <div class="equation-box">
@@ -442,7 +453,3 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
-
-
-
-
