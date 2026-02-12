@@ -404,7 +404,8 @@ if st.button('🚀 Generar curva de calibración'):
     V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v) * conv_q
     m_eq = V_mv[-1] / Q_plot[-1]
-    mover_grafica = False
+    mover_grafica = st.toggle("📱 Activar movimiento en gráfica", value=False)
+
 
     # Solo mostrar botón si es pantalla pequeña
     if st.session_state.get("mobile_mode", False):
@@ -449,6 +450,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
