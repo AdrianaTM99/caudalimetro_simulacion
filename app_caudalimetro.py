@@ -174,6 +174,12 @@ div[data-testid="stNumberInput"] input[type="text"] {
     }
 }
 
+/* ===== AJUSTE GRÁFICA EN MÓVIL ===== */
+@media (max-width: 900px) {
+    div[data-testid="stPlotlyChart"] {
+        height: 320px !important;
+    }
+}
 
 </style>
 """, unsafe_allow_html=True)
@@ -417,15 +423,7 @@ if st.session_state.mostrar_grafica:
         hovermode="x unified"
     )
 
-    # 🔵 BOTÓN DE INTERACCIÓN
-    if st.button("📱 Activar / Desactivar Interacción"):
-        st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True,
-        config={"staticPlot": not st.session_state.grafica_interactiva}
-    )
 
 
     st.markdown(f"""
@@ -438,6 +436,3 @@ if st.session_state.mostrar_grafica:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
-
-
-
