@@ -115,6 +115,17 @@ div[data-testid="stSlider"] [role="slider"] {
     padding: 200px 2rem 4rem 2rem !important;
     color: white !important;
 }
+
+
+/* ===== AUMENTAR TEXTO CENTRAL (EXCEPTO TÍTULO) ===== */
+.block-container p,
+.block-container label,
+.block-container div[data-testid="stMarkdownContainer"] p,
+.block-container li,
+.block-container span {
+    font-size: 1.2rem !important;
+}
+
 /* RESPONSIVE TÍTULO */
 @media (max-width: 900px) {
     .main-title {
