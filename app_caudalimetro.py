@@ -395,7 +395,7 @@ if st.button('🚀 Generar curva de calibración'):
     Q_plot = (A_m2 * v) * conv_q
     m_eq = V_mv[-1] / Q_plot[-1]
 
-      fig = go.Figure()
+    fig = go.Figure()
 
     fig.add_trace(go.Scatter(
         x=Q_plot,
@@ -428,6 +428,7 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
