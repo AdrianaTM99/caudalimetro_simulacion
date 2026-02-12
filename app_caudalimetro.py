@@ -425,8 +425,8 @@ if st.session_state.mostrar_grafica:
 
     # ===== FORZAR 6 DIVISIONES EXACTAS =====
     
-    x_ticks = np.linspace(x_min, x_max, 6)
-    y_ticks = np.linspace(y_min, y_max, 6)
+    x_ticks = np.linspace(0, x_max, 6)
+    y_ticks = np.linspace(0, y_max, 6)
 
     
     fig.update_layout(
@@ -470,6 +470,7 @@ if st.session_state.mostrar_grafica:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
