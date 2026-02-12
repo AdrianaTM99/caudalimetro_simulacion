@@ -115,10 +115,14 @@ div[data-testid="stSlider"] [role="slider"] {
     padding: 200px 2rem 4rem 2rem !important;
     color: white !important;
 }
-    /* ===== TAMAÑO TEXTO CUERPO CENTRAL ===== */
-    section.main div[data-testid="stVerticalBlock"] {
-        font-size: 3rem !important;
+ /* FORZAR TAMAÑO TEXTO CENTRAL */
+.block-container p,
+.block-container label,
+.block-container span,
+.block-container div {
+    font-size: 1.25rem !important;
 }
+
 
 /* RESPONSIVE TÍTULO */
 @media (max-width: 900px) {
@@ -385,5 +389,6 @@ if st.button('🚀 Generar curva de calibración'):
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
