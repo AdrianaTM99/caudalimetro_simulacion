@@ -423,7 +423,15 @@ if st.session_state.mostrar_grafica:
         hovermode="x unified"
     )
 
+    # 🔵 BOTÓN DE INTERACCIÓN
+    if st.button("📱 Activar / Desactivar Interacción"):
+        st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
 
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+        config={"staticPlot": not st.session_state.grafica_interactiva}
+    )
 
 
     st.markdown(f"""
