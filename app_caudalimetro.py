@@ -395,26 +395,27 @@ if st.button('🚀 Generar curva de calibración'):
     Q_plot = (A_m2 * v) * conv_q
     m_eq = V_mv[-1] / Q_plot[-1]
 
-  fig = go.Figure()
+      fig = go.Figure()
 
-fig.add_trace(go.Scatter(
-    x=Q_plot,
-    y=V_mv,
-    mode='lines',
-    line=dict(color='#00d4ff', width=4),
-    hovertemplate=
-        'Caudal: %{x:.4f} ' + u_q + '<br>' +
-        'Voltaje: %{y:.4f} mV<extra></extra>'
-))
+    fig.add_trace(go.Scatter(
+        x=Q_plot,
+        y=V_mv,
+        mode='lines',
+        line=dict(color='#00d4ff', width=4),
+        hovertemplate=
+            'Caudal: %{x:.4f} ' + u_q + '<br>' +
+            'Voltaje: %{y:.4f} mV<extra></extra>'
+    ))
 
-fig.update_layout(
-    template="plotly_dark",
-    xaxis_title=f'Caudal Q ({u_q})',
-    yaxis_title='Voltaje V (mV)',
-    height=500
-)
+    fig.update_layout(
+        template="plotly_dark",
+        xaxis_title=f'Caudal Q ({u_q})',
+        yaxis_title='Voltaje V (mV)',
+        height=500,
+        hovermode="x unified"
+    )
 
-st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True)
 
 
     st.markdown(f"""
@@ -427,6 +428,7 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
