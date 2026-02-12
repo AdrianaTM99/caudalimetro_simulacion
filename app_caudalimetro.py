@@ -419,10 +419,10 @@ if st.session_state.mostrar_grafica:
         template="plotly_dark",
         xaxis_title=f'Caudal Q ({u_q})',
         yaxis_title='Voltaje V (mV)',
-        height=500,
+        height=450,
+        margin=dict(l=40, r=20, t=40, b=40),
         hovermode="x unified"
     )
-
     # 🔵 BOTÓN DE INTERACCIÓN
     if st.button("📱 Activar / Desactivar Interacción"):
         st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
@@ -444,3 +444,4 @@ if st.session_state.mostrar_grafica:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
