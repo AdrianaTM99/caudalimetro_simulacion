@@ -308,12 +308,12 @@ with st.sidebar:
 
     # -------- DIÁMETROS --------
     diametros = {
-        "DN15": 15,
-        "DN25": 25,
-        "DN50": 50,
-        "DN100": 100,
-        "DN200": 200,
-        "DN500": 500,
+        "DN15": 0.015,
+        "DN25": 0.025,
+        "DN50": 0.050,
+        "DN100": 0.1,
+        "DN200": 0.2,
+        "DN500": 0.5,
     }
 
     with st.expander("🔵 Diámetros Nominales", expanded=False):
@@ -484,6 +484,7 @@ if st.session_state.mostrar_grafica:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
