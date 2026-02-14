@@ -323,7 +323,7 @@ with st.sidebar:
 
         for dn, valor_mm in diametros.items():
             valor_conv = valor_mm * conv_diam
-            tabla += f"| {dn} | {valor_conv:.2f} |\n"
+            tabla += f"| {dn} | {valor_conv:.3f} |\n"
 
         st.markdown(tabla)
 
@@ -484,6 +484,7 @@ if st.session_state.mostrar_grafica:
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
