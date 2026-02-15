@@ -1,7 +1,6 @@
 import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
-
 import time  
 
 # 1. Configuración de la página
@@ -509,18 +508,19 @@ if st.session_state.mostrar_grafica:
     # ECUACIÓN MOSTRADA
     # =========================
     st.markdown(f"""
-        <div class="equation-box">
-            <div class="equation-large">
-                V<sub>(mV)</sub> = {m_eq:.4f} · Q<sub>({u_q})</sub> + {b_eq:.4f}
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-    st.write(f"Coeficiente de determinación R² = {R2:.6f}")
+        #<div class="equation-box">
+            #<div class="equation-large">
+                #V<sub>(mV)</sub> = {m_eq:.4f} · Q<sub>({u_q})</sub> + {b_eq:.4f}
+            #</div>
+        #</div>
+    #""", unsafe_allow_html=True)
+    #st.write(f"Coeficiente de determinación R² = {R2:.6f}")
 
 
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
