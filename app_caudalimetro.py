@@ -22,6 +22,9 @@ if "grafica_interactiva" not in st.session_state:
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
 # 2. CSS Maestro con efecto de desenfoque SOLO en el centro
+.title-bar img {
+    filter: drop-shadow(0 0 8px rgba(0,212,255,0.6));
+}
 
 st.markdown("""
 <style>
@@ -184,13 +187,21 @@ div[data-testid="stNumberInput"] input[type="text"] {
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
+st.markdown(f"""
 <div class="title-bar">
-    <div class="main-title">
-        Simulador de Caudalímetro Electromagnético
-    </div>
-    <div class="subtitle">
-        Modelado y calibración digital de flujo industrial
+    <div style="display:flex; align-items:center; justify-content:center; gap:20px; flex-wrap:wrap;">
+        
+        <img src="{URL_GIF}" style="width:70px; opacity:0.9;">
+        
+        <div>
+            <div class="main-title">
+                Simulador de Caudalímetro Electromagnético
+            </div>
+            <div class="subtitle">
+                Modelado y calibración digital de flujo industrial
+            </div>
+        </div>
+
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -510,6 +521,7 @@ st.write(f"Coeficiente de determinación R² = {R2:.6f}")
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
