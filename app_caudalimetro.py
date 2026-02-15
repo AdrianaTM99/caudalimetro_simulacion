@@ -13,7 +13,8 @@ st.set_page_config(
 # ENLACE RAW CORREGIDO
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 # =========================
-# SPLASH SCREEN INICIAL
+# =========================
+# SPLASH SCREEN ELEGANTE
 # =========================
 if "splash_done" not in st.session_state:
     st.session_state.splash_done = False
@@ -22,25 +23,57 @@ if not st.session_state.splash_done:
     splash = st.empty()
 
     splash.markdown(f"""
+    <style>
+    @keyframes fadeIn {{
+        from {{ opacity: 0; transform: scale(0.95); }}
+        to {{ opacity: 1; transform: scale(1); }}
+    }}
+    </style>
+
     <div style="
         position: fixed;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
-        background: black;
+        background-image: url('https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg');
+        background-size: cover;
+        background-position: center;
         display: flex;
         justify-content: center;
         align-items: center;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         z-index: 9999;
     ">
-        <img src="{URL_GIF}" style="width:160px; opacity:0.9;">
+
+        <div style="
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+        ">
+            <img src="{URL_GIF}" style="
+                width: 320px;
+                max-width: 70vw;
+                opacity: 0.95;
+            ">
+            <div style="
+                margin-top: 20px;
+                font-size: 1.3rem;
+                color: white;
+                font-family: 'Poppins', sans-serif;
+                letter-spacing: 1px;
+            ">
+                Inicializando simulador...
+            </div>
+        </div>
+
     </div>
     """, unsafe_allow_html=True)
 
-    time.sleep(2.5)  # duración de la animación
+    time.sleep(3)
     splash.empty()
     st.session_state.splash_done = True
+
 
 # Detectar si es pantalla pequeña (aprox móvil)
 is_mobile = st.session_state.get("is_mobile", False)
@@ -511,6 +544,7 @@ if st.session_state.mostrar_grafica:
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
