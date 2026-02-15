@@ -154,25 +154,16 @@ div[data-testid="stNumberInput"] input[type="text"] {
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown(f"""
+st.markdown("""
 <div class="title-bar">
-    <div style="display:flex; align-items:center; justify-content:center; gap:20px; flex-wrap:wrap;">
-        
-        <img src="https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif" style="width:70px; opacity:0.9;">
-        
-        <div>
-            <div class="main-title">
-                Simulador de Caudalímetro Electromagnético
-            </div>
-            <div class="subtitle">
-                Modelado y calibración digital de flujo industrial
-            </div>
-        </div>
-
+    <div class="main-title">
+        Simulador de Caudalímetro Electromagnético
+    </div>
+    <div class="subtitle">
+        Modelado y calibración digital de flujo industrial
     </div>
 </div>
 """, unsafe_allow_html=True)
-
 
 # 🔵 ESTILO DE SIDEBAR DESPLEGABLE
 st.markdown("""
@@ -207,12 +198,26 @@ div[data-testid="collapsedControl"] {
 </style>
 """, unsafe_allow_html=True)
 
-# --- LÓGICA DE UNIDADES ---
-sistema = st.radio(
-    "Selecciona el Sistema de Unidades:",
-    ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"),
-    horizontal=True
-)
+# --- LÓGICA DE UNIDADES + GIF ---
+col_radio, col_gif = st.columns([3,1])
+
+with col_radio:
+    sistema = st.radio(
+        "Selecciona el Sistema de Unidades:",
+        ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"),
+        horizontal=True
+    )
+
+with col_gif:
+    st.markdown(
+        f"""
+        <div style="display:flex; justify-content:center; align-items:center; height:100%;">
+            <img src="{URL_GIF}" style="width:90px; opacity:0.95;">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 
 # Definimos conversiones
 if sistema == "Métrico (T, μS/cm, m)":
@@ -475,4 +480,3 @@ if st.session_state.mostrar_grafica:
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
-
