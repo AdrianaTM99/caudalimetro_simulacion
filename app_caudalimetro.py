@@ -27,7 +27,7 @@ if not st.session_state.splash_done:
         top: 0;
         left: 0;
         width: 100vw;
-        height: 100vh;
+        height: 300vh;
         background: black;
         display: flex;
         justify-content: center;
@@ -511,5 +511,6 @@ if st.session_state.mostrar_grafica:
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
