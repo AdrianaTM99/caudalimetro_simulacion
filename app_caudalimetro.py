@@ -406,18 +406,42 @@ if st.session_state.mostrar_grafica:
     V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
     Q_plot = (A_m2 * v) * conv_q
 
-    m_eq = V_mv[-1] / Q_plot[-1]
+    # Ajuste lineal completo V = mQ + b
+    coef = np.polyfit(Q_plot, V_mv, 1)
+    m_eq = coef[0]
+    b_eq = coef[1]
+
+
 
     # Línea extendida (efecto "infinita")
     Q_line = np.linspace(-1e6, 1e6, 10000)
 
-    V_line = m_eq * Q_line
+    V_line = m_eq * Q_line + b_eq
+    # Predicción usando la recta ajustada
+    V_pred = m_eq * Q_plot + b_eq   # si usas intercepto
+    # si no usas intercepto:
+    # V_pred = m_eq * Q_plot
+
+    # Cálculo R²
+    SS_res = np.sum((V_mv - V_pred)**2)
+    SS_tot = np.sum((V_mv - np.mean(V_mv))**2)
+
+    R2 = 1 - SS_res/SS_tot
+
+
 
     # =========================
     # GRÁFICA
     # =========================
     fig = go.Figure()
 
+    fig.add_trace(go.Scatter(
+        x=Q_plot,
+        y=V_mv,
+        mode='markers',
+        name="Datos simulados"
+    ))
+   
     fig.add_trace(go.Scatter(
         x=Q_line,
         y=V_line,
@@ -476,14 +500,17 @@ if st.session_state.mostrar_grafica:
     st.markdown(f"""
         <div class="equation-box">
             <div class="equation-large">
-                V<sub>(mV)</sub> = {m_eq:.4f} · Q<sub>({u_q})</sub>
+                V<sub>(mV)</sub> = {m_eq:.4f} · Q<sub>({u_q})</sub> + {b_eq:.4f}
             </div>
         </div>
     """, unsafe_allow_html=True)
+st.write(f"Coeficiente de determinación R² = {R2:.6f}")
+
 
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
