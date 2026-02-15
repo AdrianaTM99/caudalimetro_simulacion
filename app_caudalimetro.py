@@ -22,12 +22,14 @@ if "grafica_interactiva" not in st.session_state:
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
 # 2. CSS Maestro con efecto de desenfoque SOLO en el centro
-.title-bar img {
-    filter: drop-shadow(0 0 8px rgba(0,212,255,0.6));
-}
+
 
 st.markdown("""
 <style>
+
+.title-bar img {
+    filter: drop-shadow(0 0 8px rgba(0,212,255,0.6));
+}
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
 [data-testid="stAppViewContainer"] {
@@ -521,6 +523,7 @@ st.write(f"Coeficiente de determinación R² = {R2:.6f}")
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
