@@ -65,9 +65,7 @@ st.markdown("""
     font-family: 'Poppins', sans-serif;
     font-size: 2.8rem;
     font-weight: 800;
-    background: linear-gradient(90deg, #00d4ff, #ff8c00
-
-);
+    background: linear-gradient(90deg, #00d4ff, #ff8c00);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
@@ -523,6 +521,7 @@ st.write(f"Coeficiente de determinación R² = {R2:.6f}")
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
