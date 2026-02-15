@@ -515,12 +515,13 @@ if st.session_state.mostrar_grafica:
             </div>
         </div>
     """, unsafe_allow_html=True)
-st.write(f"Coeficiente de determinación R² = {R2:.6f}")
+    st.write(f"Coeficiente de determinación R² = {R2:.6f}")
 
 
 
 st.write("---")
 st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
