@@ -10,6 +10,38 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# ENLACE RAW CORREGIDO
+URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
+# =========================
+# SPLASH SCREEN INICIAL
+# =========================
+if "splash_done" not in st.session_state:
+    st.session_state.splash_done = False
+
+if not st.session_state.splash_done:
+    splash = st.empty()
+
+    splash.markdown(f"""
+    <div style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    ">
+        <img src="{URL_GIF}" style="width:160px; opacity:0.9;">
+    </div>
+    """, unsafe_allow_html=True)
+
+    time.sleep(2.5)  # duración de la animación
+    splash.empty()
+    st.session_state.splash_done = True
+
 # Detectar si es pantalla pequeña (aprox móvil)
 is_mobile = st.session_state.get("is_mobile", False)
 
@@ -17,8 +49,7 @@ is_mobile = st.session_state.get("is_mobile", False)
 if "grafica_interactiva" not in st.session_state:
     st.session_state.grafica_interactiva = False
 
-# ENLACE RAW CORREGIDO
-URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
+
 
 # 2. CSS Maestro con efecto de desenfoque SOLO en el centro
 st.markdown("""
@@ -480,4 +511,5 @@ if st.session_state.mostrar_grafica:
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
