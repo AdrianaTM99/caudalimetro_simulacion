@@ -154,16 +154,25 @@ div[data-testid="stNumberInput"] input[type="text"] {
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
+st.markdown(f"""
 <div class="title-bar">
-    <div class="main-title">
-        Simulador de Caudalímetro Electromagnético
-    </div>
-    <div class="subtitle">
-        Modelado y calibración digital de flujo industrial
+    <div style="display:flex; align-items:center; justify-content:center; gap:20px; flex-wrap:wrap;">
+        
+        <img src="https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif" style="width:70px; opacity:0.9;">
+        
+        <div>
+            <div class="main-title">
+                Simulador de Caudalímetro Electromagnético
+            </div>
+            <div class="subtitle">
+                Modelado y calibración digital de flujo industrial
+            </div>
+        </div>
+
     </div>
 </div>
 """, unsafe_allow_html=True)
+
 
 # 🔵 ESTILO DE SIDEBAR DESPLEGABLE
 st.markdown("""
@@ -466,3 +475,4 @@ if st.session_state.mostrar_grafica:
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
