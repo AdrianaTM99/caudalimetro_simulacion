@@ -3,6 +3,14 @@ import numpy as np
 import plotly.graph_objects as go
 import time
 
+
+# 1. Configuración de la página
+st.set_page_config(
+    layout="wide",
+    page_title="Simulador Adriana",
+    initial_sidebar_state="collapsed"
+)
+
 URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/caudalimetro%20con%20rayitas_3.gif"
 
 if "splash_done" not in st.session_state:
@@ -64,12 +72,7 @@ if not st.session_state.splash_done:
     st.session_state.splash_done = True
     st.rerun()
 
-# 1. Configuración de la página
-st.set_page_config(
-    layout="wide",
-    page_title="Simulador Adriana",
-    initial_sidebar_state="collapsed"
-)
+
 
 # Detectar si es pantalla pequeña (aprox móvil)
 is_mobile = st.session_state.get("is_mobile", False)
@@ -540,6 +543,7 @@ if st.session_state.mostrar_grafica:
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
