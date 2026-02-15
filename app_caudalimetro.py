@@ -212,7 +212,7 @@ with col_gif:
     st.markdown(
         f"""
         <div style="display:flex; justify-content:center; align-items:center; height:100%;">
-            <img src="{URL_GIF}" style="width:90px; opacity:0.95;">
+            <img src="{URL_GIF}" style="width:180px; opacity:0.95;">
         </div>
         """,
         unsafe_allow_html=True
@@ -480,3 +480,4 @@ if st.session_state.mostrar_grafica:
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
