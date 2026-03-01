@@ -558,7 +558,7 @@ if st.session_state.mostrar_grafica:
         return output.getvalue()
 
     excel_bytes = dataframe_to_excel_bytes(df)
-        st.download_button(
+    st.download_button(
         label="📥 Descargar puntos (Excel)",
         data=excel_bytes,
         file_name="puntos_caudalimetro.xlsx",
@@ -575,6 +575,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
