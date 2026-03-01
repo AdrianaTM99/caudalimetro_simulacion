@@ -306,12 +306,12 @@ with st.sidebar:
     }
 
     with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=False):
-    st.markdown(f"""
-    **Criterio técnico:** la conductividad eléctrica **σ** determina la amplitud de la señal inducida y la estabilidad del sistema.
-    Para operación industrial se recomienda trabajar por encima de un umbral mínimo (depende del transmisor y del ruido),
-    y considerar que σ varía con **temperatura, concentración iónica y composición del fluido**.  
-    Unidades mostradas: **{u_sig}** (conversión automática según el sistema seleccionado).
-    """)
+        st.markdown(f"""
+        **Criterio técnico:** la conductividad eléctrica **σ** determina la amplitud de la señal inducida y la estabilidad del sistema.
+        Para operación industrial se recomienda trabajar por encima de un umbral mínimo (depende del transmisor y del ruido),
+        y considerar que σ varía con **temperatura, concentración iónica y composición del fluido**.  
+        Unidades mostradas: **{u_sig}** (conversión automática según el sistema seleccionado).
+        """)
         filas = []
         for fluido, (min_v, max_v) in conductividades.items():
             min_conv = min_v * conv_cond
@@ -676,4 +676,5 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
