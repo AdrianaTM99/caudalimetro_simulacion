@@ -546,7 +546,7 @@ if st.session_state.mostrar_grafica:
     st.markdown("### 📌 Puntos evaluados")
 
     mostrar_tabla = st.checkbox("Mostrar tabla de puntos evaluados", value=False)
-     if mostrar_tabla:
+    if mostrar_tabla:
         st.dataframe(df, use_container_width=True)
 
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
@@ -575,6 +575,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
