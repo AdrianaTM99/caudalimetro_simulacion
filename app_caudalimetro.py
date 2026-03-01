@@ -477,7 +477,7 @@ Simular el comportamiento de un caudalímetro electromagnético *real* incluyend
 4. Si activas **“Mostrar curva ideal”**, verás dos curvas:
    - **Ideal**: modelo físico sin imperfecciones.
    - **Realista**: señal medida con errores y limitaciones.
-5. Usa la **semilla** para repetir exactamente el mismo ruido (útil en tesis para reproducibilidad).
+5. Usa la **semilla** para repetir exactamente el mismo ruido.
 
 **Interpretación rápida:**
 - Ruido/offset/deriva afectan el “cero” y la dispersión.
@@ -486,7 +486,6 @@ Simular el comportamiento de un caudalímetro electromagnético *real* incluyend
 - Saturación recorta la señal a un máximo.
 - Instalación simula errores por perfiles de flujo/tramos rectos.
 
-✅ Recomendación tesis: reporta la ecuación de calibración y **R²** comparando ideal vs realista.
         """)
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 
@@ -549,45 +548,9 @@ with c_err2:
         )
     else:
         error_factor = 1.00
-
-with c_err3:
-    st.caption(f"Por defecto: **1.00** · En uso ahora: **{error_factor:.2f}**")
-st.write("---")
-# --- CÁLCULOS ---
-# --- CONVERSIÓN A SI (T, m, S/m) ---
-if sistema == "Americano (G, mhos/in, in)":
-    # B: Gauss -> Tesla
-    B_si = B_user * 1e-4
-    # D: in -> m
-    D_si = D_user * 0.0254
-    # σ: (μmhos/in) == (μS/in) -> S/m
-    # 1 μS/in = (1e-6 S) / (0.0254 m) = 3.937e-5 S/m
-    sigma_si = sigma_user * 3.937e-5
-else:
-    # B ya en Tesla
-    B_si = B_user
-    # D ya en metros
-    D_si = D_user
-    # σ: μS/cm -> S/m  (1 μS/cm = 1e-4 S/m)
-    sigma_si = sigma_user * 1e-4
-
-if "mostrar_grafica" not in st.session_state:
-    st.session_state.mostrar_grafica = False
-
-if st.button('Generar curva de calibración'):
-    st.session_state.mostrar_grafica = True
-
-
-
 st.markdown("---")
 with st.expander("🎛️ Realismo del instrumento", expanded=False):
     st.session_state.realismo_on = st.toggle("Activar realismo", value=st.session_state.realismo_on)
-    
-    st.session_state.seed_ruido = st.number_input(
-        "Semilla (repetibilidad tipo tesis)",
-        value=int(st.session_state.seed_ruido),
-        step=1
-    )
     
     # Mostrar también la curva ideal para comparar
     st.session_state.mostrar_ideal = st.toggle("Mostrar curva ideal (comparación)", value=st.session_state.mostrar_ideal)
@@ -615,13 +578,32 @@ st.session_state["alpha_nl"] = alpha_nl
 st.session_state["qstep_mV"] = qstep_mV
 st.session_state["sat_mV"] = sat_mV
 st.session_state["inst_pct"] = inst_pct
+with c_err3:
+    st.caption(f"Por defecto: **1.00** · En uso ahora: **{error_factor:.2f}**")
+st.write("---")
+# --- CÁLCULOS ---
+# --- CONVERSIÓN A SI (T, m, S/m) ---
+if sistema == "Americano (G, mhos/in, in)":
+    # B: Gauss -> Tesla
+    B_si = B_user * 1e-4
+    # D: in -> m
+    D_si = D_user * 0.0254
+    # σ: (μmhos/in) == (μS/in) -> S/m
+    # 1 μS/in = (1e-6 S) / (0.0254 m) = 3.937e-5 S/m
+    sigma_si = sigma_user * 3.937e-5
+else:
+    # B ya en Tesla
+    B_si = B_user
+    # D ya en metros
+    D_si = D_user
+    # σ: μS/cm -> S/m  (1 μS/cm = 1e-4 S/m)
+    sigma_si = sigma_user * 1e-4
 
+if "mostrar_grafica" not in st.session_state:
+    st.session_state.mostrar_grafica = False
 
-
-
-
-
-
+if st.button('Generar curva de calibración'):
+    st.session_state.mostrar_grafica = True
 
 def aplicar_realismo(V_mv_ideal, Q_plot, sigma_si, seed,
                      ruido_mV, offset_mV, deriva_mV,
@@ -912,6 +894,7 @@ Si evalúas muy fuera del rango simulado, es extrapolación y puede no represent
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
