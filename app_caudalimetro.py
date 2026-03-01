@@ -69,7 +69,8 @@ is_mobile = st.session_state.get("is_mobile", False)
 if "grafica_interactiva" not in st.session_state:
     st.session_state.grafica_interactiva = False
 
-
+if "mostrar_eval" not in st.session_state:
+    st.session_state.mostrar_eval = False
 
 # 2. CSS Maestro con efecto de desenfoque SOLO en el centro
 st.markdown("""
@@ -769,6 +770,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
