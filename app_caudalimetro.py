@@ -195,6 +195,16 @@ div[data-testid="stNumberInput"] input[type="text"] {
         height: 320px !important;
     }
 }
+
+/* ===== REDUCIR ESPACIOS VERTICALES ENTRE COMPONENTES ===== */
+div[data-testid="stPlotlyChart"]{
+    margin-bottom: -18px !important;   /* acerca la ecuación a la gráfica */
+}
+
+.equation-box{
+    margin-top: 8px !important;        /* reduce separación superior */
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -754,6 +764,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
