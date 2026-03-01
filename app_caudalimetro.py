@@ -2,7 +2,8 @@ import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
 import time
-
+import pandas as pd
+from io import BytesIO
 
 # 1. Configuración de la página
 st.set_page_config(
@@ -446,6 +447,12 @@ if st.session_state.mostrar_grafica:
     Q_m3s = A_m2 * v  # SI puro
     Q_plot = Q_m3s if sistema.startswith("Métrico") else Q_m3s * 15850.3  # 1 m³/s = 15850.3 GPM
 
+    df = pd.DataFrame({
+        f"v (m/s)": v,
+        f"Q ({u_q})": Q_plot,
+        "V (mV)": V_mv
+    })
+
     # Ajuste lineal completo V = mQ + b
     coef = np.polyfit(Q_plot, V_mv, 1)
     m_eq = coef[0]
@@ -536,9 +543,39 @@ if st.session_state.mostrar_grafica:
     </div>
     """, unsafe_allow_html=True)
 
+    st.markdown("### 📌 Puntos evaluados")
+
+    mostrar_tabla = st.checkbox("Mostrar tabla de puntos evaluados", value=False)
+     if mostrar_tabla:
+        st.dataframe(df, use_container_width=True)
+
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
+
+    def dataframe_to_excel_bytes(dataframe: pd.DataFrame) -> bytes:
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine="openpyxl") as writer:
+            dataframe.to_excel(writer, index=False, sheet_name="Datos")
+        return output.getvalue()
+
+    excel_bytes = dataframe_to_excel_bytes(df)
+        st.download_button(
+        label="📥 Descargar puntos (Excel)",
+        data=excel_bytes,
+        file_name="puntos_caudalimetro.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+
+    csv_data = df.to_csv(index=False).encode("utf-8")
+    st.download_button(
+        label="📥 Descargar puntos (CSV)",
+        data=csv_data,
+        file_name="puntos_caudalimetro.csv",
+        mime="text/csv"
+    )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
