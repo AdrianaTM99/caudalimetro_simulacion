@@ -73,8 +73,23 @@ if "mostrar_eval" not in st.session_state:
     st.session_state.mostrar_eval = False
 
 # 2. CSS Maestro con efecto de desenfoque SOLO en el centro
+
+
+
 st.markdown("""
 <style>
+
+/* Botones un poco más “premium” */
+div.stButton > button {
+    border: 1px solid rgba(0,212,255,0.65) !important;
+    border-radius: 12px !important;
+    padding: 0.6rem 0.9rem !important;
+    font-weight: 700 !important;
+}
+div.stButton > button:hover {
+    box-shadow: 0 0 12px rgba(0,212,255,0.25) !important;
+    transform: translateY(-1px);
+}
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 [data-testid="stAppViewContainer"] {
     background-image: url("https://static.vecteezy.com/system/resources/previews/003/586/335/non_2x/surface-of-the-sea-free-photo.jpg");
@@ -763,6 +778,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
