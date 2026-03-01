@@ -470,7 +470,7 @@ y reducir riesgos de sedimentación/abrasión. El valor final depende de instala
 - **Velocidades muy altas**: aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
 - La instalación (codos, válvulas, bombas) puede introducir asimetrías de perfil → conviene validar en campo.
             """)
-   st.markdown("---")
+    st.markdown("---")
     with st.expander("🎛️ Realismo del instrumento", expanded=False):
         st.session_state.realismo_on = st.toggle("Activar realismo", value=st.session_state.realismo_on)
     
@@ -903,6 +903,7 @@ fig.add_trace(go.Scatter(
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
