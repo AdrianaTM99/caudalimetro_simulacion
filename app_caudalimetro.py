@@ -196,14 +196,6 @@ div[data-testid="stNumberInput"] input[type="text"] {
     }
 }
 
-/* ===== REDUCIR ESPACIOS VERTICALES ENTRE COMPONENTES ===== */
-div[data-testid="stPlotlyChart"]{
-    margin-bottom: -18px !important;   /* acerca la ecuación a la gráfica */
-}
-
-.equation-box{
-    margin-top: 8px !important;        /* reduce separación superior */
-}
 
 </style>
 """, unsafe_allow_html=True)
@@ -642,8 +634,8 @@ if st.session_state.mostrar_grafica:
 
     fig.update_layout(
         template="plotly_dark",
-        height=450,
-        margin=dict(l=40, r=20, t=40, b=40),
+        height=380,
+        margin=dict(l=40, r=20, t=25, b=25),
         hovermode="x unified",
         uirevision=True,
         xaxis=dict(
@@ -764,6 +756,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
