@@ -459,15 +459,16 @@ if st.session_state.mostrar_grafica:
     v = np.linspace(0.1, 5.0, 100)
     f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
     V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
-    Q_plot = (A_m2 * v) * conv_q
+    Q_m3s = A_m2 * v  # SI puro
+    Q_plot = Q_m3s if sistema.startswith("Métrico") else Q_m3s * 15850.3  # 1 m³/s = 15850.3 GPM
 
     # Ajuste lineal completo V = mQ + b
     coef = np.polyfit(Q_plot, V_mv, 1)
     m_eq = coef[0]
     b_eq = coef[1]
 
-    # Línea extendida (efecto "infinita")
-    Q_line = np.linspace(-1e6, 1e6, 10000)
+    # Línea extendida 
+    Q_line = np.linspace(Q_plot.min()*1.2, Q_plot.max()*1.2, 400)
     V_line = m_eq * Q_line + b_eq
 
     # Predicción usando la recta ajustada
