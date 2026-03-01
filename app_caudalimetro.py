@@ -4,7 +4,6 @@ import plotly.graph_objects as go
 import time
 import pandas as pd
 from io import BytesIO
-st.write("VERSION:", "2026-02-28 10000000")
 # 1. Configuración de la página
 st.set_page_config(
     layout="wide",
@@ -451,46 +450,50 @@ if st.session_state.mostrar_grafica:
     # CÁLCULOS
     # =========================
     A_m2 = np.pi * (D_si / 2)**2
+
     c1, c2 = st.columns(2)
+    with c1:
+        v_min = st.number_input(
+            "v mínima (m/s)",
+            min_value=0.0,
+            max_value=20.0,
+            value=0.1,
+            step=0.1,
+            format="%.2f",
+            help="Límite inferior de velocidad para generar la curva."
+        )
 
-with c1:
-    v_min = st.number_input(
-        "v mínima (m/s)",
-        min_value=0.0,
-        max_value=20.0,
-        value=0.1,
-        step=0.1,
-        format="%.2f",
-        help="Límite inferior de velocidad para generar la curva."
-    )
+    with c2:
+        v_max = st.number_input(
+            "v máxima (m/s)",
+            min_value=0.0,
+            max_value=30.0,
+            value=5.0,
+            step=0.1,
+            format="%.2f",
+            help="Límite superior de velocidad para generar la curva."
+        )
 
-with c2:
-    v_max = st.number_input(
-        "v máxima (m/s)",
-        min_value=0.0,
-        max_value=30.0,
-        value=5.0,
-        step=0.1,
-        format="%.2f",
-        help="Límite superior de velocidad para generar la curva."
-    )
+    if v_max <= v_min:
+        st.error("v máxima debe ser mayor que v mínima.")
+        st.stop()
 
-if v_max <= v_min:
-    st.error("v máxima debe ser mayor que v mínima.")
-    st.stop()
     v = np.linspace(v_min, v_max, 100)
+
     def eficiencia_medicion_por_sigma(sigma_Sm: float, sigma_ref_Sm: float = 0.02, k: float = 6.0) -> float:
         sigma = max(sigma_Sm, 1e-9)
         x = np.log10(sigma / sigma_ref_Sm)
         return 1.0 / (1.0 + np.exp(-k * x))
+
     f_cond = eficiencia_medicion_por_sigma(sigma_si)
     st.caption(f"Factor por conductividad f(σ) = {f_cond:.4f}")
+
     V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
     Q_m3s = A_m2 * v  # SI puro
     Q_plot = Q_m3s if sistema.startswith("Métrico") else Q_m3s * 15850.3  # 1 m³/s = 15850.3 GPM
 
     df = pd.DataFrame({
-        f"v (m/s)": v,
+        "v (m/s)": v,
         f"Q ({u_q})": Q_plot,
         "V (mV)": V_mv
     })
@@ -500,13 +503,12 @@ if v_max <= v_min:
     m_eq = coef[0]
     b_eq = coef[1]
 
-    # Línea extendida 
+    # Línea extendida
     Q_line = np.linspace(Q_plot.min()*1.2, Q_plot.max()*1.2, 400)
     V_line = m_eq * Q_line + b_eq
 
     # Predicción usando la recta ajustada
-    V_pred = m_eq * Q_plot + b_eq  # si usas intercepto
-    # si no usas intercepto: # V_pred = m_eq * Q_plot
+    V_pred = m_eq * Q_plot + b_eq
 
     # Cálculo R²
     SS_res = np.sum((V_mv - V_pred)**2)
@@ -532,8 +534,8 @@ if v_max <= v_min:
         line=dict(color='#00d4ff', width=4),
         name="Curva de calibración",
         hovertemplate=
-        'Caudal: %{x:.4f} ' + u_q + '<br>' +
-        'Voltaje: %{y:.4f} mV<extra></extra>'
+            'Caudal: %{x:.4f} ' + u_q + '<br>' +
+            'Voltaje: %{y:.4f} mV<extra></extra>'
     ))
 
     fig.update_layout(
@@ -544,14 +546,14 @@ if v_max <= v_min:
         uirevision=True,
         xaxis=dict(
             title=f'Caudal Q ({u_q})',
-            range=[-Q_plot.max()*1.2, Q_plot.max()*1.2],  # 👈 zoom inicial controlado
+            range=[-Q_plot.max()*1.2, Q_plot.max()*1.2],
             showgrid=True,
             zeroline=True,
             ticks="outside"
         ),
         yaxis=dict(
             title='Voltaje V (mV)',
-            range=[-V_mv.max()*1.2, V_mv.max()*1.2],  # 👈 proporcional
+            range=[-V_mv.max()*1.2, V_mv.max()*1.2],
             showgrid=True,
             zeroline=True,
             ticks="outside"
@@ -573,6 +575,7 @@ if v_max <= v_min:
             use_container_width=True,
             config={"staticPlot": not st.session_state.grafica_interactiva}
         )
+
 
     # =========================
     # ECUACIÓN MOSTRADA
@@ -617,6 +620,7 @@ if v_max <= v_min:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
