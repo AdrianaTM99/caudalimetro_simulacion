@@ -390,8 +390,8 @@ with col3:
         format="%.4f"
     )
 
-st.write("---")
-st.write("---")
+
+
 
 if 'edit_error' not in st.session_state:
     st.session_state.edit_error = False
@@ -420,7 +420,7 @@ with c_err2:
         )
     else:
         error_factor = 1.00
-
+st.write("---")
 # --- CÁLCULOS ---
 # --- CONVERSIÓN A SI (T, m, S/m) ---
 if sistema == "Americano (G, mhos/in, in)":
@@ -620,6 +620,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
