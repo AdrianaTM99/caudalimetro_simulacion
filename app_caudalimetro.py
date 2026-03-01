@@ -323,23 +323,38 @@ with st.sidebar:
             tabla += f"| {dn} | {valor_conv:.3f} |\n"
         st.markdown(tabla)
 
-    # -------- VELOCIDADES --------
-    velocidades = {
-        "Agua potable": (1, 3),
-        "Industria química": (1, 5),
-        "Lodos": (0.5, 2),
-        "Alimentos": (1, 4),
-    }
-    unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
+    # -------- VELOCIDADES (con notas tipo tesis) --------
+velocidades = {
+    "Agua potable":      {"vmin": 1.0, "vmax": 3.0, "nota": "Rango típico para minimizar ruido y evitar sedimentación."},
+    "Industria química": {"vmin": 1.0, "vmax": 5.0, "nota": "Mayor rango por variabilidad de procesos; verificar compatibilidad de recubrimientos."},
+    "Lodos":             {"vmin": 0.5, "vmax": 2.0, "nota": "Se prioriza evitar abrasión y atascos; velocidades moderadas."},
+    "Alimentos":         {"vmin": 1.0, "vmax": 4.0, "nota": "Compromiso entre régimen estable y condiciones higiénicas del proceso."},
+}
 
-    with st.expander("🌊 Velocidades Recomendadas", expanded=False):
-        tabla = f"| Aplicación | Velocidad Recomendada ({unidad_vel}) |\n"
-        tabla += "|-------------|----------------------|\n"
-        for app, (min_v, max_v) in velocidades.items():
-            min_conv = min_v * conv_vel
-            max_conv = max_v * conv_vel
-            tabla += f"| {app} | {min_conv:.2f} – {max_conv:.2f} |\n"
-        st.markdown(tabla)
+unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
+
+with st.expander("🌊 Velocidades recomendadas (criterio técnico)", expanded=False):
+    st.markdown(
+        """
+**Criterio de selección:** Los rangos sugeridos se establecen para mantener una medición estable del caudalímetro,
+evitar condiciones operativas con alta probabilidad de error (ruido por bajas velocidades) y reducir riesgos de
+sedimentación/abrasión en fluidos con sólidos.  
+En la práctica, el rango definitivo depende del diámetro nominal, la viscosidad y la naturaleza del fluido.
+        """
+    )
+
+    filas = []
+    for app, info in velocidades.items():
+        vmin = info["vmin"] * conv_vel
+        vmax = info["vmax"] * conv_vel
+        filas.append({
+            "Aplicación": app,
+            f"v_min ({unidad_vel})": round(vmin, 2),
+            f"v_max ({unidad_vel})": round(vmax, 2),
+            "Observación": info["nota"],
+        })
+
+    st.dataframe(pd.DataFrame(filas), use_container_width=True, hide_index=True)
 
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 
@@ -598,6 +613,7 @@ if v_max <= v_min:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
