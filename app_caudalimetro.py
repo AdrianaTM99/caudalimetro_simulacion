@@ -126,14 +126,7 @@ div[data-testid="stRadio"] [data-baseweb="radio"] > div:first-child {
 div[data-testid="stRadio"] [aria-checked="true"] > div:first-child > div {
     background-color: #00d4ff !important;
 }
-/* SLIDER AZUL */
-div[data-testid="stSlider"] > div > div > div > div {
-    background-color: #00d4ff !important;
-}
-div[data-testid="stSlider"] [role="slider"] {
-    background-color: #00d4ff !important;
-    border: 2px solid white !important;
-}
+
 /* ===== FORZAR NÚMEROS EN BLANCO ===== */
 div[data-testid="stNumberInput"] input,
 div[data-testid="stNumberInput"] input[type="number"],
@@ -397,7 +390,18 @@ with c_err1:
         st.session_state.edit_error = not st.session_state.edit_error
 
 with c_err2:
-    error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
+    if st.session_state.edit_error:
+    error_factor = st.number_input(
+        "Error (factor)",
+        min_value=0.80,
+        max_value=1.20,
+        value=1.00,
+        step=0.01,
+        format="%.2f",
+        help="Factor multiplicativo que modela errores sistemáticos (ganancia/calibración)."
+    )
+else:
+    error_factor = 1.00
 
 # --- CÁLCULOS ---
 # --- CONVERSIÓN A SI (T, m, S/m) ---
@@ -594,6 +598,7 @@ if v_max <= v_min:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
