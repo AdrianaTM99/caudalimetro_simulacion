@@ -766,7 +766,7 @@ fig.add_trace(go.Scatter(
     name="Calibración lineal (ajuste)"
 ))
 
-    fig.update_layout(
+fig.update_layout(
         template="plotly_dark",
         height=380,
         margin=dict(l=40, r=20, t=25, b=25),
@@ -787,6 +787,8 @@ fig.add_trace(go.Scatter(
             ticks="outside"
         )
     )
+
+
 
     # =========================
     # BOTÓN DE INTERACCIÓN
@@ -903,6 +905,7 @@ fig.add_trace(go.Scatter(
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
