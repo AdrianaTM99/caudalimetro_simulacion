@@ -745,7 +745,7 @@ if st.session_state.mostrar_grafica:
     Fuera del rango simulado, el resultado es extrapolación.
             """)
     
-    st.write(f"Coeficiente de determinación R² = {R2:.6f}")
+    st.caption(f"Calibración lineal: m = {m_eq:.4f} · b = {b_eq:.4f} · R² = {R2:.6f}")
     st.markdown("### 📌 Puntos evaluados")
 
     with st.expander("Mostrar tabla de puntos evaluados", expanded=False):
@@ -778,6 +778,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
