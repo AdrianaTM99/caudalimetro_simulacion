@@ -303,7 +303,16 @@ with st.sidebar:
                 valor = f"{min_conv:.1f} – {max_conv:.1f}"
             tabla += f"| {fluido} | {valor} |\n"
         st.markdown(tabla)
-
+    with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=False):
+        st.markdown(
+            f"""
+    **Nota técnica:** La conductividad del fluido influye directamente en la **calidad de medición** del caudalímetro electromagnético.
+    Para lecturas estables, normalmente se requiere una conductividad mínima (dependiente del diseño) y se recomienda
+    trabajar dentro de rangos típicos del proceso.  
+    Las magnitudes mostradas se expresan en **{u_sig}** y se convierten automáticamente según el sistema seleccionado.
+            """
+        )
+   
     # -------- DIÁMETROS --------
     diametros = {
         "DN15": 0.015,
@@ -628,6 +637,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
