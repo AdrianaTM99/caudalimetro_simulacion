@@ -727,46 +727,45 @@ if st.session_state.mostrar_grafica:
     R2 = 1 - SS_res/SS_tot if SS_tot > 0 else 1.0
 
     # =========================
+    # GRÁFICA
     # =========================
-# GRÁFICA
-# =========================
-fig = go.Figure()
+    fig = go.Figure()
 
-# Datos realistas (los que usas para calibrar)
-fig.add_trace(go.Scatter(
-    x=Q_plot,
-    y=V_mv,
-    mode='markers',
-    name="Datos simulados (realista)"
-))
-
-# Curva ideal (opcional comparación)
-if st.session_state.mostrar_ideal:
+    # Datos realistas (los que usas para calibrar)
     fig.add_trace(go.Scatter(
         x=Q_plot,
-        y=V_mv_ideal,
-        mode='lines',
-        name="Modelo ideal",
-        line=dict(width=2, dash="dot")
+        y=V_mv,
+        mode='markers',
+        name="Datos simulados (realista)"
     ))
 
-# Ajuste lineal sobre datos realistas
-coef = np.polyfit(Q_plot, V_mv, 1)
-m_eq = coef[0]
-b_eq = coef[1]
+    # Curva ideal (opcional comparación)
+    if st.session_state.mostrar_ideal:
+        fig.add_trace(go.Scatter(
+            x=Q_plot,
+            y=V_mv_ideal,
+            mode='lines',
+            name="Modelo ideal",
+            line=dict(width=2, dash="dot")
+        ))
 
-Q_line = np.linspace(Q_plot.min()*1.2, Q_plot.max()*1.2, 400)
-V_line = m_eq * Q_line + b_eq
+    # Ajuste lineal sobre datos realistas
+    coef = np.polyfit(Q_plot, V_mv, 1)
+    m_eq = coef[0]
+    b_eq = coef[1]
 
-fig.add_trace(go.Scatter(
-    x=Q_line,
-    y=V_line,
-    mode='lines',
-    line=dict(color='#00d4ff', width=4),
-    name="Calibración lineal (ajuste)"
-))
+    Q_line = np.linspace(Q_plot.min()*1.2, Q_plot.max()*1.2, 400)
+    V_line = m_eq * Q_line + b_eq
 
-fig.update_layout(
+    fig.add_trace(go.Scatter(
+        x=Q_line,
+        y=V_line,
+        mode='lines',
+        line=dict(color='#00d4ff', width=4),
+        name="Calibración lineal (ajuste)"
+    ))
+
+    fig.update_layout(
         template="plotly_dark",
         height=380,
         margin=dict(l=40, r=20, t=25, b=25),
@@ -788,37 +787,21 @@ fig.update_layout(
         )
     )
 
-
-
     # =========================
     # BOTÓN DE INTERACCIÓN
     # =========================
     if st.button("🖱️ Interactuar / Fijar gráfica", use_container_width=True):
         st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
-    
+
     estado = "Interactiva" if st.session_state.grafica_interactiva else "Estática"
     st.caption(f"Estado de gráfica: **{estado}**")
-    
-    # ESTO FALTABA (RENDER DE LA GRÁFICA)
+
     st.plotly_chart(
         fig,
         use_container_width=True,
         config={"staticPlot": not st.session_state.grafica_interactiva}
     )
-    
-    st.markdown("""
-    <style>
-    /* Evita scroll horizontal en tablas */
-    [data-testid="stTable"] table {
-        width: 100% !important;
-    }
-    [data-testid="stTable"] td, 
-    [data-testid="stTable"] th {
-        white-space: normal !important;   /* wrap */
-        word-break: break-word !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+
     # =========================
     # ECUACIÓN MOSTRADA
     # =========================
@@ -830,29 +813,27 @@ fig.update_layout(
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("")
-
-    # Botón tipo toggle
+    # =========================
+    # EVALUAR PUNTOS (toggle)
+    # =========================
     col_btn, col_hint = st.columns([1.2, 3.8])
     with col_btn:
         if st.button("🧮 Evaluar puntos", use_container_width=True):
             st.session_state.mostrar_eval = not st.session_state.mostrar_eval
-    
     with col_hint:
         st.caption("Despliega un panel para calcular V a partir de Q o Q a partir de V usando la ecuación ajustada.")
-    
-    # Contenido desplegable
+
     if st.session_state.mostrar_eval:
         st.markdown("### Evaluación con ecuación de calibración")
-    
+
         modo_eval = st.radio(
             "Selecciona qué deseas calcular:",
             (f"Calcular V a partir de Q ({u_q} → mV)", f"Calcular Q a partir de V (mV → {u_q})"),
             horizontal=True
         )
-    
+
         cA, cB = st.columns([2, 3])
-    
+
         with cA:
             if modo_eval.startswith("Calcular V"):
                 Q_in = st.number_input(f"Ingrese Q ({u_q})", value=float(np.mean(Q_plot)), format="%.6f")
@@ -865,18 +846,18 @@ fig.update_layout(
                 else:
                     Q_out = (V_in - b_eq) / m_eq
                     st.success(f"Resultado: Q = **{Q_out:.6f} {u_q}**")
-    
+
         with cB:
             st.info("""
-    **Nota:** esta evaluación usa la ecuación lineal ajustada **V = m·Q + b**.
-    Fuera del rango simulado, el resultado es extrapolación.
+**Nota:** Esta evaluación usa la ecuación lineal ajustada **V = m·Q + b**.
+Si evalúas muy fuera del rango simulado, es extrapolación y puede no representar el comportamiento real del instrumento.
             """)
-    
-    st.caption(f"Calibración lineal: m = {m_eq:.4f} · b = {b_eq:.4f} · R² = {R2:.6f}")
-    st.markdown("### 📌 Puntos evaluados")
 
+    st.caption(f"Calibración lineal: m = {m_eq:.4f} · b = {b_eq:.4f} · R² = {R2:.6f}")
+
+    st.markdown("### 📌 Puntos evaluados")
     with st.expander("Mostrar tabla de puntos evaluados", expanded=False):
-        st.table(df.head(30))  # sin pantalla completa
+        st.table(df.head(30))
         st.caption("Mostrando 30 filas. Descarga CSV/Excel para ver todo.")
 
     
@@ -905,6 +886,7 @@ fig.update_layout(
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
