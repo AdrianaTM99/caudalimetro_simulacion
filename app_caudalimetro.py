@@ -15,7 +15,12 @@ URL_GIF = "https://github.com/AdrianaTM99/caudalimetro_simulacion/raw/main/cauda
 
 if "splash_done" not in st.session_state:
     st.session_state.splash_done = False
-
+if "realismo_on" not in st.session_state:
+    st.session_state.realismo_on = True
+if "seed_ruido" not in st.session_state:
+    st.session_state.seed_ruido = 1234
+if "mostrar_ideal" not in st.session_state:
+    st.session_state.mostrar_ideal = True
 if not st.session_state.splash_done:
     splash = st.empty()
 
@@ -465,7 +470,42 @@ y reducir riesgos de sedimentación/abrasión. El valor final depende de instala
 - **Velocidades muy altas**: aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
 - La instalación (codos, válvulas, bombas) puede introducir asimetrías de perfil → conviene validar en campo.
             """)
-
+   st.markdown("---")
+    with st.expander("🎛️ Realismo del instrumento", expanded=False):
+        st.session_state.realismo_on = st.toggle("Activar realismo", value=st.session_state.realismo_on)
+    
+        st.session_state.seed_ruido = st.number_input(
+            "Semilla (repetibilidad tipo tesis)",
+            value=int(st.session_state.seed_ruido),
+            step=1
+        )
+    
+        # Mostrar también la curva ideal para comparar
+        st.session_state.mostrar_ideal = st.toggle("Mostrar curva ideal (comparación)", value=st.session_state.mostrar_ideal)
+    
+        ruido_mV = st.slider("Ruido base (mV RMS)", 0.0, 5.0, 0.15, 0.01)
+        offset_mV = st.slider("Offset / cero (mV)", -5.0, 5.0, 0.10, 0.01)
+        deriva_mV = st.slider("Deriva del cero en el barrido (mV)", 0.0, 5.0, 0.20, 0.01)
+    
+        alpha_nl = st.slider("No linealidad (α)", 0.0, 0.15, 0.02, 0.005)
+    
+        qstep_mV = st.select_slider(
+            "Cuantización ADC (paso mV)",
+            options=[0.0, 0.001, 0.005, 0.01, 0.02, 0.05],
+            value=0.005
+        )
+    
+        sat_mV = st.slider("Saturación |V| máx (mV)", 50.0, 2000.0, 800.0, 10.0)
+        inst_pct = st.slider("Efecto instalación (±% lectura)", 0.0, 5.0, 0.5, 0.1)
+    
+    # Guardamos para usarlos luego (fuera del sidebar también los necesitas)
+    st.session_state["ruido_mV"] = ruido_mV
+    st.session_state["offset_mV"] = offset_mV
+    st.session_state["deriva_mV"] = deriva_mV
+    st.session_state["alpha_nl"] = alpha_nl
+    st.session_state["qstep_mV"] = qstep_mV
+    st.session_state["sat_mV"] = sat_mV
+    st.session_state["inst_pct"] = inst_pct 
 
 
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
@@ -557,6 +597,46 @@ if "mostrar_grafica" not in st.session_state:
 if st.button('Generar curva de calibración'):
     st.session_state.mostrar_grafica = True
 
+def aplicar_realismo(V_mv_ideal, Q_plot, sigma_si, seed,
+                     ruido_mV, offset_mV, deriva_mV,
+                     alpha_nl, qstep_mV, sat_mV, inst_pct):
+    """
+    Aplica efectos típicos de un caudalímetro (y su electrónica):
+    - offset (cero), deriva lenta, instalación (ganancia), no-linealidad suave,
+      ruido dependiente de conductividad, cuantización ADC y saturación.
+    """
+    rng = np.random.default_rng(int(seed))
+    V = V_mv_ideal.copy()
+
+    # 1) Offset (cero)
+    V += offset_mV
+
+    # 2) Deriva lenta (cambia el cero durante el barrido)
+    V += np.linspace(0.0, deriva_mV, len(V))
+
+    # 3) Instalación: error multiplicativo constante (perfil / swirl / tramos rectos)
+    inst_factor = 1.0 + rng.uniform(-inst_pct, inst_pct) / 100.0
+    V *= inst_factor
+
+    # 4) No-linealidad suave (curvatura)
+    Qmax = float(np.max(np.abs(Q_plot))) if np.max(np.abs(Q_plot)) > 0 else 1.0
+    V *= (1.0 + alpha_nl * (Q_plot / Qmax) ** 2)
+
+    # 5) Ruido: empeora si sigma es baja (peor SNR)
+    sigma_ref = 0.02  # S/m (~200 μS/cm)
+    penal = np.clip((sigma_ref / max(sigma_si, 1e-9)) ** 0.35, 1.0, 5.0)
+    ruido_std = ruido_mV * penal
+    V += rng.normal(0.0, ruido_std, size=len(V))
+
+    # 6) Cuantización ADC
+    if qstep_mV and qstep_mV > 0:
+        V = np.round(V / qstep_mV) * qstep_mV
+
+    # 7) Saturación
+    V = np.clip(V, -sat_mV, sat_mV)
+
+    return V
+
 if st.session_state.mostrar_grafica:
     # =========================
     # CÁLCULOS
@@ -598,9 +678,30 @@ if st.session_state.mostrar_grafica:
     f_cond = eficiencia_medicion_por_sigma(sigma_si)
     st.caption(f"Factor por conductividad f(σ) = {f_cond:.4f}")
 
-    V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
-    Q_m3s = A_m2 * v  # SI puro
-    Q_plot = Q_m3s if sistema.startswith("Métrico") else Q_m3s * 15850.3  # 1 m³/s = 15850.3 GPM
+    # 1) Caudal
+    Q_m3s = A_m2 * v
+    Q_plot = Q_m3s if sistema.startswith("Métrico") else Q_m3s * 15850.3
+    
+    # 2) Voltaje ideal (modelo físico)
+    V_mv_ideal = (B_si * D_si * v * f_cond * 1000) * error_factor
+    
+    # 3) Voltaje realista (si activado)
+    if st.session_state.realismo_on:
+        V_mv = aplicar_realismo(
+            V_mv_ideal=V_mv_ideal,
+            Q_plot=Q_plot,
+            sigma_si=sigma_si,
+            seed=st.session_state.seed_ruido,
+            ruido_mV=st.session_state["ruido_mV"],
+            offset_mV=st.session_state["offset_mV"],
+            deriva_mV=st.session_state["deriva_mV"],
+            alpha_nl=st.session_state["alpha_nl"],
+            qstep_mV=st.session_state["qstep_mV"],
+            sat_mV=st.session_state["sat_mV"],
+            inst_pct=st.session_state["inst_pct"],
+        )
+    else:
+        V_mv = V_mv_ideal
 
     df = pd.DataFrame({
         "v (m/s)": v,
@@ -626,27 +727,44 @@ if st.session_state.mostrar_grafica:
     R2 = 1 - SS_res/SS_tot if SS_tot > 0 else 1.0
 
     # =========================
-    # GRÁFICA
     # =========================
-    fig = go.Figure()
+# GRÁFICA
+# =========================
+fig = go.Figure()
 
+# Datos realistas (los que usas para calibrar)
+fig.add_trace(go.Scatter(
+    x=Q_plot,
+    y=V_mv,
+    mode='markers',
+    name="Datos simulados (realista)"
+))
+
+# Curva ideal (opcional comparación)
+if st.session_state.mostrar_ideal:
     fig.add_trace(go.Scatter(
         x=Q_plot,
-        y=V_mv,
-        mode='markers',
-        name="Datos simulados"
+        y=V_mv_ideal,
+        mode='lines',
+        name="Modelo ideal",
+        line=dict(width=2, dash="dot")
     ))
 
-    fig.add_trace(go.Scatter(
-        x=Q_line,
-        y=V_line,
-        mode='lines',
-        line=dict(color='#00d4ff', width=4),
-        name="Curva de calibración",
-        hovertemplate=
-            'Caudal: %{x:.4f} ' + u_q + '<br>' +
-            'Voltaje: %{y:.4f} mV<extra></extra>'
-    ))
+# Ajuste lineal sobre datos realistas
+coef = np.polyfit(Q_plot, V_mv, 1)
+m_eq = coef[0]
+b_eq = coef[1]
+
+Q_line = np.linspace(Q_plot.min()*1.2, Q_plot.max()*1.2, 400)
+V_line = m_eq * Q_line + b_eq
+
+fig.add_trace(go.Scatter(
+    x=Q_line,
+    y=V_line,
+    mode='lines',
+    line=dict(color='#00d4ff', width=4),
+    name="Calibración lineal (ajuste)"
+))
 
     fig.update_layout(
         template="plotly_dark",
@@ -785,6 +903,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
