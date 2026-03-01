@@ -348,47 +348,108 @@ with st.sidebar:
             tabla += f"| {app} | {min_conv:.2f} – {max_conv:.2f} |\n"
         st.markdown(tabla)
 
-# --- PARÁMETROS ---
+# --- Helpers de sincronización ---
+def sync_from_number(key_num, key_slider):
+    st.session_state[key_slider] = st.session_state[key_num]
+
+def sync_from_slider(key_slider, key_num):
+    st.session_state[key_num] = st.session_state[key_slider]
+
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 
-B_val = st.number_input(
-    f'B: Campo Magnético ({u_b})',
-    float(b_min), float(b_max), float(b_def)
-)
+# Inicializar valores solo la primera vez
+for k, default in [
+    ("B_num", b_def), ("B_slider", b_def),
+    ("sig_num", sig_def), ("sig_slider", sig_def),
+    ("D_num", d_def), ("D_slider", d_def)
+]:
+    if k not in st.session_state:
+        st.session_state[k] = float(default)
 
-B_user = st.slider(
-    'Ajustar B',
-    float(b_min), float(b_max), float(B_val),
-    key="B_slider"
-)
+# ======================
+# B
+# ======================
+col1, col2 = st.columns([1,2])
+
+with col1:
+    st.number_input(
+        f'B: Campo Magnético ({u_b})',
+        min_value=float(b_min),
+        max_value=float(b_max),
+        key="B_num",
+        on_change=sync_from_number,
+        args=("B_num","B_slider")
+    )
+
+with col2:
+    st.slider(
+        "Ajustar B",
+        min_value=float(b_min),
+        max_value=float(b_max),
+        key="B_slider",
+        on_change=sync_from_slider,
+        args=("B_slider","B_num")
+    )
 
 st.write("")
 
-sig_val = st.number_input(
-    f'σ: Conductividad ({u_sig})',
-    float(sig_min), float(sig_max), float(sig_def)
-)
+# ======================
+# SIGMA
+# ======================
+col1, col2 = st.columns([1,2])
 
-sigma_user = st.slider(
-    'Ajustar σ',
-    float(sig_min), float(sig_max), float(sig_val),
-    key="sig_slider"
-)
+with col1:
+    st.number_input(
+        f'σ: Conductividad ({u_sig})',
+        min_value=float(sig_min),
+        max_value=float(sig_max),
+        key="sig_num",
+        on_change=sync_from_number,
+        args=("sig_num","sig_slider")
+    )
+
+with col2:
+    st.slider(
+        "Ajustar σ",
+        min_value=float(sig_min),
+        max_value=float(sig_max),
+        key="sig_slider",
+        on_change=sync_from_slider,
+        args=("sig_slider","sig_num")
+    )
 
 st.write("")
 
-D_val = st.number_input(
-    f'D: Diámetro ({u_d})',
-    float(d_min), float(d_max), float(d_def),
-    format="%.4f"
-)
+# ======================
+# DIÁMETRO
+# ======================
+col1, col2 = st.columns([1,2])
 
-D_user = st.slider(
-    'Ajustar D',
-    float(d_min), float(d_max), float(D_val),
-    key="D_slider"
-)
+with col1:
+    st.number_input(
+        f'D: Diámetro ({u_d})',
+        min_value=float(d_min),
+        max_value=float(d_max),
+        format="%.4f",
+        key="D_num",
+        on_change=sync_from_number,
+        args=("D_num","D_slider")
+    )
 
+with col2:
+    st.slider(
+        "Ajustar D",
+        min_value=float(d_min),
+        max_value=float(d_max),
+        key="D_slider",
+        on_change=sync_from_slider,
+        args=("D_slider","D_num")
+    )
+
+# Valores finales sincronizados
+B_user = st.session_state["B_num"]
+sigma_user = st.session_state["sig_num"]
+D_user = st.session_state["D_num"]
 st.write("---")
 
 if 'edit_error' not in st.session_state:
@@ -575,6 +636,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
