@@ -350,113 +350,39 @@ with st.sidebar:
 
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 
-# ========= Inicializar keys una sola vez =========
-if "B_num" not in st.session_state:
-    st.session_state["B_num"] = float(b_def)
-if "B_sld" not in st.session_state:
-    st.session_state["B_sld"] = float(b_def)
+col1, col2, col3 = st.columns(3)
 
-if "SIG_num" not in st.session_state:
-    st.session_state["SIG_num"] = float(sig_def)
-if "SIG_sld" not in st.session_state:
-    st.session_state["SIG_sld"] = float(sig_def)
-
-if "D_num" not in st.session_state:
-    st.session_state["D_num"] = float(d_def)
-if "D_sld" not in st.session_state:
-    st.session_state["D_sld"] = float(d_def)
-
-# ========= Callbacks (sin args/kwargs) =========
-def B_num_changed():
-    st.session_state["B_sld"] = st.session_state["B_num"]
-
-def B_sld_changed():
-    st.session_state["B_num"] = st.session_state["B_sld"]
-
-def SIG_num_changed():
-    st.session_state["SIG_sld"] = st.session_state["SIG_num"]
-
-def SIG_sld_changed():
-    st.session_state["SIG_num"] = st.session_state["SIG_sld"]
-
-def D_num_changed():
-    st.session_state["D_sld"] = st.session_state["D_num"]
-
-def D_sld_changed():
-    st.session_state["D_num"] = st.session_state["D_sld"]
-
-# ======================
-# B
-# ======================
-c1, c2 = st.columns([1, 2])
-with c1:
-    st.number_input(
+with col1:
+    B_user = st.number_input(
         f"B: Campo Magnético ({u_b})",
         min_value=float(b_min),
         max_value=float(b_max),
-        key="B_num",
-        on_change=B_num_changed,
-    )
-with c2:
-    st.slider(
-        "Ajustar B",
-        min_value=float(b_min),
-        max_value=float(b_max),
-        key="B_sld",
-        on_change=B_sld_changed,
+        value=float(b_def),
+        step=0.01 if sistema.startswith("Métrico") else 100.0,
+        format="%.4f" if sistema.startswith("Métrico") else "%.1f"
     )
 
-st.write("")
-
-# ======================
-# SIGMA
-# ======================
-c1, c2 = st.columns([1, 2])
-with c1:
-    st.number_input(
+with col2:
+    sigma_user = st.number_input(
         f"σ: Conductividad ({u_sig})",
         min_value=float(sig_min),
         max_value=float(sig_max),
-        key="SIG_num",
-        on_change=SIG_num_changed,
-    )
-with c2:
-    st.slider(
-        "Ajustar σ",
-        min_value=float(sig_min),
-        max_value=float(sig_max),
-        key="SIG_sld",
-        on_change=SIG_sld_changed,
+        value=float(sig_def),
+        step=10.0 if sistema.startswith("Métrico") else 50.0,
+        format="%.2f"
     )
 
-st.write("")
-
-# ======================
-# DIÁMETRO
-# ======================
-c1, c2 = st.columns([1, 2])
-with c1:
-    st.number_input(
+with col3:
+    D_user = st.number_input(
         f"D: Diámetro ({u_d})",
         min_value=float(d_min),
         max_value=float(d_max),
-        format="%.4f",
-        key="D_num",
-        on_change=D_num_changed,
-    )
-with c2:
-    st.slider(
-        "Ajustar D",
-        min_value=float(d_min),
-        max_value=float(d_max),
-        key="D_sld",
-        on_change=D_sld_changed,
+        value=float(d_def),
+        step=0.001 if sistema.startswith("Métrico") else 0.01,
+        format="%.4f"
     )
 
-# Valores finales sincronizados
-B_user = float(st.session_state["B_num"])
-sigma_user = float(st.session_state["SIG_num"])
-D_user = float(st.session_state["D_num"])
+st.write("---")
 st.write("---")
 
 if 'edit_error' not in st.session_state:
@@ -643,6 +569,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
