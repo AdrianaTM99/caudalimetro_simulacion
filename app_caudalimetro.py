@@ -407,8 +407,8 @@ with c_err1:
 
 with c_err2:
     if st.session_state.edit_error:
-    error_factor = st.number_input(
-        "Error (factor)",
+        error_factor = st.number_input(
+            "Error (factor)",
         min_value=0.80,
         max_value=1.20,
         value=1.00,
@@ -614,6 +614,7 @@ if v_max <= v_min:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
