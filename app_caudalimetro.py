@@ -572,7 +572,19 @@ if st.session_state.mostrar_grafica:
             config={"staticPlot": not st.session_state.grafica_interactiva}
         )
 
-
+    st.markdown("""
+    <style>
+    /* Evita scroll horizontal en tablas */
+    [data-testid="stTable"] table {
+        width: 100% !important;
+    }
+    [data-testid="stTable"] td, 
+    [data-testid="stTable"] th {
+        white-space: normal !important;   /* wrap */
+        word-break: break-word !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
     # =========================
     # ECUACIÓN MOSTRADA
     # =========================
@@ -616,6 +628,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
