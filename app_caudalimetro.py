@@ -306,6 +306,12 @@ with st.sidebar:
     }
 
     with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=False):
+    st.markdown(f"""
+    **Criterio técnico:** la conductividad eléctrica **σ** determina la amplitud de la señal inducida y la estabilidad del sistema.
+    Para operación industrial se recomienda trabajar por encima de un umbral mínimo (depende del transmisor y del ruido),
+    y considerar que σ varía con **temperatura, concentración iónica y composición del fluido**.  
+    Unidades mostradas: **{u_sig}** (conversión automática según el sistema seleccionado).
+    """)
         filas = []
         for fluido, (min_v, max_v) in conductividades.items():
             min_conv = min_v * conv_cond
@@ -340,6 +346,12 @@ Las magnitudes mostradas están en **{u_sig}** y se convierten automáticamente 
     }
 
     with st.expander("🔵 Diámetros Nominales", expanded=False):
+    st.markdown(f"""
+    **Criterio técnico:** el diámetro interno **D** afecta el área (**A = π·D²/4**) y la relación señal–caudal.
+    En caudalímetros electromagnéticos, la tendencia es **V ∝ B·D·v**: a mayor **D**, mayor señal inducida para igual B y v.
+    La selección de DN también condiciona **pérdidas de carga**, rango de caudal y requisitos de instalación.
+    Unidades mostradas: **{u_d}** (conversión automática).
+    """)
         filas = []
         for dn, valor_m in diametros.items():
             valor_conv = valor_m * conv_diam
@@ -664,3 +676,4 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
