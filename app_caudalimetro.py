@@ -43,31 +43,19 @@ if not st.session_state.splash_done:
         -webkit-backdrop-filter: blur(8px);
         z-index: 9999;
     ">
-
-        <div style="
-            text-align: center;
-            animation: fadeIn 1.5s ease-in-out;
-        ">
-            <img src="{URL_GIF}" style="
-                width: 320px;
-                max-width: 70vw;
-                opacity: 0.95;
-            ">
-            <div style="
-                margin-top: 20px;
-                font-size: 1.3rem;
-                color: white;
-                font-family: 'Poppins', sans-serif;
-                letter-spacing: 1px;
-            ">
+        <div style="text-align:center; animation: fadeIn 1.5s ease-in-out;">
+            <img src="{URL_GIF}" style="width:320px; max-width:70vw; opacity:0.95;">
+            <div style="margin-top:20px; font-size:1.3rem; color:white; font-family:'Poppins', sans-serif; letter-spacing:1px;">
                 Inicializando simulador...
             </div>
         </div>
-
     </div>
     """, unsafe_allow_html=True)
 
     time.sleep(3)
+
+    # 🔥 Limpia el placeholder antes de recargar
+    splash.empty()
 
     st.session_state.splash_done = True
     st.rerun()
@@ -459,7 +447,12 @@ if st.session_state.mostrar_grafica:
     v_min = st.slider("v mínima (m/s)", 0.0, 5.0, 0.1, 0.1)
     v_max = st.slider("v máxima (m/s)", 0.1, 10.0, 5.0, 0.1)
     v = np.linspace(v_min, v_max, 100)
-    f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
+    def eficiencia_medicion_por_sigma(sigma_Sm: float, sigma_ref_Sm: float = 0.02, k: float = 6.0) -> float:
+        sigma = max(sigma_Sm, 1e-9)
+        x = np.log10(sigma / sigma_ref_Sm)
+        return 1.0 / (1.0 + np.exp(-k * x))
+    f_cond = eficiencia_medicion_por_sigma(sigma_si)
+    st.caption(f"Factor por conductividad f(σ) = {f_cond:.4f}")
     V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
     Q_m3s = A_m2 * v  # SI puro
     Q_plot = Q_m3s if sistema.startswith("Métrico") else Q_m3s * 15850.3  # 1 m³/s = 15850.3 GPM
@@ -557,6 +550,7 @@ if st.session_state.mostrar_grafica:
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
