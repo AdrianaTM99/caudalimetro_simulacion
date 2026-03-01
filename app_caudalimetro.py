@@ -324,23 +324,23 @@ with st.sidebar:
         st.markdown(tabla)
 
     # -------- VELOCIDADES (con notas tipo tesis) --------
-velocidades = {
-    "Agua potable":      {"vmin": 1.0, "vmax": 3.0, "nota": "Rango típico para minimizar ruido y evitar sedimentación."},
-    "Industria química": {"vmin": 1.0, "vmax": 5.0, "nota": "Mayor rango por variabilidad de procesos; verificar compatibilidad de recubrimientos."},
-    "Lodos":             {"vmin": 0.5, "vmax": 2.0, "nota": "Se prioriza evitar abrasión y atascos; velocidades moderadas."},
-    "Alimentos":         {"vmin": 1.0, "vmax": 4.0, "nota": "Compromiso entre régimen estable y condiciones higiénicas del proceso."},
-}
+    velocidades = {
+        "Agua potable":      {"vmin": 1.0, "vmax": 3.0, "nota": "Rango típico para minimizar ruido y evitar sedimentación."},
+        "Industria química": {"vmin": 1.0, "vmax": 5.0, "nota": "Mayor rango por variabilidad de procesos; verificar compatibilidad de recubrimientos."},
+        "Lodos":             {"vmin": 0.5, "vmax": 2.0, "nota": "Se prioriza evitar abrasión y atascos; velocidades moderadas."},
+        "Alimentos":         {"vmin": 1.0, "vmax": 4.0, "nota": "Compromiso entre régimen estable y condiciones higiénicas del proceso."},
+    }
 
-unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
+    unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
 
-with st.expander("🌊 Velocidades recomendadas (criterio técnico)", expanded=False):
-    st.markdown(
-        """
-**Criterio de selección:** Los rangos sugeridos se establecen para mantener una medición estable del caudalímetro,
-evitar condiciones operativas con alta probabilidad de error (ruido por bajas velocidades) y reducir riesgos de
-sedimentación/abrasión en fluidos con sólidos.  
-En la práctica, el rango definitivo depende del diámetro nominal, la viscosidad y la naturaleza del fluido.
-        """
+    with st.expander("🌊 Velocidades recomendadas (criterio técnico)", expanded=False):
+        st.markdown(
+            """
+    **Criterio de selección:** Los rangos sugeridos se establecen para mantener una medición estable del caudalímetro,
+    evitar condiciones operativas con alta probabilidad de error (ruido por bajas velocidades) y reducir riesgos de
+    sedimentación/abrasión en fluidos con sólidos.  
+    En la práctica, el rango definitivo depende del diámetro nominal, la viscosidad y la naturaleza del fluido.
+            """
     )
 
     filas = []
@@ -368,6 +368,7 @@ with col1:
         value=float(b_def),
         step=0.01 if sistema.startswith("Métrico") else 100.0,
         format="%.4f" if sistema.startswith("Métrico") else "%.1f"
+        help="Campo aplicado por las bobinas. A mayor B, mayor voltaje inducido (mejor SNR), pero mayor consumo."
     )
 
 with col2:
@@ -613,6 +614,7 @@ if v_max <= v_min:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
