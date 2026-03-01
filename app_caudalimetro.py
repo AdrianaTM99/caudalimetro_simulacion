@@ -246,7 +246,7 @@ div[data-testid="collapsedControl"] {
 """, unsafe_allow_html=True)
 
 with st.expander("ℹ️ ¿Cómo funciona el simulador?", expanded=False):
-    st.markdown(f"""
+    st.markdown("""
 Este simulador modela la respuesta de un **caudalímetro electromagnético** a partir de variables de diseño y operación:
 
 1. **Entrada de parámetros:** el usuario define el campo magnético **B**, la conductividad del fluido **σ** y el diámetro interno **D**.
@@ -259,7 +259,7 @@ Este simulador modela la respuesta de un **caudalímetro electromagnético** a p
 5. **Ajuste lineal (calibración):** con los puntos simulados se ajusta una recta **V = m·Q + b** y se reporta **R²**.
 
 **Salida del simulador:** curva V–Q, ecuación de calibración y tabla de puntos evaluados.
-Unidades activas: **{sistema}**.
+**El sistema de unidades se selecciona en el siguiente bloque.**
     """)
 
 
@@ -729,6 +729,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
