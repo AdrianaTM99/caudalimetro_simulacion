@@ -711,8 +711,12 @@ if st.session_state.mostrar_grafica:
     else:
         V_mv = V_mv_ideal
 
+    # Etiqueta y conversión de velocidad para tabla
+    u_v = "m/s" if sistema.startswith("Métrico") else "ft/s"
+    v_tabla = v if sistema.startswith("Métrico") else v * 3.28084  # m/s -> ft/s
+    
     df = pd.DataFrame({
-        "v (m/s)": v,
+        f"v ({u_v})": v_tabla,
         f"Q ({u_q})": Q_plot,
         "V (mV)": V_mv
     })
@@ -894,6 +898,7 @@ Si evalúas muy fuera del rango simulado, es extrapolación y puede no represent
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
