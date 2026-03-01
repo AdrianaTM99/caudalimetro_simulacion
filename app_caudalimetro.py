@@ -600,41 +600,41 @@ if st.button('Generar curva de calibración'):
 
 
 st.markdown("---")
-    with st.expander("🎛️ Realismo del instrumento", expanded=False):
-        st.session_state.realismo_on = st.toggle("Activar realismo", value=st.session_state.realismo_on)
+with st.expander("🎛️ Realismo del instrumento", expanded=False):
+    st.session_state.realismo_on = st.toggle("Activar realismo", value=st.session_state.realismo_on)
     
-        st.session_state.seed_ruido = st.number_input(
-            "Semilla (repetibilidad tipo tesis)",
-            value=int(st.session_state.seed_ruido),
-            step=1
-        )
+    st.session_state.seed_ruido = st.number_input(
+        "Semilla (repetibilidad tipo tesis)",
+        value=int(st.session_state.seed_ruido),
+        step=1
+    )
     
-        # Mostrar también la curva ideal para comparar
-        st.session_state.mostrar_ideal = st.toggle("Mostrar curva ideal (comparación)", value=st.session_state.mostrar_ideal)
+    # Mostrar también la curva ideal para comparar
+    st.session_state.mostrar_ideal = st.toggle("Mostrar curva ideal (comparación)", value=st.session_state.mostrar_ideal)
     
-        ruido_mV = st.slider("Ruido base (mV RMS)", 0.0, 5.0, 0.15, 0.01)
-        offset_mV = st.slider("Offset / cero (mV)", -5.0, 5.0, 0.10, 0.01)
-        deriva_mV = st.slider("Deriva del cero en el barrido (mV)", 0.0, 5.0, 0.20, 0.01)
+    ruido_mV = st.slider("Ruido base (mV RMS)", 0.0, 5.0, 0.15, 0.01)
+    offset_mV = st.slider("Offset / cero (mV)", -5.0, 5.0, 0.10, 0.01)
+    deriva_mV = st.slider("Deriva del cero en el barrido (mV)", 0.0, 5.0, 0.20, 0.01)
     
-        alpha_nl = st.slider("No linealidad (α)", 0.0, 0.15, 0.02, 0.005)
+    alpha_nl = st.slider("No linealidad (α)", 0.0, 0.15, 0.02, 0.005)
     
-        qstep_mV = st.select_slider(
-            "Cuantización ADC (paso mV)",
-            options=[0.0, 0.001, 0.005, 0.01, 0.02, 0.05],
-            value=0.005
-        )
+    qstep_mV = st.select_slider(
+        "Cuantización ADC (paso mV)",
+        options=[0.0, 0.001, 0.005, 0.01, 0.02, 0.05],
+        value=0.005
+    )
     
-        sat_mV = st.slider("Saturación |V| máx (mV)", 50.0, 2000.0, 800.0, 10.0)
-        inst_pct = st.slider("Efecto instalación (±% lectura)", 0.0, 5.0, 0.5, 0.1)
+    sat_mV = st.slider("Saturación |V| máx (mV)", 50.0, 2000.0, 800.0, 10.0)
+    inst_pct = st.slider("Efecto instalación (±% lectura)", 0.0, 5.0, 0.5, 0.1)
     
-    # Guardamos para usarlos luego (fuera del sidebar también los necesitas)
-    st.session_state["ruido_mV"] = ruido_mV
-    st.session_state["offset_mV"] = offset_mV
-    st.session_state["deriva_mV"] = deriva_mV
-    st.session_state["alpha_nl"] = alpha_nl
-    st.session_state["qstep_mV"] = qstep_mV
-    st.session_state["sat_mV"] = sat_mV
-    st.session_state["inst_pct"] = inst_pct
+# Guardamos para usarlos luego (fuera del sidebar también los necesitas)
+st.session_state["ruido_mV"] = ruido_mV
+st.session_state["offset_mV"] = offset_mV
+st.session_state["deriva_mV"] = deriva_mV
+st.session_state["alpha_nl"] = alpha_nl
+st.session_state["qstep_mV"] = qstep_mV
+st.session_state["sat_mV"] = sat_mV
+st.session_state["inst_pct"] = inst_pct
 
 
 
@@ -932,6 +932,7 @@ Si evalúas muy fuera del rango simulado, es extrapolación y puede no represent
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
