@@ -401,23 +401,26 @@ st.markdown("#### Factor de Error del Sistema")
 
 c_err1, c_err2 = st.columns([1, 3])
 
+if "edit_error" not in st.session_state:
+    st.session_state.edit_error = False
+
 with c_err1:
-    if st.button('Cambiar Factor'):
+    if st.button("Cambiar Factor"):
         st.session_state.edit_error = not st.session_state.edit_error
 
 with c_err2:
     if st.session_state.edit_error:
         error_factor = st.number_input(
             "Error (factor)",
-        min_value=0.80,
-        max_value=1.20,
-        value=1.00,
-        step=0.01,
-        format="%.2f",
-        help="Factor multiplicativo que modela errores sistemáticos (ganancia/calibración)."
-    )
-else:
-    error_factor = 1.00
+            min_value=0.80,
+            max_value=1.20,
+            value=1.00,
+            step=0.01,
+            format="%.2f",
+            help="Factor multiplicativo que modela errores sistemáticos (ganancia/calibración)."
+        )
+    else:
+        error_factor = 1.00
 
 # --- CÁLCULOS ---
 # --- CONVERSIÓN A SI (T, m, S/m) ---
