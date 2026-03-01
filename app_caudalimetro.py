@@ -643,6 +643,36 @@ if st.session_state.mostrar_grafica:
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+    st.markdown("### 🧮 Evaluar puntos con la ecuación de calibración")
+
+    modo_eval = st.radio(
+        "Selecciona qué deseas calcular:",
+        (f"Calcular V a partir de Q ({u_q} → mV)", f"Calcular Q a partir de V (mV → {u_q})"),
+        horizontal=True
+    )
+
+    cA, cB = st.columns([2, 3])
+
+    with cA:
+        if modo_eval.startswith("Calcular V"):
+            Q_in = st.number_input(f"Ingrese Q ({u_q})", value=float(np.mean(Q_plot)), format="%.6f")
+            V_out = m_eq * Q_in + b_eq
+            st.success(f"Resultado: V = **{V_out:.4f} mV**")
+        else:
+            V_in = st.number_input("Ingrese V (mV)", value=float(np.mean(V_mv)), format="%.6f")
+            if abs(m_eq) < 1e-12:
+                st.error("No se puede despejar Q porque la pendiente m≈0.")
+            else:
+                Q_out = (V_in - b_eq) / m_eq
+                st.success(f"Resultado: Q = **{Q_out:.6f} {u_q}**")
+
+    with cB:
+        st.info("""
+    **Nota:** esta evaluación usa la ecuación lineal ajustada **V = m·Q + b**.
+    Si el usuario trabaja fuera del rango simulado, el resultado es una extrapolación y puede no ser representativo.
+        """)
+    
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.markdown("### 📌 Puntos evaluados")
 
@@ -676,6 +706,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
