@@ -542,14 +542,14 @@ if st.session_state.mostrar_grafica:
         </div>
     </div>
     """, unsafe_allow_html=True)
-
+    st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.markdown("### 📌 Puntos evaluados")
 
     with st.expander("Mostrar tabla de puntos evaluados", expanded=False):
         st.table(df.head(30))  # sin pantalla completa
         st.caption("Mostrando 30 filas. Descarga CSV/Excel para ver todo.")
 
-    st.write(f"Coeficiente de determinación R² = {R2:.6f}")
+    
 
     def dataframe_to_excel_bytes(dataframe: pd.DataFrame) -> bytes:
         output = BytesIO()
@@ -575,6 +575,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
