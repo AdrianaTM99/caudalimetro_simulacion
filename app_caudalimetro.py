@@ -459,7 +459,6 @@ if st.session_state.mostrar_grafica:
             value=0.1,
             step=0.1,
             format="%.2f",
-            help="Límite inferior de velocidad para generar la curva."
         )
 
     with c2:
@@ -470,7 +469,6 @@ if st.session_state.mostrar_grafica:
             value=5.0,
             step=0.1,
             format="%.2f",
-            help="Límite superior de velocidad para generar la curva."
         )
 
     if v_max <= v_min:
@@ -619,6 +617,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
