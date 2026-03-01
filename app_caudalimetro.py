@@ -280,6 +280,20 @@ else:
 with st.sidebar:
     st.markdown("## 📘 Biblioteca Técnica")
 
+    # CSS para evitar que el texto se vaya largo y cree scroll horizontal en tablas
+    st.markdown("""
+    <style>
+    [data-testid="stTable"] table {
+        width: 100% !important;
+    }
+    [data-testid="stTable"] td,
+    [data-testid="stTable"] th {
+        white-space: normal !important;
+        word-break: break-word !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     # -------- CONDUCTIVIDADES --------
     conductividades = {
         "Agua destilada": (0.5, 5),
@@ -292,76 +306,89 @@ with st.sidebar:
     }
 
     with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=False):
-        tabla = f"| Fluido | Conductividad ({u_sig}) |\n"
-        tabla += "|---------|----------------|\n"
+        filas = []
         for fluido, (min_v, max_v) in conductividades.items():
             min_conv = min_v * conv_cond
             max_conv = max_v * conv_cond
-            if min_v == max_v:
-                valor = f"{min_conv:.1f}"
-            else:
-                valor = f"{min_conv:.1f} – {max_conv:.1f}"
-            tabla += f"| {fluido} | {valor} |\n"
-        st.markdown(tabla)
-    with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=False):
-        st.markdown(
-            f"""
-    **Nota técnica:** La conductividad del fluido influye directamente en la **calidad de medición** del caudalímetro electromagnético.
-    Para lecturas estables, normalmente se requiere una conductividad mínima (dependiente del diseño) y se recomienda
-    trabajar dentro de rangos típicos del proceso.  
-    Las magnitudes mostradas se expresan en **{u_sig}** y se convierten automáticamente según el sistema seleccionado.
-            """
-        )
-   
+            valor = f"{min_conv:.1f}" if min_v == max_v else f"{min_conv:.1f} – {max_conv:.1f}"
+            filas.append({"Fluido": fluido, f"Conductividad ({u_sig})": valor})
+
+        df_cond = pd.DataFrame(filas)
+        st.table(df_cond)
+
+        # “Más info” dentro del mismo bloque desplegable
+        with st.expander("📌 Más información (criterio técnico)", expanded=False):
+            st.markdown(f"""
+**Importancia en caudalímetros electromagnéticos:**  
+La conductividad del fluido condiciona la **calidad de la señal inducida** y, por tanto, la estabilidad de la medición.
+En fluidos con conductividad baja aumenta la **incertidumbre** y el sistema puede requerir:
+- Mayor **campo magnético B** o mejor electrónica de adquisición (SNR).
+- Tratamiento de ruido y filtrado.
+- Validación de un **umbral mínimo de σ** para garantizar repetibilidad.
+
+Las magnitudes mostradas están en **{u_sig}** y se convierten automáticamente según el sistema seleccionado.
+            """)
+
     # -------- DIÁMETROS --------
     diametros = {
         "DN15": 0.015,
         "DN25": 0.025,
         "DN50": 0.050,
-        "DN100": 0.1,
-        "DN200": 0.2,
-        "DN500": 0.5,
+        "DN100": 0.100,
+        "DN200": 0.200,
+        "DN500": 0.500,
     }
 
     with st.expander("🔵 Diámetros Nominales", expanded=False):
-        tabla = f"| DN | Diámetro ({u_d}) |\n"
-        tabla += "|----|---------------|\n"
-        for dn, valor_mm in diametros.items():
-            valor_conv = valor_mm * conv_diam
-            tabla += f"| {dn} | {valor_conv:.3f} |\n"
-        st.markdown(tabla)
+        filas = []
+        for dn, valor_m in diametros.items():
+            valor_conv = valor_m * conv_diam
+            filas.append({"DN": dn, f"Diámetro ({u_d})": f"{valor_conv:.4f}"})
+        df_dn = pd.DataFrame(filas)
+        st.table(df_dn)
 
-    # -------- VELOCIDADES (criterio técnico tipo tesis) --------
-velocidades = {
-    "Agua potable":      {"vmin": 1.0, "vmax": 3.0, "nota": "Rango típico para evitar ruido a baja velocidad y reducir riesgo de sedimentación."},
-    "Industria química": {"vmin": 1.0, "vmax": 5.0, "nota": "Rango amplio por variabilidad del proceso. Confirmar compatibilidad química del liner y electrodos."},
-    "Lodos":             {"vmin": 0.5, "vmax": 2.0, "nota": "Se limita velocidad para disminuir abrasión; se busca régimen estable y minimizar depósitos."},
-    "Alimentos":         {"vmin": 1.0, "vmax": 4.0, "nota": "Compromiso entre estabilidad de señal y condiciones sanitarias. Preferir materiales grado alimentario."},
-}
-unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
+        with st.expander("📌 Nota (uso en diseño)", expanded=False):
+            st.markdown(f"""
+En un caudalímetro electromagnético, el diámetro interno influye directamente en:
+- Área transversal (**A = π·(D/2)²**) → cambia el caudal para una misma velocidad.
+- Voltaje inducido (tendencia **V ∝ B·D·v**) → diámetros mayores elevan la señal inducida para igual B y v.
+- Requisitos de instalación (tramos rectos, perturbaciones) y pérdidas de carga.
+            """)
 
-with st.expander("🌊 Velocidades recomendadas (criterio técnico)", expanded=False):
-    st.markdown(
-        """
-**Criterio técnico:** Los rangos propuestos buscan mantener una **señal inducida estable** (mejor relación señal/ruido),
-evitar incertidumbre elevada a **bajas velocidades** y reducir riesgos asociados a **sedimentación/abrasión** en fluidos con sólidos.
-El rango final depende de **diámetro nominal, viscosidad, régimen de flujo e instalación** (tramos rectos y perturbaciones).
-        """
-    )
+    # -------- VELOCIDADES (AHORA SÍ DENTRO DEL SIDEBAR) --------
+    velocidades = {
+        "Agua potable":      {"vmin": 1.0, "vmax": 3.0, "nota": "Rango típico para buena SNR y menor riesgo de sedimentación."},
+        "Industria química": {"vmin": 1.0, "vmax": 5.0, "nota": "Variabilidad alta del proceso; validar compatibilidad de materiales."},
+        "Lodos":             {"vmin": 0.5, "vmax": 2.0, "nota": "Se limita para reducir abrasión y depósitos; operación más estable."},
+        "Alimentos":         {"vmin": 1.0, "vmax": 4.0, "nota": "Compromiso entre estabilidad de señal y criterios sanitarios."},
+    }
+    unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
 
-    filas = []
-    for app, info in velocidades.items():
-        vmin = info["vmin"] * conv_vel
-        vmax = info["vmax"] * conv_vel
-        filas.append({
-            "Aplicación": app,
-            f"v_min ({unidad_vel})": f"{vmin:.2f}",
-            f"v_max ({unidad_vel})": f"{vmax:.2f}",
-            "Observación técnica": info["nota"],
-        })
+    with st.expander("🌊 Velocidades recomendadas (criterio técnico)", expanded=False):
+        st.markdown("""
+**Criterio técnico:** rangos orientativos para mantener señal estable, evitar ruido a baja velocidad
+y reducir riesgos de sedimentación/abrasión. El valor final depende de instalación, régimen de flujo y proceso.
+        """)
 
-    df_vel = pd.DataFrame(filas)
-    st.table(df_vel)
+        filas = []
+        for app, info in velocidades.items():
+            vmin = info["vmin"] * conv_vel
+            vmax = info["vmax"] * conv_vel
+            filas.append({
+                "Aplicación": app,
+                f"v_min ({unidad_vel})": f"{vmin:.2f}",
+                f"v_max ({unidad_vel})": f"{vmax:.2f}",
+                "Observación": info["nota"],
+            })
+        df_vel = pd.DataFrame(filas)
+        st.table(df_vel)
+
+        with st.expander("📌 Más información (interpretación)", expanded=False):
+            st.markdown("""
+- **Velocidades muy bajas**: suelen empeorar la relación señal/ruido (SNR) y la repetibilidad.
+- **Velocidades muy altas**: aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
+- La instalación (codos, válvulas, bombas) puede introducir asimetrías de perfil → conviene validar en campo.
+            """)
 
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 
@@ -637,41 +664,3 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
