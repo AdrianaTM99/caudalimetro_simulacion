@@ -675,9 +675,16 @@ if st.session_state.mostrar_grafica:
     # =========================
     if st.button("🖱️ Interactuar / Fijar gráfica", use_container_width=True):
         st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
-
+    
     estado = "Interactiva" if st.session_state.grafica_interactiva else "Estática"
     st.caption(f"Estado de gráfica: **{estado}**")
+    
+    # ESTO FALTABA (RENDER DE LA GRÁFICA)
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+        config={"staticPlot": not st.session_state.grafica_interactiva}
+    )
     
     st.markdown("""
     <style>
@@ -778,6 +785,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
