@@ -563,7 +563,7 @@ if st.session_state.mostrar_grafica:
     col1, col2 = st.columns([1,4])
 
     with col1:
-        if st.button("📱 Interacción"):
+        if st.button("Interactuar con la gráfica"):
             st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
 
     with col2:
@@ -617,6 +617,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
