@@ -249,15 +249,12 @@ div[data-testid="collapsedControl"] {
 </style>
 """, unsafe_allow_html=True)
 
-# --- LÓGICA DE UNIDADES + GIF ---
-col_radio, col_gif = st.columns([3,1])
-
-with col_radio:
-    sistema = st.radio(
-        "Selecciona el Sistema de Unidades:",
-        ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"),
-        horizontal=True
-    )
+# --- LÓGICA DE UNIDADES (sin GIF) ---
+sistema = st.radio(
+    "Selecciona el Sistema de Unidades:",
+    ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"),
+    horizontal=True
+)
 
 with col_gif:
     st.markdown(
@@ -550,6 +547,7 @@ if st.session_state.mostrar_grafica:
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
