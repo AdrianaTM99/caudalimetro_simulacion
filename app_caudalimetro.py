@@ -394,12 +394,6 @@ with st.sidebar:
         # “Más info” dentro del mismo bloque desplegable
         with st.expander("📌 Más información (criterio técnico)", expanded=False):
             st.markdown(f"""
-**Importancia en caudalímetros electromagnéticos:**  
-La conductividad del fluido condiciona la **calidad de la señal inducida** y, por tanto, la estabilidad de la medición.
-En fluidos con conductividad baja aumenta la **incertidumbre** y el sistema puede requerir:
-- Mayor **campo magnético B** o mejor electrónica de adquisición (SNR).
-- Tratamiento de ruido y filtrado.
-- Validación de un **umbral mínimo de σ** para garantizar repetibilidad.
 
 Las magnitudes mostradas están en **{u_sig}** y se convierten automáticamente según el sistema seleccionado.
             """)
@@ -471,43 +465,29 @@ y reducir riesgos de sedimentación/abrasión. El valor final depende de instala
 - La instalación (codos, válvulas, bombas) puede introducir asimetrías de perfil → conviene validar en campo.
             """)
     st.markdown("---")
-    with st.expander("🎛️ Realismo del instrumento", expanded=False):
-        st.session_state.realismo_on = st.toggle("Activar realismo", value=st.session_state.realismo_on)
-    
-        st.session_state.seed_ruido = st.number_input(
-            "Semilla (repetibilidad tipo tesis)",
-            value=int(st.session_state.seed_ruido),
-            step=1
-        )
-    
-        # Mostrar también la curva ideal para comparar
-        st.session_state.mostrar_ideal = st.toggle("Mostrar curva ideal (comparación)", value=st.session_state.mostrar_ideal)
-    
-        ruido_mV = st.slider("Ruido base (mV RMS)", 0.0, 5.0, 0.15, 0.01)
-        offset_mV = st.slider("Offset / cero (mV)", -5.0, 5.0, 0.10, 0.01)
-        deriva_mV = st.slider("Deriva del cero en el barrido (mV)", 0.0, 5.0, 0.20, 0.01)
-    
-        alpha_nl = st.slider("No linealidad (α)", 0.0, 0.15, 0.02, 0.005)
-    
-        qstep_mV = st.select_slider(
-            "Cuantización ADC (paso mV)",
-            options=[0.0, 0.001, 0.005, 0.01, 0.02, 0.05],
-            value=0.005
-        )
-    
-        sat_mV = st.slider("Saturación |V| máx (mV)", 50.0, 2000.0, 800.0, 10.0)
-        inst_pct = st.slider("Efecto instalación (±% lectura)", 0.0, 5.0, 0.5, 0.1)
-    
-    # Guardamos para usarlos luego (fuera del sidebar también los necesitas)
-    st.session_state["ruido_mV"] = ruido_mV
-    st.session_state["offset_mV"] = offset_mV
-    st.session_state["deriva_mV"] = deriva_mV
-    st.session_state["alpha_nl"] = alpha_nl
-    st.session_state["qstep_mV"] = qstep_mV
-    st.session_state["sat_mV"] = sat_mV
-    st.session_state["inst_pct"] = inst_pct 
+    with st.expander("🧭 ¿Cómo usar el modo realista?", expanded=False):
+        st.markdown("""
+**Finalidad del modo realista:**  
+Simular el comportamiento de un caudalímetro electromagnético *real* incluyendo efectos típicos de instrumentación y electrónica.
 
+**Cómo usarlo (pasos):**
+1. En el panel principal (fuera de la sidebar), activa **“Modo realista”**.
+2. Ajusta los parámetros (ruido, offset, deriva, no linealidad, cuantización, saturación e instalación).
+3. Pulsa **“Generar curva de calibración”** para recalcular.
+4. Si activas **“Mostrar curva ideal”**, verás dos curvas:
+   - **Ideal**: modelo físico sin imperfecciones.
+   - **Realista**: señal medida con errores y limitaciones.
+5. Usa la **semilla** para repetir exactamente el mismo ruido (útil en tesis para reproducibilidad).
 
+**Interpretación rápida:**
+- Ruido/offset/deriva afectan el “cero” y la dispersión.
+- No linealidad introduce curvatura (la recta ya no ajusta perfecto).
+- Cuantización simula resolución ADC.
+- Saturación recorta la señal a un máximo.
+- Instalación simula errores por perfiles de flujo/tramos rectos.
+
+✅ Recomendación tesis: reporta la ecuación de calibración y **R²** comparando ideal vs realista.
+        """)
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 
 col1, col2, col3 = st.columns(3)
@@ -932,6 +912,7 @@ Si evalúas muy fuera del rango simulado, es extrapolación y puede no represent
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
