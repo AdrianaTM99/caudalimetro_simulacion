@@ -322,24 +322,22 @@ with st.sidebar:
             tabla += f"| {dn} | {valor_conv:.3f} |\n"
         st.markdown(tabla)
 
-    # -------- VELOCIDADES (con notas tipo tesis) --------
-    velocidades = {
-        "Agua potable":      {"vmin": 1.0, "vmax": 3.0, "nota": "Rango típico para minimizar ruido y evitar sedimentación."},
-        "Industria química": {"vmin": 1.0, "vmax": 5.0, "nota": "Mayor rango por variabilidad de procesos; verificar compatibilidad de recubrimientos."},
-        "Lodos":             {"vmin": 0.5, "vmax": 2.0, "nota": "Se prioriza evitar abrasión y atascos; velocidades moderadas."},
-        "Alimentos":         {"vmin": 1.0, "vmax": 4.0, "nota": "Compromiso entre régimen estable y condiciones higiénicas del proceso."},
-    }
+    # -------- VELOCIDADES (criterio técnico tipo tesis) --------
+velocidades = {
+    "Agua potable":      {"vmin": 1.0, "vmax": 3.0, "nota": "Rango típico para evitar ruido a baja velocidad y reducir riesgo de sedimentación."},
+    "Industria química": {"vmin": 1.0, "vmax": 5.0, "nota": "Rango amplio por variabilidad del proceso. Confirmar compatibilidad química del liner y electrodos."},
+    "Lodos":             {"vmin": 0.5, "vmax": 2.0, "nota": "Se limita velocidad para disminuir abrasión; se busca régimen estable y minimizar depósitos."},
+    "Alimentos":         {"vmin": 1.0, "vmax": 4.0, "nota": "Compromiso entre estabilidad de señal y condiciones sanitarias. Preferir materiales grado alimentario."},
+}
+unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
 
-    unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
-
-    with st.expander("🌊 Velocidades recomendadas (criterio técnico)", expanded=False):
-        st.markdown(
-            """
-    **Criterio de selección:** Los rangos sugeridos se establecen para mantener una medición estable del caudalímetro,
-    evitar condiciones operativas con alta probabilidad de error (ruido por bajas velocidades) y reducir riesgos de
-    sedimentación/abrasión en fluidos con sólidos.  
-    En la práctica, el rango definitivo depende del diámetro nominal, la viscosidad y la naturaleza del fluido.
-            """
+with st.expander("🌊 Velocidades recomendadas (criterio técnico)", expanded=False):
+    st.markdown(
+        """
+**Criterio técnico:** Los rangos propuestos buscan mantener una **señal inducida estable** (mejor relación señal/ruido),
+evitar incertidumbre elevada a **bajas velocidades** y reducir riesgos asociados a **sedimentación/abrasión** en fluidos con sólidos.
+El rango final depende de **diámetro nominal, viscosidad, régimen de flujo e instalación** (tramos rectos y perturbaciones).
+        """
     )
 
     filas = []
@@ -348,12 +346,13 @@ with st.sidebar:
         vmax = info["vmax"] * conv_vel
         filas.append({
             "Aplicación": app,
-            f"v_min ({unidad_vel})": round(vmin, 2),
-            f"v_max ({unidad_vel})": round(vmax, 2),
-            "Observación": info["nota"],
+            f"v_min ({unidad_vel})": f"{vmin:.2f}",
+            f"v_max ({unidad_vel})": f"{vmax:.2f}",
+            "Observación técnica": info["nota"],
         })
 
-    st.dataframe(pd.DataFrame(filas), use_container_width=True, hide_index=True)
+    df_vel = pd.DataFrame(filas)
+    st.table(df_vel)
 
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 
@@ -607,7 +606,7 @@ if st.session_state.mostrar_grafica:
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
-
+    
     csv_data = df.to_csv(index=False).encode("utf-8")
     st.download_button(
         label="📥 Descargar puntos (CSV)",
@@ -617,6 +616,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
