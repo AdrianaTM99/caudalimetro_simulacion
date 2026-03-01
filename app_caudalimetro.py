@@ -242,6 +242,31 @@ div[data-testid="collapsedControl"] {
     border-radius: 10px !important;
     border: 1px solid #00d4ff !important;
 }
+
+/* ===== ECUACIÓN GRANDE Y CENTRADA ===== */
+.equation-box{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin: 18px 0 8px 0;
+    padding: 18px 16px;
+    border: 2px solid #00d4ff;
+    border-radius: 14px;
+    background: rgba(0,0,0,0.55);
+    box-shadow: 0 0 18px rgba(0,212,255,0.20);
+}
+
+.equation-large{
+    font-size: 2.2rem;
+    font-weight: 800;
+    text-align:center;
+    line-height: 1.3;
+}
+
+@media (max-width: 900px){
+  .equation-large{ font-size: 1.45rem; }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -729,6 +754,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
