@@ -367,7 +367,7 @@ with col1:
         max_value=float(b_max),
         value=float(b_def),
         step=0.01 if sistema.startswith("Métrico") else 100.0,
-        format="%.4f" if sistema.startswith("Métrico") else "%.1f"
+        format="%.4f" if sistema.startswith("Métrico") else "%.1f",
         help="Campo aplicado por las bobinas. A mayor B, mayor voltaje inducido (mejor SNR), pero mayor consumo."
     )
 
@@ -614,6 +614,7 @@ if v_max <= v_min:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
