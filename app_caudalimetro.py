@@ -393,19 +393,15 @@ with col3:
 
 
 
-if 'edit_error' not in st.session_state:
+if "edit_error" not in st.session_state:
     st.session_state.edit_error = False
 
 st.markdown("#### Factor de Error del Sistema")
 
-c_err1, c_err2 = st.columns([1, 3])
-
-if "edit_error" not in st.session_state:
-    st.session_state.edit_error = False
+c_err1, c_err2, c_err3 = st.columns([1.1, 1.6, 3.3])
 
 with c_err1:
-    if st.button("Cambiar Factor"):
-        st.session_state.edit_error = not st.session_state.edit_error
+    st.session_state.edit_error = st.toggle("Ajustar", value=st.session_state.edit_error)
 
 with c_err2:
     if st.session_state.edit_error:
@@ -416,10 +412,13 @@ with c_err2:
             value=1.00,
             step=0.01,
             format="%.2f",
-            help="Factor multiplicativo que modela errores sistemáticos (ganancia/calibración)."
+            help="Factor multiplicativo para modelar errores sistemáticos de ganancia/calibración."
         )
     else:
         error_factor = 1.00
+
+with c_err3:
+    st.caption(f"Por defecto: **1.00** · En uso ahora: **{error_factor:.2f}**")
 st.write("---")
 # --- CÁLCULOS ---
 # --- CONVERSIÓN A SI (T, m, S/m) ---
@@ -620,6 +619,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
