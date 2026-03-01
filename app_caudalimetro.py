@@ -456,7 +456,9 @@ if st.session_state.mostrar_grafica:
     # CÁLCULOS
     # =========================
     A_m2 = np.pi * (D_si / 2)**2
-    v = np.linspace(0.1, 5.0, 100)
+    v_min = st.slider("v mínima (m/s)", 0.0, 5.0, 0.1, 0.1)
+    v_max = st.slider("v máxima (m/s)", 0.1, 10.0, 5.0, 0.1)
+    v = np.linspace(v_min, v_max, 100)
     f_cond = 1 / (1 + np.exp(-0.01 * (sigma_si - 5)))
     V_mv = (B_si * D_si * v * f_cond * 1000) * error_factor
     Q_m3s = A_m2 * v  # SI puro
@@ -478,7 +480,7 @@ if st.session_state.mostrar_grafica:
     # Cálculo R²
     SS_res = np.sum((V_mv - V_pred)**2)
     SS_tot = np.sum((V_mv - np.mean(V_mv))**2)
-    R2 = 1 - SS_res/SS_tot
+    R2 = 1 - SS_res/SS_tot if SS_tot > 0 else 1.0
 
     # =========================
     # GRÁFICA
@@ -555,6 +557,7 @@ if st.session_state.mostrar_grafica:
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
