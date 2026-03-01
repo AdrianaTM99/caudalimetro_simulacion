@@ -259,20 +259,6 @@ with col_radio:
         horizontal=True
     )
 
-with col_gif:
-    st.empty()  # no mostramos nada
-
-with col_gif:
-    st.markdown(
-        f"""
-        <div style="display:flex; justify-content:center; align-items:center; height:100%;">
-            <img src="{URL_GIF}" style="width:180px; opacity:0.95;">
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
 # Definimos conversiones
 if sistema == "Métrico (T, μS/cm, m)":
     u_b, u_sig, u_d, u_q = "T", "μS/cm", "m", "m³/s"
@@ -553,6 +539,7 @@ if st.session_state.mostrar_grafica:
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
