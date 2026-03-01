@@ -428,11 +428,22 @@ with c_err2:
     error_factor = st.slider('Error', 0.80, 1.20, 1.00, 0.01) if st.session_state.edit_error else 1.00
 
 # --- CÁLCULOS ---
+# --- CONVERSIÓN A SI (T, m, S/m) ---
 if sistema == "Americano (G, mhos/in, in)":
-    # Corregido: Usar B_user para B_si
-    B_si, D_si, sigma_si = B_user / 10000.0, D_user * 0.0254, sigma_user / 2.54
+    # B: Gauss -> Tesla
+    B_si = B_user * 1e-4
+    # D: in -> m
+    D_si = D_user * 0.0254
+    # σ: (μmhos/in) == (μS/in) -> S/m
+    # 1 μS/in = (1e-6 S) / (0.0254 m) = 3.937e-5 S/m
+    sigma_si = sigma_user * 3.937e-5
 else:
-    B_si, D_si, sigma_si = B_user, D_user, sigma_user
+    # B ya en Tesla
+    B_si = B_user
+    # D ya en metros
+    D_si = D_user
+    # σ: μS/cm -> S/m  (1 μS/cm = 1e-4 S/m)
+    sigma_si = sigma_user * 1e-4
 
 if "mostrar_grafica" not in st.session_state:
     st.session_state.mostrar_grafica = False
@@ -543,6 +554,7 @@ if st.session_state.mostrar_grafica:
     st.write(f"Coeficiente de determinación R² = {R2:.6f}")
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
