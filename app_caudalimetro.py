@@ -350,21 +350,40 @@ with st.sidebar:
 
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 
-# ========= helpers (callbacks) =========
-def sync_num_to_slider(num_key: str, sld_key: str):
-    st.session_state[sld_key] = st.session_state[num_key]
+# ========= Inicializar keys una sola vez =========
+if "B_num" not in st.session_state:
+    st.session_state["B_num"] = float(b_def)
+if "B_sld" not in st.session_state:
+    st.session_state["B_sld"] = float(b_def)
 
-def sync_slider_to_num(sld_key: str, num_key: str):
-    st.session_state[num_key] = st.session_state[sld_key]
+if "SIG_num" not in st.session_state:
+    st.session_state["SIG_num"] = float(sig_def)
+if "SIG_sld" not in st.session_state:
+    st.session_state["SIG_sld"] = float(sig_def)
 
-# ========= inicializar keys una sola vez =========
-for k, default in [
-    ("B_num", b_def), ("B_sld", b_def),
-    ("SIG_num", sig_def), ("SIG_sld", sig_def),
-    ("D_num", d_def), ("D_sld", d_def),
-]:
-    if k not in st.session_state:
-        st.session_state[k] = float(default)
+if "D_num" not in st.session_state:
+    st.session_state["D_num"] = float(d_def)
+if "D_sld" not in st.session_state:
+    st.session_state["D_sld"] = float(d_def)
+
+# ========= Callbacks (sin args/kwargs) =========
+def B_num_changed():
+    st.session_state["B_sld"] = st.session_state["B_num"]
+
+def B_sld_changed():
+    st.session_state["B_num"] = st.session_state["B_sld"]
+
+def SIG_num_changed():
+    st.session_state["SIG_sld"] = st.session_state["SIG_num"]
+
+def SIG_sld_changed():
+    st.session_state["SIG_num"] = st.session_state["SIG_sld"]
+
+def D_num_changed():
+    st.session_state["D_sld"] = st.session_state["D_num"]
+
+def D_sld_changed():
+    st.session_state["D_num"] = st.session_state["D_sld"]
 
 # ======================
 # B
@@ -376,8 +395,7 @@ with c1:
         min_value=float(b_min),
         max_value=float(b_max),
         key="B_num",
-        on_change=sync_num_to_slider,
-        kwargs={"num_key": "B_num", "sld_key": "B_sld"},
+        on_change=B_num_changed,
     )
 with c2:
     st.slider(
@@ -385,8 +403,7 @@ with c2:
         min_value=float(b_min),
         max_value=float(b_max),
         key="B_sld",
-        on_change=sync_slider_to_num,
-        kwargs={"sld_key": "B_sld", "num_key": "B_num"},
+        on_change=B_sld_changed,
     )
 
 st.write("")
@@ -401,8 +418,7 @@ with c1:
         min_value=float(sig_min),
         max_value=float(sig_max),
         key="SIG_num",
-        on_change=sync_num_to_slider,
-        kwargs={"num_key": "SIG_num", "sld_key": "SIG_sld"},
+        on_change=SIG_num_changed,
     )
 with c2:
     st.slider(
@@ -410,8 +426,7 @@ with c2:
         min_value=float(sig_min),
         max_value=float(sig_max),
         key="SIG_sld",
-        on_change=sync_slider_to_num,
-        kwargs={"sld_key": "SIG_sld", "num_key": "SIG_num"},
+        on_change=SIG_sld_changed,
     )
 
 st.write("")
@@ -427,8 +442,7 @@ with c1:
         max_value=float(d_max),
         format="%.4f",
         key="D_num",
-        on_change=sync_num_to_slider,
-        kwargs={"num_key": "D_num", "sld_key": "D_sld"},
+        on_change=D_num_changed,
     )
 with c2:
     st.slider(
@@ -436,11 +450,10 @@ with c2:
         min_value=float(d_min),
         max_value=float(d_max),
         key="D_sld",
-        on_change=sync_slider_to_num,
-        kwargs={"sld_key": "D_sld", "num_key": "D_num"},
+        on_change=D_sld_changed,
     )
 
-# Valores finales (ya sincronizados)
+# Valores finales sincronizados
 B_user = float(st.session_state["B_num"])
 sigma_user = float(st.session_state["SIG_num"])
 D_user = float(st.session_state["D_num"])
@@ -630,6 +643,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
