@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import time
 import pandas as pd
 from io import BytesIO
-
+st.write("VERSION:", "2026-02-28 10000000")
 # 1. Configuración de la página
 st.set_page_config(
     layout="wide",
@@ -614,6 +614,7 @@ if v_max <= v_min:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
