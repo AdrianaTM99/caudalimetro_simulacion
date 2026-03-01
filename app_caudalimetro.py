@@ -350,118 +350,100 @@ with st.sidebar:
 
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 
-# ======================
-# B (sincronizado)
-# ======================
-if "B" not in st.session_state:
-    st.session_state.B = float(b_def)
+# ========= helpers (callbacks) =========
+def sync_num_to_slider(num_key: str, sld_key: str):
+    st.session_state[sld_key] = st.session_state[num_key]
 
-col1, col2 = st.columns([1,2])
+def sync_slider_to_num(sld_key: str, num_key: str):
+    st.session_state[num_key] = st.session_state[sld_key]
 
-with col1:
-    B_num = st.number_input(
-        f'B: Campo Magnético ({u_b})',
+# ========= inicializar keys una sola vez =========
+for k, default in [
+    ("B_num", b_def), ("B_sld", b_def),
+    ("SIG_num", sig_def), ("SIG_sld", sig_def),
+    ("D_num", d_def), ("D_sld", d_def),
+]:
+    if k not in st.session_state:
+        st.session_state[k] = float(default)
+
+# ======================
+# B
+# ======================
+c1, c2 = st.columns([1, 2])
+with c1:
+    st.number_input(
+        f"B: Campo Magnético ({u_b})",
         min_value=float(b_min),
         max_value=float(b_max),
-        value=float(st.session_state.B),
-        key="B_num"
+        key="B_num",
+        on_change=sync_num_to_slider,
+        kwargs={"num_key": "B_num", "sld_key": "B_sld"},
     )
-
-with col2:
-    B_sld = st.slider(
+with c2:
+    st.slider(
         "Ajustar B",
         min_value=float(b_min),
         max_value=float(b_max),
-        value=float(st.session_state.B),
-        key="B_sld"
+        key="B_sld",
+        on_change=sync_slider_to_num,
+        kwargs={"sld_key": "B_sld", "num_key": "B_num"},
     )
-
-if B_num != st.session_state.B:
-    st.session_state.B = float(B_num)
-    st.rerun()
-
-if B_sld != st.session_state.B:
-    st.session_state.B = float(B_sld)
-    st.rerun()
-
-B_user = st.session_state.B
 
 st.write("")
 
 # ======================
-# σ (sincronizado)
+# SIGMA
 # ======================
-if "SIG" not in st.session_state:
-    st.session_state.SIG = float(sig_def)
-
-col1, col2 = st.columns([1,2])
-
-with col1:
-    sig_num = st.number_input(
-        f'σ: Conductividad ({u_sig})',
+c1, c2 = st.columns([1, 2])
+with c1:
+    st.number_input(
+        f"σ: Conductividad ({u_sig})",
         min_value=float(sig_min),
         max_value=float(sig_max),
-        value=float(st.session_state.SIG),
-        key="sig_num"
+        key="SIG_num",
+        on_change=sync_num_to_slider,
+        kwargs={"num_key": "SIG_num", "sld_key": "SIG_sld"},
     )
-
-with col2:
-    sig_sld = st.slider(
+with c2:
+    st.slider(
         "Ajustar σ",
         min_value=float(sig_min),
         max_value=float(sig_max),
-        value=float(st.session_state.SIG),
-        key="sig_sld"
+        key="SIG_sld",
+        on_change=sync_slider_to_num,
+        kwargs={"sld_key": "SIG_sld", "num_key": "SIG_num"},
     )
-
-if sig_num != st.session_state.SIG:
-    st.session_state.SIG = float(sig_num)
-    st.rerun()
-
-if sig_sld != st.session_state.SIG:
-    st.session_state.SIG = float(sig_sld)
-    st.rerun()
-
-sigma_user = st.session_state.SIG
 
 st.write("")
 
 # ======================
-# D (sincronizado)
+# DIÁMETRO
 # ======================
-if "D" not in st.session_state:
-    st.session_state.D = float(d_def)
-
-col1, col2 = st.columns([1,2])
-
-with col1:
-    D_num = st.number_input(
-        f'D: Diámetro ({u_d})',
+c1, c2 = st.columns([1, 2])
+with c1:
+    st.number_input(
+        f"D: Diámetro ({u_d})",
         min_value=float(d_min),
         max_value=float(d_max),
-        value=float(st.session_state.D),
         format="%.4f",
-        key="D_num"
+        key="D_num",
+        on_change=sync_num_to_slider,
+        kwargs={"num_key": "D_num", "sld_key": "D_sld"},
     )
-
-with col2:
-    D_sld = st.slider(
+with c2:
+    st.slider(
         "Ajustar D",
         min_value=float(d_min),
         max_value=float(d_max),
-        value=float(st.session_state.D),
-        key="D_sld"
+        key="D_sld",
+        on_change=sync_slider_to_num,
+        kwargs={"sld_key": "D_sld", "num_key": "D_num"},
     )
 
-if D_num != st.session_state.D:
-    st.session_state.D = float(D_num)
-    st.rerun()
-
-if D_sld != st.session_state.D:
-    st.session_state.D = float(D_sld)
-    st.rerun()
-
-D_user = st.session_state.D
+# Valores finales (ya sincronizados)
+B_user = float(st.session_state["B_num"])
+sigma_user = float(st.session_state["SIG_num"])
+D_user = float(st.session_state["D_num"])
 st.write("---")
 
 if 'edit_error' not in st.session_state:
@@ -648,6 +630,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
