@@ -658,19 +658,12 @@ if st.session_state.mostrar_grafica:
     # =========================
     # BOTÓN DE INTERACCIÓN
     # =========================
-    col1, col2 = st.columns([1,4])
+    if st.button("🖱️ Interactuar / Fijar gráfica", use_container_width=True):
+        st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
 
-    with col1:
-        if st.button("Interactuar con la gráfica"):
-            st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
-
-    with col2:
-        st.plotly_chart(
-            fig,
-            use_container_width=True,
-            config={"staticPlot": not st.session_state.grafica_interactiva}
-        )
-
+    estado = "Interactiva" if st.session_state.grafica_interactiva else "Estática"
+    st.caption(f"Estado de gráfica: **{estado}**")
+    
     st.markdown("""
     <style>
     /* Evita scroll horizontal en tablas */
@@ -770,6 +763,7 @@ if st.session_state.mostrar_grafica:
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
+
 
 
 
