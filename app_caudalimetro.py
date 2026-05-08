@@ -297,14 +297,14 @@ with st.expander("ℹ️ ¿Cómo funciona el simulador?", expanded=False):
     st.markdown("""
 Este simulador modela la respuesta de un **caudalímetro electromagnético** a partir de variables de diseño y operación:
 
-1. **Entrada de parámetros:** el usuario define el campo magnético **B**, la conductividad del fluido **σ** y el diámetro interno **D**.
-2. **Barrido de velocidades:** se genera un conjunto de velocidades entre **v_min** y **v_max** para simular condiciones de operación.
-3. **Cálculo de caudal:** se calcula el caudal por continuidad: **Q = A·v**, donde **A = π·(D/2)²**.
-4. **Modelo de señal inducida:** se estima el voltaje inducido como:
+1. Defina las variables de diseño: Campo magnético **B**, la conductividad del fluido **σ**,  el diámetro interno **D** y el rango de velocidades a estudiar.
+2. **Barrido de velocidades:** se genera un conjunto de velocidades entre **v_min** y **v_max** (previamente elegidos) para simular condiciones de operación.
+3. **Cálculo de caudal:** El simulador calcula el caudal por continuidad: **Q = A·v**, donde **A = π·(D/2)²**.
+4. **Modelo de señal inducida:** Se estima el voltaje inducido como:
    - Tendencia base: **V ∝ B·D·v**
    - Se incluye un factor **f(σ)** que representa la mejora de medición al aumentar la conductividad.
    - Se incorpora un **factor de error** para simular desviaciones sistemáticas.
-5. **Ajuste lineal (calibración):** con los puntos simulados se ajusta una recta **V = m·Q + b** y se reporta **R²**.
+5. **Ajuste lineal (calibración):** Con los puntos simulados se ajusta una recta **V = m·Q + b** y se reporta **R²**.
 
 **Salida del simulador:** curva V–Q, ecuación de calibración y tabla de puntos evaluados.
 **El sistema de unidades se selecciona en el siguiente bloque.**
