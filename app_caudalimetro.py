@@ -59,7 +59,7 @@ if not st.session_state.splash_done:
 
     time.sleep(3)
 
-    # 🔥 Limpia el placeholder antes de recargar
+    # Limpia el placeholder antes de recargar
     splash.empty()
 
     st.session_state.splash_done = True
@@ -147,7 +147,7 @@ div[data-testid="stRadio"] [aria-checked="true"] > div:first-child > div {
     background-color: #00d4ff !important;
 }
 
-/* ===== FORZAR NÚMEROS EN BLANCO ===== */
+/* FORZAR NÚMEROS EN BLANCO  */
 div[data-testid="stNumberInput"] input,
 div[data-testid="stNumberInput"] input[type="number"],
 div[data-testid="stNumberInput"] input[type="text"] {
@@ -179,7 +179,7 @@ div[data-testid="stNumberInput"] input[type="text"] {
     padding: 200px 2rem 4rem 2rem !important;
     color: white !important;
 }
-/* ===== AUMENTAR TEXTO CENTRAL (EXCEPTO TÍTULO) ===== */
+/* AUMENTAR TEXTO CENTRAL (EXCEPTO TÍTULO)  */
 .block-container p,
 .block-container label,
 .block-container div[data-testid="stMarkdownContainer"] p,
@@ -198,7 +198,7 @@ div[data-testid="stNumberInput"] input[type="text"] {
     .block-container {
         padding: 100px 1rem 3rem 1rem !important;
     }
-    /* ===== AUMENTAR TEXTO CENTRAL (EXCEPTO TÍTULO) ===== */
+    /* AUMENTAR TEXTO CENTRAL (EXCEPTO TÍTULO) */
     .block-container p,
     .block-container label,
     .block-container div[data-testid="stMarkdownContainer"] p,
@@ -210,7 +210,7 @@ div[data-testid="stNumberInput"] input[type="text"] {
         margin-top: 30px !important;
     }
 }
-/* ===== AJUSTE GRÁFICA EN MÓVIL ===== */
+/*AJUSTE GRÁFICA EN MÓVIL*/
 @media (max-width: 900px) {
     div[data-testid="stPlotlyChart"] {
         height: 320px !important;
@@ -235,7 +235,7 @@ st.markdown("""
 
 
 
-# 🔵 ESTILO DE SIDEBAR DESPLEGABLE
+# ESTILO DE SIDEBAR DESPLEGABLE
 st.markdown("""
 <style>
 /* SIDEBAR */
@@ -266,7 +266,7 @@ div[data-testid="collapsedControl"] {
     border: 1px solid #00d4ff !important;
 }
 
-/* ===== ECUACIÓN GRANDE Y CENTRADA ===== */
+/* ECUACIÓN GRANDE Y CENTRADA */
 .equation-box{
     display:flex;
     justify-content:center;
@@ -311,7 +311,7 @@ Este simulador modela la respuesta de un **caudalímetro electromagnético** a p
     """)
 
 
-# --- LÓGICA DE UNIDADES (manteniendo columnas, sin GIF) ---
+# LÓGICA DE UNIDADES (manteniendo columnas, sin GIF)
 col_radio, col_gif = st.columns([3,1])
 
 with col_radio:
@@ -343,11 +343,11 @@ else:
     d_min, d_max, d_def = 0.2, 20.0, 0.5
     conv_q = 15850.3
 
-# ================================
-# 📘 SIDEBAR DINÁMICA CON CONVERSIÓN
-# ================================
+
+# SIDEBAR DINÁMICA CON CONVERSIÓN
+
 with st.sidebar:
-    st.markdown("## 📘 Biblioteca Técnica")
+    st.markdown("## Biblioteca Técnica")
 
     # CSS para evitar que el texto se vaya largo y cree scroll horizontal en tablas
     st.markdown("""
@@ -363,7 +363,7 @@ with st.sidebar:
     </style>
     """, unsafe_allow_html=True)
 
-    # -------- CONDUCTIVIDADES --------
+    # CONDUCTIVIDADES 
     conductividades = {
         "Agua destilada": (0.5, 5),
         "Agua potable": (50, 1500),
@@ -392,13 +392,13 @@ with st.sidebar:
         st.table(df_cond)
 
         # “Más info” dentro del mismo bloque desplegable
-        with st.expander("📌 Más información (criterio técnico)", expanded=False):
+        with st.expander("Más información (criterio técnico)", expanded=False):
             st.markdown(f"""
 
 Las magnitudes mostradas están en **{u_sig}** y se convierten automáticamente según el sistema seleccionado.
             """)
 
-    # -------- DIÁMETROS --------
+    # DIÁMETROS
     diametros = {
         "DN15": 0.015,
         "DN25": 0.025,
@@ -408,7 +408,7 @@ Las magnitudes mostradas están en **{u_sig}** y se convierten automáticamente 
         "DN500": 0.500,
     }
 
-    with st.expander("🔵 Diámetros Nominales", expanded=False):
+    with st.expander("Diámetros Nominales", expanded=False):
         st.markdown(f"""
         **Criterio técnico:** el diámetro interno **D** afecta el área (**A = π·D²/4**) y la relación señal–caudal.
         En caudalímetros electromagnéticos, la tendencia es **V ∝ B·D·v**: a mayor **D**, mayor señal inducida para igual B y v.
@@ -422,7 +422,7 @@ Las magnitudes mostradas están en **{u_sig}** y se convierten automáticamente 
         df_dn = pd.DataFrame(filas)
         st.table(df_dn)
 
-        with st.expander("📌 Nota (uso en diseño)", expanded=False):
+        with st.expander("Nota (uso en diseño)", expanded=False):
             st.markdown(f"""
 En un caudalímetro electromagnético, el diámetro interno influye directamente en:
 - Área transversal (**A = π·(D/2)²**) → cambia el caudal para una misma velocidad.
@@ -430,7 +430,7 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
 - Requisitos de instalación (tramos rectos, perturbaciones) y pérdidas de carga.
             """)
 
-    # -------- VELOCIDADES (AHORA SÍ DENTRO DEL SIDEBAR) --------
+    # VELOCIDADES (AHORA SÍ DENTRO DEL SIDEBAR)
     velocidades = {
         "Agua potable":      {"vmin": 1.0, "vmax": 3.0, "nota": "Rango típico para buena SNR y menor riesgo de sedimentación."},
         "Industria química": {"vmin": 1.0, "vmax": 5.0, "nota": "Variabilidad alta del proceso; validar compatibilidad de materiales."},
@@ -458,14 +458,14 @@ y reducir riesgos de sedimentación/abrasión. El valor final depende de instala
         df_vel = pd.DataFrame(filas)
         st.table(df_vel)
 
-        with st.expander("📌 Más información (interpretación)", expanded=False):
+        with st.expander("Más información (interpretación)", expanded=False):
             st.markdown("""
 - **Velocidades muy bajas**: suelen empeorar la relación señal/ruido (SNR) y la repetibilidad.
 - **Velocidades muy altas**: aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
 - La instalación (codos, válvulas, bombas) puede introducir asimetrías de perfil → conviene validar en campo.
             """)
     st.markdown("---")
-    with st.expander("🧭 ¿Cómo usar el modo realista?", expanded=False):
+    with st.expander("¿Cómo usar el modo realista?", expanded=False):
         st.markdown("""
 **Finalidad del modo realista:**  
 Simular el comportamiento de un caudalímetro electromagnético *real* incluyendo efectos típicos de instrumentación y electrónica.
@@ -646,9 +646,9 @@ def aplicar_realismo(V_mv_ideal, Q_plot, sigma_si, seed,
     return V
 
 if st.session_state.mostrar_grafica:
-    # =========================
+  
     # CÁLCULOS
-    # =========================
+  
     A_m2 = np.pi * (D_si / 2)**2
 
     c1, c2 = st.columns(2)
@@ -738,9 +738,9 @@ if st.session_state.mostrar_grafica:
     SS_tot = np.sum((V_mv - np.mean(V_mv))**2)
     R2 = 1 - SS_res/SS_tot if SS_tot > 0 else 1.0
 
-    # =========================
+   
     # GRÁFICA
-    # =========================
+
     fig = go.Figure()
 
     # Datos realistas (los que usas para calibrar)
@@ -830,7 +830,7 @@ if st.session_state.mostrar_grafica:
     # =========================
     col_btn, col_hint = st.columns([1.2, 3.8])
     with col_btn:
-        if st.button("🧮 Evaluar puntos", use_container_width=True):
+        if st.button("Evaluar puntos", use_container_width=True):
             st.session_state.mostrar_eval = not st.session_state.mostrar_eval
     with col_hint:
         st.caption("Despliega un panel para calcular V a partir de Q o Q a partir de V usando la ecuación ajustada.")
@@ -867,7 +867,7 @@ Si evalúas muy fuera del rango simulado, es extrapolación y puede no represent
 
     st.caption(f"Calibración lineal: m = {m_eq:.4f} · b = {b_eq:.4f} · R² = {R2:.6f}")
 
-    st.markdown("### 📌 Puntos evaluados")
+    st.markdown("### Puntos evaluados")
     with st.expander("Mostrar tabla de puntos evaluados", expanded=False):
         st.table(df.head(30))
         st.caption("Mostrando 30 filas. Descarga CSV/Excel para ver todo.")
