@@ -439,7 +439,7 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
     }
     unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
 
-    with st.expander("🌊 Velocidades recomendadas (criterio técnico)", expanded=False):
+    with st.expander("Velocidades recomendadas (criterio técnico)", expanded=False):
         st.markdown("""
 **Criterio técnico:** rangos orientativos para mantener señal estable, evitar ruido a baja velocidad
 y reducir riesgos de sedimentación/abrasión. El valor final depende de instalación, régimen de flujo y proceso.
@@ -549,7 +549,7 @@ with c_err2:
     else:
         error_factor = 1.00
 st.markdown("---")
-with st.expander("🎛️ Realismo del instrumento", expanded=False):
+with st.expander("Realismo del instrumento", expanded=False):
     st.session_state.realismo_on = st.toggle("Activar realismo", value=st.session_state.realismo_on)
     
     # Mostrar también la curva ideal para comparar
@@ -581,8 +581,8 @@ st.session_state["inst_pct"] = inst_pct
 with c_err3:
     st.caption(f"Por defecto: **1.00** · En uso ahora: **{error_factor:.2f}**")
 st.write("---")
-# --- CÁLCULOS ---
-# --- CONVERSIÓN A SI (T, m, S/m) ---
+# CÁLCULOS
+# CONVERSIÓN A SI (T, m, S/m) 
 if sistema == "Americano (G, mhos/in, in)":
     # B: Gauss -> Tesla
     B_si = B_user * 1e-4
@@ -799,9 +799,8 @@ if st.session_state.mostrar_grafica:
         )
     )
 
-    # =========================
     # BOTÓN DE INTERACCIÓN
-    # =========================
+   
     if st.button("🖱️ Interactuar / Fijar gráfica", use_container_width=True):
         st.session_state.grafica_interactiva = not st.session_state.grafica_interactiva
 
@@ -814,9 +813,9 @@ if st.session_state.mostrar_grafica:
         config={"staticPlot": not st.session_state.grafica_interactiva}
     )
 
-    # =========================
+  
     # ECUACIÓN MOSTRADA
-    # =========================
+  
     st.markdown(f"""
     <div class="equation-box">
         <div class="equation-large">
@@ -825,9 +824,9 @@ if st.session_state.mostrar_grafica:
     </div>
     """, unsafe_allow_html=True)
 
-    # =========================
+ 
     # EVALUAR PUNTOS (toggle)
-    # =========================
+  
     col_btn, col_hint = st.columns([1.2, 3.8])
     with col_btn:
         if st.button("Evaluar puntos", use_container_width=True):
@@ -882,7 +881,7 @@ Si evalúas muy fuera del rango simulado, es extrapolación y puede no represent
 
     excel_bytes = dataframe_to_excel_bytes(df)
     st.download_button(
-        label="📥 Descargar puntos (Excel)",
+        label="Descargar puntos (Excel)",
         data=excel_bytes,
         file_name="puntos_caudalimetro.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -891,7 +890,7 @@ Si evalúas muy fuera del rango simulado, es extrapolación y puede no represent
     
     csv_data = df.to_csv(index=False).encode("utf-8")
     st.download_button(
-        label="📥 Descargar puntos (CSV)",
+        label="Descargar puntos (CSV)",
         data=csv_data,
         file_name="puntos_caudalimetro.csv",
         mime="text/csv"
