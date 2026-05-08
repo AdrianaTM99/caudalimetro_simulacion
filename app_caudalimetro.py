@@ -103,7 +103,7 @@ div.stButton > button:hover {
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
-/* IMPORTAR FUENTE BONITA */
+/* IMPORTANDO FUENTE BONITA */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 /* TÍTULO PRINCIPAL */
 /* BARRA SUPERIOR DEL TÍTULO */
