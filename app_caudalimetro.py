@@ -177,7 +177,7 @@ div[data-testid="stNumberInput"] input[type="text"] {
     font-family: 'Roboto', sans-serif;
     max-width: 1100px !important;
     margin: 0 auto !important;
-    padding: 120px 2rem 4rem 2rem !important;
+    padding: 700px 2rem 4rem 2rem !important;
     color: white !important;
 }
 /* AUMENTAR TEXTO CENTRAL (EXCEPTO TÍTULO)  */
