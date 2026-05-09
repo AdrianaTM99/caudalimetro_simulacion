@@ -502,7 +502,7 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
 
         with st.expander("Más información", expanded=False):
             st.markdown("""
-- **Velocidades muy bajas**: Suelen empeorar la relación señal/ruido (SNR) y la repetibilidad.
+- **Velocidades muy bajas**: Suelen empeorar la relación señal/ruido y la repetibilidad.
 - **Velocidades muy altas**: Aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
 
             """)
@@ -539,7 +539,7 @@ with col1:
         value=float(b_def),
         step=0.01 if sistema.startswith("Métrico") else 100.0,
         format="%.4f" if sistema.startswith("Métrico") else "%.1f",
-        help="Campo aplicado por las bobinas. A mayor B, mayor voltaje inducido (mejor SNR), pero mayor consumo."
+        help="Campo aplicado por las bobinas. A mayor B, mayor voltaje inducido pero mayor consumo."
     )
 
 with col2:
