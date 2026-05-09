@@ -330,7 +330,7 @@ if sistema == "Métrico (T, μS/cm, m)":
     conv_diam = 1
     conv_vel = 1
     # Rangos métricos
-    b_min, b_max, b_def = 0.1, 1.5, 0.5
+    b_min, b_max, b_def = 0.01, 0.6, 0.1
     sig_min, sig_max, sig_def = 1.0, 5000.0, 1000.0
     d_min, d_max, d_def = 0.005, 0.500, 0.0127
     conv_q = 1.0
