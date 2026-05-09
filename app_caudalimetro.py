@@ -388,7 +388,7 @@ with st.sidebar:
         "Ácidos diluidos": (1.0, 10.0),
     }
 
-    with st.expander("Conductividades de Fluidos Comunes", expanded=False):
+    with st.expander("Conductividades de fluidos comunes", expanded=False):
         st.markdown(f"""
         Las magnitudes mostradas se convierten automáticamente según el sistema de unidades seleccionado. """)
         filas = []
@@ -423,7 +423,7 @@ with st.sidebar:
         "DN500": 0.500,
     }
 
-    with st.expander("Diámetros Nominales", expanded=False):
+    with st.expander("Diámetros nominales", expanded=False):
         filas = []
         for dn, valor_m in diametros.items():
             valor_conv = valor_m * conv_diam
@@ -478,7 +478,7 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
     unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
     unidad_d = u_d
 
-    with st.expander("Velocidades recomendadas según diámetro", expanded=False):
+    with st.expander("Velocidades sugeridas según el diámetro", expanded=False):
 
         filas = []
     
@@ -508,7 +508,7 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
 
             """)
     st.markdown("---")
-    with st.expander('información sobre el **modo realista**', expanded=False):
+    with st.expander('Información sobre el **modo realista**', expanded=False):
         st.markdown("""
 Una vez activado, este modo simula el comportamiento de un caudalímetro electromagnético *real* incluyendo efectos típicos de instrumentación y electrónica.
 
