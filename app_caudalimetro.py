@@ -513,7 +513,8 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
         - No linealidad introduce curvatura (la recta ya no ajusta perfecto).
         - Cuantización simula resolución ADC.
         - Saturación recorta la señal a un máximo.
-        - Instalación simula errores por perfiles de flujo/tramos rectos.""")
+        - Instalación simula errores por perfiles de flujo/tramos rectos.
+        """)
 
 
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
