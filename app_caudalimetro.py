@@ -225,7 +225,8 @@ div[data-testid="stNumberInput"] input[type="text"] {
 st.markdown("""
 <div class="title-bar">
     <div class="main-title">
-        Simulador de Caudalímetro Electromagnético
+        Simulador de Caudalímetro 
+        Electromagnético
     </div>
 </div>
 """, unsafe_allow_html=True)
