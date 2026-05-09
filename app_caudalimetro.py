@@ -312,7 +312,7 @@ Nota: Puede consultar la bibliuoteca tecnica para Más información sobre las va
 **El sistema de unidades se selecciona en el siguiente bloque.**
     """)
 
-</style>
+
 """, unsafe_allow_html=True)
 
 with st.expander("Evite fallas siguiendo estas consideraciones", expanded=False):
