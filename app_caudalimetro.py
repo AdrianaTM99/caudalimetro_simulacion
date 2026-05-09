@@ -458,21 +458,19 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
 
             """)
     st.markdown("---")
-    with st.expander("¿Cómo usar el modo realista?", expanded=False):
+    with st.expander("información sobre el **"modo realista""**, expanded=False):
         st.markdown("""
-**Finalidad del modo realista:**  
-Simular el comportamiento de un caudalímetro electromagnético *real* incluyendo efectos típicos de instrumentación y electrónica.
+Una vez activado, este modo simula el comportamiento de un caudalímetro electromagnético *real* incluyendo efectos típicos de instrumentación y electrónica.
 
-**Cómo usarlo (pasos):**
-1. En el panel principal (fuera de la sidebar), activa **“Modo realista”**.
+**Modo de uso:**
+1. En el panel principal, active el **“Modo realista”**.
 2. Ajusta los parámetros (ruido, offset, deriva, no linealidad, cuantización, saturación e instalación).
 3. Pulsa **“Generar curva de calibración”** para recalcular.
 4. Si activas **“Mostrar curva ideal”**, verás dos curvas:
    - **Ideal**: modelo físico sin imperfecciones.
    - **Realista**: señal medida con errores y limitaciones.
-5. Usa la **semilla** para repetir exactamente el mismo ruido.
 
-**Interpretación rápida:**
+**Interpretación:**
 - Ruido/offset/deriva afectan el “cero” y la dispersión.
 - No linealidad introduce curvatura (la recta ya no ajusta perfecto).
 - Cuantización simula resolución ADC.
