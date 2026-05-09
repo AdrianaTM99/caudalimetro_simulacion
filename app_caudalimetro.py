@@ -417,12 +417,6 @@ with st.sidebar:
     }
 
     with st.expander("Diámetros Nominales", expanded=False):
-        st.markdown(f"""
-        **Criterio técnico:** el diámetro interno **D** afecta el área (**A = π·D²/4**) y la relación señal–caudal.
-        En caudalímetros electromagnéticos, la tendencia es **V ∝ B·D·v**: a mayor **D**, mayor señal inducida para igual B y v.
-        La selección de DN también condiciona **pérdidas de carga**, rango de caudal y requisitos de instalación.
-        Unidades mostradas: **{u_d}** (conversión automática).
-        """)
         filas = []
         for dn, valor_m in diametros.items():
             valor_conv = valor_m * conv_diam
@@ -433,9 +427,8 @@ with st.sidebar:
         with st.expander("Nota (uso en diseño)", expanded=False):
             st.markdown(f"""
 En un caudalímetro electromagnético, el diámetro interno influye directamente en:
-- Área transversal (**A = π·(D/2)²**) → cambia el caudal para una misma velocidad.
+- Área de seccion transversal (**A = π·(D/2)²**) → Cambia el caudal para una misma velocidad.
 - Voltaje inducido (tendencia **V ∝ B·D·v**) → diámetros mayores elevan la señal inducida para igual B y v.
-- Requisitos de instalación (tramos rectos, perturbaciones) y pérdidas de carga.
             """)
 
     # VELOCIDADES (AHORA SÍ DENTRO DEL SIDEBAR)
