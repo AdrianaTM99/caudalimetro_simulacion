@@ -436,11 +436,7 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
     }
     unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
 
-    with st.expander("Velocidades recomendadas (criterio técnico)", expanded=False):
-        st.markdown("""
-**Criterio técnico:** rangos orientativos para mantener señal estable, evitar ruido a baja velocidad
-y reducir riesgos de sedimentación/abrasión. El valor final depende de instalación, régimen de flujo y proceso.
-        """)
+    with st.expander("Velocidades comunes", expanded=False):
 
         filas = []
         for app, info in velocidades.items():
@@ -457,9 +453,9 @@ y reducir riesgos de sedimentación/abrasión. El valor final depende de instala
 
         with st.expander("Más información", expanded=False):
             st.markdown("""
-- **Velocidades muy bajas**: suelen empeorar la relación señal/ruido (SNR) y la repetibilidad.
-- **Velocidades muy altas**: aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
-- La instalación (codos, válvulas, bombas) puede introducir asimetrías de perfil → conviene validar en campo.
+- **Velocidades muy bajas**: Suelen empeorar la relación señal/ruido (SNR) y la repetibilidad.
+- **Velocidades muy altas**: Aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
+
             """)
     st.markdown("---")
     with st.expander("¿Cómo usar el modo realista?", expanded=False):
