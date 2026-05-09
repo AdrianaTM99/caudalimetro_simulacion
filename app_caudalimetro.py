@@ -789,7 +789,7 @@ if st.session_state.mostrar_grafica:
         x=Q_plot,
         y=V_mv,
         mode='markers',
-        name="Datos simulados (realista)"
+        name="Datos simulados"
     ))
 
     # Curva ideal (opcional comparación)
