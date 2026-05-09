@@ -498,8 +498,7 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
                     """)
     st.markdown("---")
     with st.expander('información sobre el **modo realista**', expanded=False):
-        st.markdown("""Una vez activado, este modo simula el comportamiento de un caudalímetro electromagnético *real* incluyendo efectos típicos de instrumentación y electrónica. 
-        
+        st.markdown("""Una vez activado, este modo simula el comportamiento de un caudalímetro electromagnético *real* incluyendo efectos típicos de instrumentación y electrónica.
         **Modo de uso:**
         1. En el panel principal, active el **“Modo realista”**.
         2. Ajusta los parámetros (ruido, offset, deriva, no linealidad, cuantización, saturación e instalación).
