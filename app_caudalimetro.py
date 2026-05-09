@@ -306,7 +306,7 @@ Este simulador modela la respuesta de un **caudalímetro electromagnético** a p
    - Se incluye un factor **f(σ)** que representa la mejora de medición al aumentar la conductividad.
    - Se incorpora un **factor de error** para simular desviaciones sistemáticas.
 6. **Ajuste lineal (calibración):** Con los puntos simulados se ajusta una recta **V = m·Q + b** y se reporta **R²**.
-Nota: Puede consultar la bibliuoteca tecnica para mas informacion sobre las variables de diseño (despliegue arriba a la izquierda para acceder)  
+Nota: Puede consultar la bibliuoteca tecnica para Más información sobre las variables de diseño (despliegue arriba a la izquierda para acceder)  
 
 **Salida del simulador:** curva V–Q, ecuación de calibración y tabla de puntos evaluados.
 **El sistema de unidades se selecciona en el siguiente bloque.**
@@ -420,7 +420,7 @@ with st.sidebar:
         df_dn = pd.DataFrame(filas)
         st.table(df_dn)
 
-        with st.expander("Nota (uso en diseño)", expanded=False):
+        with st.expander("Más información", expanded=False):
             st.markdown(f"""
 En un caudalímetro electromagnético, el diámetro interno influye directamente en:
 - Área de seccion transversal (**A = π·(D/2)²**) → Cambia el caudal para una misma velocidad.
@@ -455,7 +455,7 @@ y reducir riesgos de sedimentación/abrasión. El valor final depende de instala
         df_vel = pd.DataFrame(filas)
         st.table(df_vel)
 
-        with st.expander("Más información (interpretación)", expanded=False):
+        with st.expander("Más información", expanded=False):
             st.markdown("""
 - **Velocidades muy bajas**: suelen empeorar la relación señal/ruido (SNR) y la repetibilidad.
 - **Velocidades muy altas**: aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
