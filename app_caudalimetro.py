@@ -364,7 +364,8 @@ with st.sidebar:
     }
     </style>
     """, unsafe_allow_html=True)
-
+     st.markdown(f"""
+        Las magnitudes mostradas se convierten automáticamente según el sistema seleccionado.**. 
     # CONDUCTIVIDADES 
     conductividades = {
         "Agua destilada": (0.5, 5),
@@ -378,7 +379,7 @@ with st.sidebar:
 
     with st.expander("Conductividades de Fluidos Comunes", expanded=False):
         st.markdown(f"""
-        **Criterio técnico:**Las magnitudes mostradas están en μS/cm y se convierten automáticamente según el sistema seleccionado.**.  
+        Las magnitudes mostradas se convierten automáticamente según el sistema seleccionado.**.  
         Unidades mostradas: **{u_sig}** (conversión automática según el sistema seleccionado).
         """)
         filas = []
@@ -397,7 +398,7 @@ with st.sidebar:
 
  La conductividad eléctrica **σ** determina la amplitud de la señal inducida y la estabilidad del sistema.
         Para operación industrial se recomienda trabajar por encima de un umbral mínimo (depende del transmisor y del ruido),
-        y considerar que σ varía con **temperatura, concentración iónica y composición del fluido""")
+        y considerar que σ varía con temperatura, concentración iónica y composición del fluido""")
 
     # DIÁMETROS
     diametros = {
