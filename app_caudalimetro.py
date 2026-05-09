@@ -366,14 +366,15 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     
     # CONDUCTIVIDADES 
-    conductividades = {
-        "Agua destilada": (0.5, 5),
-        "Agua potable": (50, 1500),
-        "Agua de mar": (50000, 50000),
-        "Leche": (4000, 6000),
-        "Sangre": (7000, 7000),
-        "Soluciones salinas": (10000, 80000),
-        "Ácidos diluidos": (10000, 100000),
+    # SIEMPRE EN S/m 
+    conductividades_SI = {
+        "Agua destilada": (5e-6, 5e-5),
+        "Agua potable": (5e-3, 0.15),
+        "Agua de mar": (5.0, 5.0),
+        "Leche": (0.4, 0.6),
+        "Sangre": (0.7, 0.7),
+        "Soluciones salinas": (1.0, 8.0),
+        "Ácidos diluidos": (1.0, 10.0),
     }
 
     with st.expander("Conductividades de Fluidos Comunes", expanded=False):
@@ -382,9 +383,15 @@ with st.sidebar:
         Unidades mostradas: **{u_sig}** (conversión automática según el sistema seleccionado).
         """)
         filas = []
-        for fluido, (min_v, max_v) in conductividades.items():
-            min_conv = min_v * conv_cond
-            max_conv = max_v * conv_cond
+            # FACTOR SEGÚN SISTEMA
+    if sistema.startswith("Métrico"):
+        factor_cond = 1e4        # S/m → μS/cm
+    else:
+        factor_cond = 25400      # S/m → μmhos/in
+    
+    for fluido, (min_v, max_v) in conductividades_SI.items():
+        min_conv = min_v * factor_cond
+        max_conv = max_v * factor_cond
             valor = f"{min_conv:.1f}" if min_v == max_v else f"{min_conv:.1f} – {max_conv:.1f}"
             filas.append({"Fluido": fluido, f"Conductividad ({u_sig})": valor})
 
