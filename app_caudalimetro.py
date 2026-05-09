@@ -514,7 +514,7 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
         - Cuantización simula resolución ADC.
         - Saturación recorta la señal a un máximo.
         - Instalación simula errores por perfiles de flujo/tramos rectos.
-            """)
+        """)
 
 
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
