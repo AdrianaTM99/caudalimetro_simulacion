@@ -462,9 +462,9 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
         "nota": "Compromiso entre higiene y medición."
     },
     ]
-unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
+    unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
     
-        unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
+    unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
     unidad_d = u_d
     
     with st.expander("Velocidades recomendadas según diámetro", expanded=False):
