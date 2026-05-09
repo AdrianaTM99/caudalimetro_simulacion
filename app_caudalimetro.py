@@ -189,9 +189,6 @@ div[data-testid="stNumberInput"] input[type="text"] {
 }
 /* RESPONSIVE TÍTULO */
 @media (max-width: 900px) {
-     .block-container {
-            padding: 260px 1rem 3rem 1rem !important;
-        }
     .main-title {
         font-size: 1.2rem !important;
     }
@@ -228,9 +225,6 @@ st.markdown("""
 <div class="title-bar">
     <div class="main-title">
         Simulador de Caudalímetro Electromagnético
-    </div>
-    <div class="subtitle">
-        Modelado y calibración digital de flujo industrial
     </div>
 </div>
 """, unsafe_allow_html=True)
