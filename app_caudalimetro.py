@@ -496,7 +496,7 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
         - **Velocidades muy altas**: Aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
         
                     """)
-        st.markdown("---")
+    st.markdown("---")
         with st.expander('información sobre el **modo realista**', expanded=False):
             st.markdown("""
     Una vez activado, este modo simula el comportamiento de un caudalímetro electromagnético *real* incluyendo efectos típicos de instrumentación y electrónica.
