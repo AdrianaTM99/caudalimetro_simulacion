@@ -89,7 +89,7 @@ div.stButton > button {
     border: 1px solid rgba(0,212,255,0.65) !important;
     border-radius: 12px !important;
     padding: 0.6rem 0.9rem !important;
-    font-weight: 500 !important;
+    font-weight: 700 !important;
 }
 div.stButton > button:hover {
     box-shadow: 0 0 12px rgba(0,212,255,0.25) !important;
@@ -177,7 +177,7 @@ div[data-testid="stNumberInput"] input[type="text"] {
     font-family: 'Roboto', sans-serif;
     max-width: 1100px !important;
     margin: 0 auto !important;
-    padding: 700px 2rem 4rem 2rem !important;
+    padding: 200px 2rem 4rem 2rem !important;
     color: white !important;
 }
 /* AUMENTAR TEXTO CENTRAL (EXCEPTO TÍTULO)  */
