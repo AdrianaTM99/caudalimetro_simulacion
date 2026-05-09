@@ -428,101 +428,56 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
             """)
 
     # VELOCIDADES (AHORA SÍ DENTRO DEL SIDEBAR)
-    velocidades = [
-    {
-        "aplicacion": "Agua potable",
-        "D_min": 0.025,
-        "D_max": 0.300,
-        "v_min": 1.0,
-        "v_max": 3.0,
-        "nota": "Rango típico para evitar sedimentación y buena señal."
-    },
-    {
-        "aplicacion": "Industria química",
-        "D_min": 0.010,
-        "D_max": 0.200,
-        "v_min": 1.0,
-        "v_max": 5.0,
-        "nota": "Depende del proceso y materiales."
-    },
-    {
-        "aplicacion": "Lodos",
-        "D_min": 0.050,
-        "D_max": 0.500,
-        "v_min": 0.5,
-        "v_max": 2.5,
-        "nota": "Evitar abrasión y acumulación."
-    },
-    {
-        "aplicacion": "Alimentos",
-        "D_min": 0.015,
-        "D_max": 0.150,
-        "v_min": 1.0,
-        "v_max": 4.0,
-        "nota": "Compromiso entre higiene y medición."
-    },
-    ]
+    velocidades = {
+        "Agua potable":      {"vmin": 1.0, "vmax": 3.0, "nota": "Rango típico para buena SNR y menor riesgo de sedimentación."},
+        "Industria química": {"vmin": 1.0, "vmax": 5.0, "nota": "Variabilidad alta del proceso; validar compatibilidad de materiales."},
+        "Lodos":             {"vmin": 0.5, "vmax": 2.0, "nota": "Se limita para reducir abrasión y depósitos; operación más estable."},
+        "Alimentos":         {"vmin": 1.0, "vmax": 4.0, "nota": "Compromiso entre estabilidad de señal y criterios sanitarios."},
+    }
     unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
-    
-    unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
-    unidad_d = u_d
-    
-    with st.expander("Velocidades recomendadas según diámetro", expanded=False):
-    
+
+    with st.expander("Velocidades comunes", expanded=False):
+
         filas = []
-    
-        for item in velocidades:
-            vmin = item["v_min"] * conv_vel
-            vmax = item["v_max"] * conv_vel
-    
-            Dmin = item["D_min"] * conv_diam
-            Dmax = item["D_max"] * conv_diam
-    
+        for app, info in velocidades.items():
+            vmin = info["vmin"] * conv_vel
+            vmax = info["vmax"] * conv_vel
             filas.append({
-                "Aplicación": item["aplicacion"],
-                f"D_min ({unidad_d})": f"{Dmin:.3f}",
-                f"D_max ({unidad_d})": f"{Dmax:.3f}",
+                "Aplicación": app,
                 f"v_min ({unidad_vel})": f"{vmin:.2f}",
                 f"v_max ({unidad_vel})": f"{vmax:.2f}",
-                "Observación": item["nota"],
+                "Observación": info["nota"],
             })
-    
         df_vel = pd.DataFrame(filas)
         st.table(df_vel)
-    
+
         with st.expander("Más información", expanded=False):
             st.markdown("""
-        - **Velocidades muy bajas**: Suelen empeorar la relación señal/ruido (SNR) y la repetibilidad.
-        - **Velocidades muy altas**: Aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
-                    
-                    """)
+- **Velocidades muy bajas**: Suelen empeorar la relación señal/ruido (SNR) y la repetibilidad.
+- **Velocidades muy altas**: Aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
+
+            """)
     st.markdown("---")
-
-
     with st.expander('información sobre el **modo realista**', expanded=False):
-            st.markdown("""Una vez activado, este modo simula el comportamiento de un caudalímetro electromagnético *real* incluyendo efectos típicos de instrumentación y electrónica.
-            
-    **Modo de uso:**
-         
-     1. En el panel principal, active el **“Modo realista”**.
-     2. Ajusta los parámetros (ruido, offset, deriva, no linealidad, cuantización, saturación e instalación).
-    3. Pulsa **“Generar curva de calibración”** para recalcular.
-    4. Si activas **“Mostrar curva ideal”**, verás dos curvas:
-    - **Ideal**: modelo físico sin imperfecciones.
-    - **Realista**: señal medida con errores y limitaciones.
+        st.markdown("""
+Una vez activado, este modo simula el comportamiento de un caudalímetro electromagnético *real* incluyendo efectos típicos de instrumentación y electrónica.
 
-           
-    **Interpretación:**
-        
-    - Ruido/offset/deriva afectan el “cero” y la dispersión.
-    - No linealidad introduce curvatura (la recta ya no ajusta perfecto).
-    - Cuantización simula resolución ADC.
-    - Saturación recorta la señal a un máximo.
-    - Instalación simula errores por perfiles de flujo/tramos rectos.
-                    
-                    """)
+**Modo de uso:**
+1. En el panel principal, active el **“Modo realista”**.
+2. Ajusta los parámetros (ruido, offset, deriva, no linealidad, cuantización, saturación e instalación).
+3. Pulsa **“Generar curva de calibración”** para recalcular.
+4. Si activas **“Mostrar curva ideal”**, verás dos curvas:
+   - **Ideal**: modelo físico sin imperfecciones.
+   - **Realista**: señal medida con errores y limitaciones.
 
+**Interpretación:**
+- Ruido/offset/deriva afectan el “cero” y la dispersión.
+- No linealidad introduce curvatura (la recta ya no ajusta perfecto).
+- Cuantización simula resolución ADC.
+- Saturación recorta la señal a un máximo.
+- Instalación simula errores por perfiles de flujo/tramos rectos.
 
+        """)
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 
 col1, col2, col3 = st.columns(3)
@@ -933,27 +888,3 @@ Si evalúas muy fuera del rango simulado, es extrapolación y puede no represent
     )
     st.write("---")
     st.caption("Adriana Teixeira Mendoza - Universidad Central de Venezuela - 2026")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
