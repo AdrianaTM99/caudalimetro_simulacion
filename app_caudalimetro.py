@@ -462,7 +462,7 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
         "nota": "Compromiso entre higiene y medición."
     },
     ]
-        unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
+unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
     
         unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
     unidad_d = u_d
@@ -517,6 +517,8 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
     - Instalación simula errores por perfiles de flujo/tramos rectos.
     
             """)
+
+
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 
 col1, col2, col3 = st.columns(3)
