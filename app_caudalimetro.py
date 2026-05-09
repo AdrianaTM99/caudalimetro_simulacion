@@ -428,28 +428,67 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
             """)
 
     # VELOCIDADES (AHORA SÍ DENTRO DEL SIDEBAR)
-    velocidades = {
-        "Agua potable":      {"vmin": 1.0, "vmax": 3.0, "nota": "Rango típico para buena SNR y menor riesgo de sedimentación."},
-        "Industria química": {"vmin": 1.0, "vmax": 5.0, "nota": "Variabilidad alta del proceso; validar compatibilidad de materiales."},
-        "Lodos":             {"vmin": 0.5, "vmax": 2.0, "nota": "Se limita para reducir abrasión y depósitos; operación más estable."},
-        "Alimentos":         {"vmin": 1.0, "vmax": 4.0, "nota": "Compromiso entre estabilidad de señal y criterios sanitarios."},
-    }
+    velocidades = [
+    {
+        "aplicacion": "Agua potable",
+        "D_min": 0.025,
+        "D_max": 0.300,
+        "v_min": 1.0,
+        "v_max": 3.0,
+        "nota": "Rango típico para evitar sedimentación y buena señal."
+    },
+    {
+        "aplicacion": "Industria química",
+        "D_min": 0.010,
+        "D_max": 0.200,
+        "v_min": 1.0,
+        "v_max": 5.0,
+        "nota": "Depende del proceso y materiales."
+    },
+    {
+        "aplicacion": "Lodos",
+        "D_min": 0.050,
+        "D_max": 0.500,
+        "v_min": 0.5,
+        "v_max": 2.5,
+        "nota": "Evitar abrasión y acumulación."
+    },
+    {
+        "aplicacion": "Alimentos",
+        "D_min": 0.015,
+        "D_max": 0.150,
+        "v_min": 1.0,
+        "v_max": 4.0,
+        "nota": "Compromiso entre higiene y medición."
+    },
+]
     unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
 
-    with st.expander("Velocidades comunes", expanded=False):
+    unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
+unidad_d = u_d
 
-        filas = []
-        for app, info in velocidades.items():
-            vmin = info["vmin"] * conv_vel
-            vmax = info["vmax"] * conv_vel
-            filas.append({
-                "Aplicación": app,
-                f"v_min ({unidad_vel})": f"{vmin:.2f}",
-                f"v_max ({unidad_vel})": f"{vmax:.2f}",
-                "Observación": info["nota"],
-            })
-        df_vel = pd.DataFrame(filas)
-        st.table(df_vel)
+with st.expander("Velocidades recomendadas según diámetro", expanded=False):
+
+    filas = []
+
+    for item in velocidades:
+        vmin = item["v_min"] * conv_vel
+        vmax = item["v_max"] * conv_vel
+
+        Dmin = item["D_min"] * conv_diam
+        Dmax = item["D_max"] * conv_diam
+
+        filas.append({
+            "Aplicación": item["aplicacion"],
+            f"D_min ({unidad_d})": f"{Dmin:.3f}",
+            f"D_max ({unidad_d})": f"{Dmax:.3f}",
+            f"v_min ({unidad_vel})": f"{vmin:.2f}",
+            f"v_max ({unidad_vel})": f"{vmax:.2f}",
+            "Observación": item["nota"],
+        })
+
+    df_vel = pd.DataFrame(filas)
+    st.table(df_vel)
 
         with st.expander("Más información", expanded=False):
             st.markdown("""
