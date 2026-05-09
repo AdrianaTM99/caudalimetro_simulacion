@@ -364,8 +364,7 @@ with st.sidebar:
     }
     </style>
     """, unsafe_allow_html=True)
-     st.markdown(f"""
-        Las magnitudes mostradas se convierten automáticamente según el sistema seleccionado.**. 
+    
     # CONDUCTIVIDADES 
     conductividades = {
         "Agua destilada": (0.5, 5),
