@@ -461,41 +461,41 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
         "v_max": 4.0,
         "nota": "Compromiso entre higiene y medición."
     },
-]
-    unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
-
-    unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
-unidad_d = u_d
-
-with st.expander("Velocidades recomendadas según diámetro", expanded=False):
-
-    filas = []
-
-    for item in velocidades:
-        vmin = item["v_min"] * conv_vel
-        vmax = item["v_max"] * conv_vel
-
-        Dmin = item["D_min"] * conv_diam
-        Dmax = item["D_max"] * conv_diam
-
-        filas.append({
-            "Aplicación": item["aplicacion"],
-            f"D_min ({unidad_d})": f"{Dmin:.3f}",
-            f"D_max ({unidad_d})": f"{Dmax:.3f}",
-            f"v_min ({unidad_vel})": f"{vmin:.2f}",
-            f"v_max ({unidad_vel})": f"{vmax:.2f}",
-            "Observación": item["nota"],
-        })
-
-    df_vel = pd.DataFrame(filas)
-    st.table(df_vel)
-
-    with st.expander("Más información", expanded=False):
-        st.markdown("""
-    - **Velocidades muy bajas**: Suelen empeorar la relación señal/ruido (SNR) y la repetibilidad.
-    - **Velocidades muy altas**: Aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
+    ]
+        unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
     
-                """)
+        unidad_vel = "m/s" if sistema.startswith("Métrico") else "ft/s"
+    unidad_d = u_d
+    
+    with st.expander("Velocidades recomendadas según diámetro", expanded=False):
+    
+        filas = []
+    
+        for item in velocidades:
+            vmin = item["v_min"] * conv_vel
+            vmax = item["v_max"] * conv_vel
+    
+            Dmin = item["D_min"] * conv_diam
+            Dmax = item["D_max"] * conv_diam
+    
+            filas.append({
+                "Aplicación": item["aplicacion"],
+                f"D_min ({unidad_d})": f"{Dmin:.3f}",
+                f"D_max ({unidad_d})": f"{Dmax:.3f}",
+                f"v_min ({unidad_vel})": f"{vmin:.2f}",
+                f"v_max ({unidad_vel})": f"{vmax:.2f}",
+                "Observación": item["nota"],
+            })
+    
+        df_vel = pd.DataFrame(filas)
+        st.table(df_vel)
+    
+        with st.expander("Más información", expanded=False):
+            st.markdown("""
+        - **Velocidades muy bajas**: Suelen empeorar la relación señal/ruido (SNR) y la repetibilidad.
+        - **Velocidades muy altas**: Aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
+        
+                    """)
     st.markdown("---")
     with st.expander('información sobre el **modo realista**', expanded=False):
         st.markdown("""
