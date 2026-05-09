@@ -496,27 +496,27 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
         - **Velocidades muy altas**: Aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
         
                     """)
-    st.markdown("---")
-    with st.expander('información sobre el **modo realista**', expanded=False):
-        st.markdown("""
-Una vez activado, este modo simula el comportamiento de un caudalímetro electromagnético *real* incluyendo efectos típicos de instrumentación y electrónica.
-
-**Modo de uso:**
-1. En el panel principal, active el **“Modo realista”**.
-2. Ajusta los parámetros (ruido, offset, deriva, no linealidad, cuantización, saturación e instalación).
-3. Pulsa **“Generar curva de calibración”** para recalcular.
-4. Si activas **“Mostrar curva ideal”**, verás dos curvas:
-   - **Ideal**: modelo físico sin imperfecciones.
-   - **Realista**: señal medida con errores y limitaciones.
-
-**Interpretación:**
-- Ruido/offset/deriva afectan el “cero” y la dispersión.
-- No linealidad introduce curvatura (la recta ya no ajusta perfecto).
-- Cuantización simula resolución ADC.
-- Saturación recorta la señal a un máximo.
-- Instalación simula errores por perfiles de flujo/tramos rectos.
-
-        """)
+        st.markdown("---")
+        with st.expander('información sobre el **modo realista**', expanded=False):
+            st.markdown("""
+    Una vez activado, este modo simula el comportamiento de un caudalímetro electromagnético *real* incluyendo efectos típicos de instrumentación y electrónica.
+    
+    **Modo de uso:**
+    1. En el panel principal, active el **“Modo realista”**.
+    2. Ajusta los parámetros (ruido, offset, deriva, no linealidad, cuantización, saturación e instalación).
+    3. Pulsa **“Generar curva de calibración”** para recalcular.
+    4. Si activas **“Mostrar curva ideal”**, verás dos curvas:
+       - **Ideal**: modelo físico sin imperfecciones.
+       - **Realista**: señal medida con errores y limitaciones.
+    
+    **Interpretación:**
+    - Ruido/offset/deriva afectan el “cero” y la dispersión.
+    - No linealidad introduce curvatura (la recta ya no ajusta perfecto).
+    - Cuantización simula resolución ADC.
+    - Saturación recorta la señal a un máximo.
+    - Instalación simula errores por perfiles de flujo/tramos rectos.
+    
+            """)
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
 
 col1, col2, col3 = st.columns(3)
