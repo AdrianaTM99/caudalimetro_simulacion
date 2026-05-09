@@ -383,15 +383,15 @@ with st.sidebar:
         Unidades mostradas: **{u_sig}** (conversión automática según el sistema seleccionado).
         """)
         filas = []
-            # FACTOR SEGÚN SISTEMA
-    if sistema.startswith("Métrico"):
-        factor_cond = 1e4        # S/m → μS/cm
-    else:
-        factor_cond = 25400      # S/m → μmhos/in
-    
-    for fluido, (min_v, max_v) in conductividades_SI.items():
-        min_conv = min_v * factor_cond
-        max_conv = max_v * factor_cond
+        # FACTOR SEGÚN SISTEMA
+        if sistema.startswith("Métrico"):
+            factor_cond = 1e4        # S/m → μS/cm
+        else:
+            factor_cond = 25400      # S/m → μmhos/in
+        
+        for fluido, (min_v, max_v) in conductividades_SI.items():
+            min_conv = min_v * factor_cond
+            max_conv = max_v * factor_cond
             valor = f"{min_conv:.1f}" if min_v == max_v else f"{min_conv:.1f} – {max_conv:.1f}"
             filas.append({"Fluido": fluido, f"Conductividad ({u_sig})": valor})
 
