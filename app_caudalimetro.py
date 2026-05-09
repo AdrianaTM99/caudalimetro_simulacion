@@ -313,7 +313,7 @@ Nota: Puede consultar la bibliuoteca tecnica para Más información sobre las va
     """)
 
 
-""", unsafe_allow_html=True)
+
 
 with st.expander("Evite fallas siguiendo estas consideraciones", expanded=False):
     st.markdown(""" 
