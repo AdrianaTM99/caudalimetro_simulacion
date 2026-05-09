@@ -490,12 +490,12 @@ with st.expander("Velocidades recomendadas según diámetro", expanded=False):
     df_vel = pd.DataFrame(filas)
     st.table(df_vel)
 
-        with st.expander("Más información", expanded=False):
-            st.markdown("""
-- **Velocidades muy bajas**: Suelen empeorar la relación señal/ruido (SNR) y la repetibilidad.
-- **Velocidades muy altas**: Aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
-
-            """)
+    with st.expander("Más información", expanded=False):
+        st.markdown("""
+    - **Velocidades muy bajas**: Suelen empeorar la relación señal/ruido (SNR) y la repetibilidad.
+    - **Velocidades muy altas**: Aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
+    
+                """)
     st.markdown("---")
     with st.expander('información sobre el **modo realista**', expanded=False):
         st.markdown("""
