@@ -397,7 +397,7 @@ with st.sidebar:
         st.table(df_cond)
 
         # “Más info” dentro del mismo bloque desplegable
-        with st.expander("Más información (criterio técnico)", expanded=False):
+        with st.expander("Más información", expanded=False):
             st.markdown(f"""
 
  La conductividad eléctrica **σ** determina la amplitud de la señal inducida y la estabilidad del sistema, influyendo en la eficiencia de la medicion""")
