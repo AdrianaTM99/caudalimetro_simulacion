@@ -124,12 +124,13 @@ div.stButton > button:hover {
 /* TEXTO DEL TÍTULO */
 .main-title {
     font-family: 'Poppins', sans-serif;
-    font-size: 2.8rem;
     font-weight: 800;
     background: linear-gradient(90deg, #00d4ff, #ff8c00 );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
+
+    font-size: clamp(2rem, 4vw, 3.8rem);
 }
 /* SUBTÍTULO */
 .subtitle {
