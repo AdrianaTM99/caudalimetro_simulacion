@@ -376,11 +376,9 @@ with st.sidebar:
         "Ácidos diluidos": (10000, 100000),
     }
 
-    with st.expander("🔬 Conductividades de Fluidos Comunes", expanded=False):
+    with st.expander("Conductividades de Fluidos Comunes", expanded=False):
         st.markdown(f"""
-        **Criterio técnico:** la conductividad eléctrica **σ** determina la amplitud de la señal inducida y la estabilidad del sistema.
-        Para operación industrial se recomienda trabajar por encima de un umbral mínimo (depende del transmisor y del ruido),
-        y considerar que σ varía con **temperatura, concentración iónica y composición del fluido**.  
+        **Criterio técnico:**Las magnitudes mostradas están en μS/cm y se convierten automáticamente según el sistema seleccionado.**.  
         Unidades mostradas: **{u_sig}** (conversión automática según el sistema seleccionado).
         """)
         filas = []
@@ -397,8 +395,9 @@ with st.sidebar:
         with st.expander("Más información (criterio técnico)", expanded=False):
             st.markdown(f"""
 
-Las magnitudes mostradas están en **{u_sig}** y se convierten automáticamente según el sistema seleccionado.
-            """)
+ La conductividad eléctrica **σ** determina la amplitud de la señal inducida y la estabilidad del sistema.
+        Para operación industrial se recomienda trabajar por encima de un umbral mínimo (depende del transmisor y del ruido),
+        y considerar que σ varía con **temperatura, concentración iónica y composición del fluido""")
 
     # DIÁMETROS
     diametros = {
