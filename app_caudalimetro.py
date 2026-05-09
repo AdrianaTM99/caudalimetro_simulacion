@@ -189,6 +189,9 @@ div[data-testid="stNumberInput"] input[type="text"] {
 }
 /* RESPONSIVE TÍTULO */
 @media (max-width: 900px) {
+     .block-container {
+            padding: 260px 1rem 3rem 1rem !important;
+        }
     .main-title {
         font-size: 1.2rem !important;
     }
