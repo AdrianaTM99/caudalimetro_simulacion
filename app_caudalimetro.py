@@ -379,9 +379,7 @@ with st.sidebar:
 
     with st.expander("Conductividades de Fluidos Comunes", expanded=False):
         st.markdown(f"""
-        Las magnitudes mostradas se convierten automáticamente según el sistema seleccionado.**.  
-        Unidades mostradas: **{u_sig}** (conversión automática según el sistema seleccionado).
-        """)
+        Las magnitudes mostradas se convierten automáticamente según el sistema seleccionado. """)
         filas = []
         # FACTOR SEGÚN SISTEMA
         if sistema.startswith("Métrico"):
