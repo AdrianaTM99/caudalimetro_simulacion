@@ -329,7 +329,7 @@ col_radio, col_gif = st.columns([3,1])
 with col_radio:
     sistema = st.radio(
         "Selecciona el Sistema de Unidades:",
-        ("Métrico (T, μS/cm, m)", "Americano (G, mhos/in, in)"),
+        ("Métrico (T, μS/cm, m)", "Americano (G, μS/in, in)"),
         horizontal=True
     )
 
