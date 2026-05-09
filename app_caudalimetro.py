@@ -89,7 +89,7 @@ div.stButton > button {
     border: 1px solid rgba(0,212,255,0.65) !important;
     border-radius: 12px !important;
     padding: 0.6rem 0.9rem !important;
-    font-weight: 700 !important;
+    font-weight: 500 !important;
 }
 div.stButton > button:hover {
     box-shadow: 0 0 12px rgba(0,212,255,0.25) !important;
