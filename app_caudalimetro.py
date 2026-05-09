@@ -494,7 +494,7 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
             st.markdown("""
         - **Velocidades muy bajas**: Suelen empeorar la relación señal/ruido (SNR) y la repetibilidad.
         - **Velocidades muy altas**: Aumentan abrasión (si hay sólidos), esfuerzos mecánicos y desgaste.
-        
+                    
                     """)
     st.markdown("---")
     with st.expander('información sobre el **modo realista**', expanded=False):
@@ -514,7 +514,7 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
         - Cuantización simula resolución ADC.
         - Saturación recorta la señal a un máximo.
         - Instalación simula errores por perfiles de flujo/tramos rectos.
-        """)
+                    """)
 
 
 st.markdown(f"#### Configuración de Parámetros ({sistema})")
