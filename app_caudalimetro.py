@@ -337,7 +337,7 @@ if sistema == "Métrico (T, μS/cm, m)":
 else:
     u_b, u_sig, u_d, u_q = "G", "μmhos/in", "in", "GPM"
     conv_cond = 2.54
-    conv_diam = 1 / 25.4
+    conv_diam = 39.3701
     conv_vel = 3.28084
     # Rangos americanos
     b_min, b_max, b_def = 1000.0, 15000.0, 5000.0
