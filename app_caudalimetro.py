@@ -506,7 +506,6 @@ En un caudalímetro electromagnético, el diámetro interno influye directamente
         4. Si activas **“Mostrar curva ideal”**, verás dos curvas:
            - **Ideal**: modelo físico sin imperfecciones.
            - **Realista**: señal medida con errores y limitaciones.
-        
         **Interpretación:**
         - Ruido/offset/deriva afectan el “cero” y la dispersión.
         - No linealidad introduce curvatura (la recta ya no ajusta perfecto).
