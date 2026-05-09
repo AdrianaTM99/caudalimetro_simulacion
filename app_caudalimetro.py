@@ -312,6 +312,17 @@ Nota: Puede consultar la bibliuoteca tecnica para Más información sobre las va
 **El sistema de unidades se selecciona en el siguiente bloque.**
     """)
 
+</style>
+""", unsafe_allow_html=True)
+
+with st.expander("Evite fallas siguiendo estas consideraciones", expanded=False):
+    st.markdown("""
+1. Cuando evalue puntos en la ecuacion obtenida NO cambie el sistemas de unidades que ha escogido previamente, si quiere cambiarlo debera generar la grafica de nuevo antes de la evaluacion
+2. Una vez se deja de interactuar con la grafica, esta vuelve a mostrar su configuracion inicial, por lo que si hizo zoom para buscar un dato concreto se recomienda que use el simbolo de la camara para guardar una imagen de esa configuracion y de esa forma no la pierda al dedsactivar la interaccion
+    """)
+
+
+
 
 # LÓGICA DE UNIDADES (manteniendo columnas, sin GIF)
 col_radio, col_gif = st.columns([3,1])
