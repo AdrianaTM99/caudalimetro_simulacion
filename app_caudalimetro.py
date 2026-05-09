@@ -379,7 +379,7 @@ with st.sidebar:
 
     with st.expander("Conductividades de Fluidos Comunes", expanded=False):
         st.markdown(f"""
-        Las magnitudes mostradas se convierten automáticamente según el sistema seleccionado. """)
+        Las magnitudes mostradas se convierten automáticamente según el sistema de unidades seleccionado. """)
         filas = []
         # FACTOR SEGÚN SISTEMA
         if sistema.startswith("Métrico"):
@@ -400,9 +400,7 @@ with st.sidebar:
         with st.expander("Más información (criterio técnico)", expanded=False):
             st.markdown(f"""
 
- La conductividad eléctrica **σ** determina la amplitud de la señal inducida y la estabilidad del sistema.
-        Para operación industrial se recomienda trabajar por encima de un umbral mínimo (depende del transmisor y del ruido),
-        y considerar que σ varía con temperatura, concentración iónica y composición del fluido""")
+ La conductividad eléctrica **σ** determina la amplitud de la señal inducida y la estabilidad del sistema, influyendo en la eficiencia de la medicion""")
 
     # DIÁMETROS
     diametros = {
