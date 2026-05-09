@@ -345,7 +345,7 @@ if sistema == "Métrico (T, μS/cm, m)":
     d_min, d_max, d_def = 0.005, 0.500, 0.0127
     conv_q = 1.0
 else:
-    u_b, u_sig, u_d, u_q = "G", "μmhos/in", "in", "GPM"
+    u_b, u_sig, u_d, u_q = "G", "μS/in", "in", "GPM"
     conv_cond = 2.54
     conv_diam = 39.3701
     conv_vel = 3.28084
